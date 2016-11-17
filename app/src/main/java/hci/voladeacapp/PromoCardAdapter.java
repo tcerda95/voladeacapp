@@ -13,6 +13,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import java.util.ArrayList;
 
 /**
@@ -23,6 +27,7 @@ public class PromoCardAdapter extends BaseAdapter {
     private ArrayList<Flight> cardsData;
     private LayoutInflater inflater;
     private ViewHolder holder;
+
 
     public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
         this.cardsData = listData;
@@ -76,6 +81,21 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.dateView.setText(flight.getDepartureDate().toString());
         holder.priceView.setText(String.valueOf(flight.getPrice()));
 
+
+        // IMAGEN
+        holder.photoView = (ImageView) convertView.findViewById(R.id.city_photo);
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(convertView.getContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        holder.loaderView = ImageLoader.getInstance();
+        holder.loaderView.init(config);
+        holder.loaderView.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", holder.photoView);
+
+
         return convertView;
     }
 
@@ -106,7 +126,8 @@ public class PromoCardAdapter extends BaseAdapter {
         TextView dateView;
         TextView priceView;
         ImageView overflowbtn;
-
+        ImageLoader loaderView;
+        ImageView photoView;
         //MAS
     }
 }

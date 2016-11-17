@@ -8,7 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +23,9 @@ public class PromocionesFragment extends Fragment {
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
 
     private ListView cardListView;
+
+    ImageLoader imageLoader;
+    ImageView imageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,9 @@ public class PromocionesFragment extends Fragment {
                 startActivity(detailIntent);
             }
         });
+
+
+
 
         return rootView;
 
