@@ -41,7 +41,7 @@ public class MisVuelosFragment extends Fragment {
                 Flight flightData = (Flight) o;
 
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra("number", flightData.getNumber());
+                detailIntent.putExtra("Flight",flightData);
 
                 startActivity(detailIntent);
 

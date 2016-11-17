@@ -9,5 +9,13 @@
     <string name="title_resenas">Reseñas</string>
     <string name="title_promociones">Promociones</string>
     <string name="configuration">Configuración</string>
+    <string name="salida_label">Sallida</string>
+    <string name="date_label">Fecha:</string>
+    <string name="boarding_time_label">Embarque:</string>
+    <string name="airport_label">Aeropuerto:</string>
+    <string name="terminal_label">Terminal:</string>
+    <string name="gate_label">Puerta:</string>
+    <string name="llegada_label">Llegada:</string>
+    <string name="baggage_claim_label">Retiro de equipaje:</string>
 
 </resources>

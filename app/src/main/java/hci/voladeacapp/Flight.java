@@ -1,7 +1,9 @@
 package hci.voladeacapp;
 
 
-public class Flight {
+import java.io.Serializable;
+
+public class Flight implements Serializable{
     private String number;
     private String cityOrigin, cityDestination;
     private String aerolinea;
