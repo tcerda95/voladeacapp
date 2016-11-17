@@ -30,7 +30,6 @@ public class PromocionesFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
         return rootView;
 
     }
