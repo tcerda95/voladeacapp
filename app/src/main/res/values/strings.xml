@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Voladeacapp</string>
+    <string name="title_mis_vuelos">Mis Vuelos</string>
+    <string name="salida">Salida</string>
+    <string name="llegada">Llegada</string>
+    <string name="btn">HOLA</string>
+    <string name="mapa">Mapa</string>
+    <string name="search">Buscar</string>
+    <string name="title_resenas">Reseñas</string>
+    <string name="title_promociones">Promociones</string>
+    <string name="configuration">Configuración</string>
+
 </resources>

@@ -1,0 +1,100 @@
+package hci.voladeacapp;
+
+import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+public class MisVuelosFragment extends Fragment {
+
+    public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
+
+    private ListView flightsListView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
+
+        populateList();
+
+        flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            //ACA A LO QUE PASA CUANDO HACE CLICK
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                Object o = flightsListView.getItemAtPosition(position);
+                Flight flightData = (Flight) o;
+
+                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
+                detailIntent.putExtra("number", flightData.getNumber());
+
+                startActivity(detailIntent);
+
+            }
+        });
+
+        FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"Aca se deberia agregar un vuelo", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void populateList() {
+        ArrayList flight_details = getListData();
+        flightsListView.setAdapter(new FlightListAdapter(getActivity(),flight_details));
+    }
+
+    /* PROBANDO UNA ARRAYLIST CUALQUIERA */
+    public ArrayList getListData() {
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        Flight flight1 = new Flight();
+        flight1.setCityDestination("BUENOS AIRES");
+        flight1.setNumber("12345");
+        flight1.setCityOrigin("NUEVA YORK");
+        flight1.setState("EXPLOTADO");
+        results.add(flight1);
+
+        Flight flight2 = new Flight();
+        flight2.setCityDestination("EL INFINITO");
+        flight2.setNumber("00000");
+        flight2.setCityOrigin("MAS ALLA");
+        flight2.setState("PERDIDO");
+        results.add(flight2);
+
+        Flight flight3 = new Flight();
+        flight3.setCityDestination("MADRID");
+        flight3.setNumber("00002");
+        flight3.setCityOrigin("BARILOCHE");
+        flight3.setState("RESTRASADO");
+        results.add(flight3);
+
+        Flight flight4 = new Flight();
+        flight4.setCityDestination("LALA");
+        flight4.setNumber("000123");
+        flight4.setCityOrigin("ERWER");
+        flight4.setState("RESTRASADO");
+        results.add(flight4);
+
+
+        return results;
+    }
+}
