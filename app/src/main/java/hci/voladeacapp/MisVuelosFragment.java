@@ -46,19 +46,12 @@ public class MisVuelosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
-
-        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         //Lleno la lista con lo que esta en shared preferences
         SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
 
-        if(list == null){
+        if(list == null || list.length() < 1){
             flight_details = getListData(); //TODO: Borrar
         }
         else {
@@ -68,6 +61,13 @@ public class MisVuelosFragment extends Fragment {
 
             flight_details = gson.fromJson(list, type);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+
+        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         adapter = new FlightListAdapter(getActivity(),flight_details);
         flightsListView.setAdapter(adapter);
@@ -190,8 +190,6 @@ public class MisVuelosFragment extends Fragment {
 
     }
 
-
-
     @Override
     public void onStop() {
         // Save the user's current game state
@@ -203,9 +201,7 @@ public class MisVuelosFragment extends Fragment {
         SharedPreferences.Editor editor = getActivity().getPreferences(MODE_PRIVATE).edit();
         editor.putString(FLIGHT_LIST, s);
         editor.commit();
-
     }
-
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */
     public ArrayList getListData() {
