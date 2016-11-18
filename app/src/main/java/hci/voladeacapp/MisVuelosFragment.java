@@ -2,6 +2,7 @@ package hci.voladeacapp;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -11,15 +12,25 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_CANCELED;
+import static android.content.Context.MODE_PRIVATE;
 
 public class MisVuelosFragment extends Fragment {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
+    public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
     public final static int GET_FLIGHT = 1;
 
+    private boolean returningFromResult;
     private ListView flightsListView;
 
     ArrayList<Flight> flight_details;
@@ -32,11 +43,41 @@ public class MisVuelosFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+
+        SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
+        String list = sp.getString(FLIGHT_LIST, null);
+
+        System.out.println(list);
+
+        if(returningFromResult) {
+            returningFromResult = false;
+            return;
+        }
+
+        if(list == null){
+            flight_details = getListData();
+        }
+        else {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Flight>>() {
+            }.getType();
+
+            flight_details = gson.fromJson(list, type);
+        }
+
+        adapter = new FlightListAdapter(getActivity(),flight_details);
+        flightsListView.setAdapter(adapter);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+
         flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
-        populateList();
 
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -65,11 +106,6 @@ public class MisVuelosFragment extends Fragment {
         return rootView;
     }
 
-    private void populateList() {
-        flight_details = getListData();
-        adapter = new FlightListAdapter(getActivity(),flight_details);
-        flightsListView.setAdapter(adapter);
-    }
 
 
     protected void addToList(Flight f){
@@ -96,7 +132,24 @@ public class MisVuelosFragment extends Fragment {
 
             }
         }
+
+        returningFromResult = true;
     }
+
+    @Override
+    public void onPause() {
+        // Save the user's current game state
+        super.onPause();
+
+        Gson gson = new Gson();
+        String s = gson.toJson(flight_details);
+
+        SharedPreferences.Editor editor = getActivity().getPreferences(MODE_PRIVATE).edit();
+        editor.putString(FLIGHT_LIST, s);
+        editor.commit();
+
+    }
+
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */
     public ArrayList getListData() {
