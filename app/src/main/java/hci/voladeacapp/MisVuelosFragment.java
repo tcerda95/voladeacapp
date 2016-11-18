@@ -76,7 +76,7 @@ public class MisVuelosFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        //Lleno la lista con lo que esta en shared preferences
+        //Lleno la lista con lo que esta en shared app_preferences
         SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
 

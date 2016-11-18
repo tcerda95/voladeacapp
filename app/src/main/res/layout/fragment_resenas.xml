@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh_resenas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/text_resenas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/title_resenas" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hola Resenas"
-        android:textSize="60sp" />
-</LinearLayout>
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_create_white_24px"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/add_review_button"/>
+
+
+</android.support.design.widget.CoordinatorLayout>

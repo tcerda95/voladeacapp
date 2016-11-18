@@ -1,27 +1,27 @@
 package hci.voladeacapp;
 
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
-public class AppSettingsActivity extends AppCompatActivity {
+
+public class FlightSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new AppPreferenceFragment()).commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new FlightPreferenceFragment()).commit();
     }
 
-    public static class AppPreferenceFragment extends PreferenceFragment
+    public static class FlightPreferenceFragment extends PreferenceFragment
     {
         @Override
         public void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.app_preferences);
+            addPreferencesFromResource(R.xml.flight_preferences);
 
 
             SharedPreferences.OnSharedPreferenceChangeListener spChanged = new
@@ -29,13 +29,8 @@ public class AppSettingsActivity extends AppCompatActivity {
                         @Override
                         public void onSharedPreferenceChanged(SharedPreferences SP,
                                                               String key) {
-                            if ("notifications_switch".equals(key)) {
-                                Boolean val = SP.getBoolean(key, true);
-                                System.out.println(key + "Changed to: " + val);
-                            } else {
-                                String val = SP.getString(key, "NULL");
-                                System.out.println(key + "Changed to: " + val);
-                            }
+                            System.out.println("Preferences changed");
+                            return;
                         }
                     };
 
@@ -45,3 +40,4 @@ public class AppSettingsActivity extends AppCompatActivity {
     }
 
 }
+

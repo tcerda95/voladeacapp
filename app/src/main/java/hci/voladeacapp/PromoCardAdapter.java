@@ -41,8 +41,9 @@ public class PromoCardAdapter extends BaseAdapter {
     public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
-        rq = Volley.newRequestQueue(aContext);
+//        rq = Volley.newRequestQueue(aContext);
     }
+
 
     @Override
     public int getCount() {
@@ -63,7 +64,7 @@ public class PromoCardAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.promo_card, null);
-            fillViewHolder(convertView);
+            fillViewHolder(convertView, (Flight) getItem(position));
         } else {
             holder = (PromoCardAdapter.ViewHolder) convertView.getTag();
         }
@@ -80,7 +81,7 @@ public class PromoCardAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void fillViewHolder(View convertView) {
+    private void fillViewHolder(View convertView, final Flight flight) {
         holder = new ViewHolder();
         holder.cityView = (TextView) convertView.findViewById(R.id.city_info_text);
         holder.dateView = (TextView) convertView.findViewById(R.id.promo_date);
@@ -101,14 +102,14 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view.findViewById(R.id.promo_card_overflow));
+                showPopupMenu(view.findViewById(R.id.promo_card_overflow), flight);
             }
         });
 
         convertView.setTag(holder);
     }
 
-    private void showPopupMenu(View btn) {
+    private void showPopupMenu(final View btn, final Flight fl) {
         PopupMenu popup = new PopupMenu(btn.getContext(), btn);
         popup.getMenuInflater().inflate(R.menu.promo_item_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -116,7 +117,10 @@ public class PromoCardAdapter extends BaseAdapter {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.overflow_more_details:
-                        System.out.println("Abrir mas detalles");
+                        Intent settingsIntent = new Intent(btn.getContext(), FlightSettingsActivity.class);
+                        settingsIntent.putExtra("Flight", fl);
+                        System.out.println("More Details");
+                        btn.getContext().startActivity(settingsIntent);
                         return true;
                     case R.id.overflow_add_flight:
                         System.out.println("Agregar a mis vuelos");

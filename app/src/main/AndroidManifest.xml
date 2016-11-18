@@ -72,12 +72,16 @@
         <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings" />
+        <![CDATA[
+            android:label="@string/title_activity_app_settings">]]>
 
-        <receiver
-            android:name=".RefreshReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
+        <activity
+            android:name=".FlightSettingsActivity"
+            android:label="Notificaciones de "></activity>
 
+        <activity android:name=".AddReviewActivity"
+            android:label="@string/title_dejar_resena"
+            android:parentActivityName=".Voladeacapp"></activity>
     </application>
 
 </manifest>
