@@ -41,7 +41,7 @@ public class PromoCardAdapter extends BaseAdapter {
     public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
-        rq = Volley.newRequestQueue(aContext);
+//        rq = Volley.newRequestQueue(aContext);
     }
 
     @Override

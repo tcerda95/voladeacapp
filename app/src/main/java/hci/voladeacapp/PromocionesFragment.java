@@ -118,7 +118,7 @@ public class PromocionesFragment extends Fragment {
     }
 
     private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //In which you need put here
+        String myFormat = "MM/dd/yy"; //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         fromDateText.setText("Fecha de salida: " + sdf.format(fromCalendar.getTime()));
