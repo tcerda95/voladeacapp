@@ -1,6 +1,8 @@
 package hci.voladeacapp;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,20 +23,35 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.content.Context.MODE_PRIVATE;
 
 public class MisVuelosFragment extends Fragment {
 
+    private class RefreshReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra("RESPONSE");
+        }
+    }
+
+
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
     public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
+
+    public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
+    public final static String ACTION_GET_REFRESH = "hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH";
+
     public final static int GET_FLIGHT = 1;
 
     private ListView flightsListView;
 
     ArrayList<Flight> flight_details;
     FlightListAdapter adapter;
+    Set<Flight> refresh_bag =  new HashSet<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,6 +125,11 @@ public class MisVuelosFragment extends Fragment {
      * Realiza la lógica del refresh. En este caso refreshear el estado de los vuelos.
      */
     private void updateFlightsStatus() {
+
+        for(Flight f: flight_details){
+            ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_FLIGHT);
+        }
+
         Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh_mis_vuelos);
         swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh

@@ -37,9 +37,12 @@ public class Flight implements Serializable {
     }
 
 
+    public Flight(){
+
+    }
 
     public boolean update(FlightStatusGson newStatus){
-
+        return true;
     }
 
 

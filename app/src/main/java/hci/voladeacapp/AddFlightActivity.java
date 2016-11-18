@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
+import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_REFRESH;
+
 public class AddFlightActivity extends AppCompatActivity {
 
 
@@ -76,7 +79,7 @@ public class AddFlightActivity extends AppCompatActivity {
                 String airline = ((EditText)findViewById(R.id.ch_airline_id)).getText().toString();
                 String number = ((EditText)findViewById(R.id.fl_num)).getText().toString();
                 pDialog.show();
-                ApiService.startActionGetFlightStatus(v.getContext(), airline, number);
+                ApiService.startActionGetFlightStatus(v.getContext(), airline, number, ACTION_GET_FLIGHT);
             }
         });
 
@@ -98,7 +101,7 @@ public class AddFlightActivity extends AppCompatActivity {
         if(adder == null) {
             adder = new AdderReceiver(this);
         }
-        registerReceiver(adder, new IntentFilter(Intent.ACTION_ANSWER));
+        registerReceiver(adder, new IntentFilter(ACTION_GET_FLIGHT));
     }
 
 

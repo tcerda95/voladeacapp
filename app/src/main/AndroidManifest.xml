@@ -66,9 +66,14 @@
 
         <activity
             android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
         <activity android:name=".CheloActivity" />
-        <activity android:name=".AddFlightActivity"></activity>
+        <activity android:name=".AddFlightActivity" />
+
+        <receiver
+            android:name=".RefreshReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

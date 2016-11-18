@@ -31,6 +31,7 @@ public class ApiService extends IntentService {
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "hci.voladeacapp.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "hci.voladeacapp.extra.PARAM2";
+    private static final String CALLBACK_INTENT = "hci.voladeacapp.extra.CALLBACK";
 
     public ApiService() {
         super("ApiService");
@@ -43,16 +44,17 @@ public class ApiService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGetFlightStatus(Context context, String airline, String num) {
+    public static void startActionGetFlightStatus(Context context, String airline, String num, String callback) {
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_STATUS);
         intent.putExtra(EXTRA_PARAM1, airline);
         intent.putExtra(EXTRA_PARAM2, num);
+        intent.putExtra(CALLBACK_INTENT, callback);
         context.startService(intent);
     }
     
-    public static void startActionGetFlightStatus(Context context, Flight flight) {
-        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber());
+    public static void startActionGetFlightStatus(Context context, Flight flight, String callbackAction) {
+        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber(), callbackAction);
     }
 
 
@@ -64,7 +66,8 @@ public class ApiService extends IntentService {
             if (ACTION_GET_STATUS.equals(action)) {
                 final String param1 = intent.getStringExtra(EXTRA_PARAM1);
                 final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionGetStatus(param1, param2);
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetStatus(param1, param2, callback);
             }
         }
     }
@@ -77,14 +80,12 @@ public class ApiService extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionGetStatus(String airline, String number) {
+    private void handleActionGetStatus(String airline, String number, final String callback) {
         requestQueue = Volley.newRequestQueue(this);
 
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
                 + airline + "&flight_number=" + number;
 
-
-        System.out.println("HOLa");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -105,7 +106,7 @@ public class ApiService extends IntentService {
                                 status = null;
                             }
 
-                            sendBroadcast(new Intent(Intent.ACTION_ANSWER).putExtra("RESPONSE", status));
+                            sendBroadcast(new Intent(callback).putExtra("RESPONSE", status));
                         }catch(Exception e){
                             e.printStackTrace();
                         }
