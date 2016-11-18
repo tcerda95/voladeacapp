@@ -92,5 +92,17 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_dejar_resena">Dejá tu reseña</string>
+    <string name="airline_label">Aerolinea:</string>
+    <string name="flight_number_label">Número de vuelo:</string>
+    <string name="amabilidad_label">Amabilidad:</string>
+    <string name="confort_label">Confort:</string>
+    <string name="comida_label">Comida:</string>
+    <string name="relacion_precio_calidad_label">Relación precio-calidad:</string>
+    <string name="puntualidad_label">Puntualidad:</string>
+    <string name="viajeros_frecuentes_label">Programa de viajeros frecuentes:</string>
+    <string name="recommend_label">¿Recomendaría este vuelo?</string>
+    <string name="puntuacion_total_label">Puntuación total:</string>
+    <string name="enviar_resena">Enviar Reseña</string>
 
 </resources>

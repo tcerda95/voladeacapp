@@ -66,9 +66,12 @@
 
         <activity
             android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
         <activity android:name=".CheloActivity" />
-        <activity android:name=".AddFlightActivity"></activity>
+        <activity android:name=".AddFlightActivity" />
+        <activity android:name=".AddReviewActivity"
+            android:label="@string/title_dejar_resena"
+            android:parentActivityName=".Voladeacapp"></activity>
     </application>
 
 </manifest>
