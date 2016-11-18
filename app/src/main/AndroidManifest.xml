@@ -64,6 +64,9 @@
             android:name=".ApiService"
             android:exported="false" />
 
+        <activity
+            android:name=".AppSettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
         <activity android:name=".CheloActivity" />
         <activity android:name=".AddFlightActivity"></activity>
     </application>

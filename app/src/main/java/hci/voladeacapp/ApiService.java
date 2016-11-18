@@ -50,6 +50,10 @@ public class ApiService extends IntentService {
         intent.putExtra(EXTRA_PARAM2, num);
         context.startService(intent);
     }
+    
+    public static void startActionGetFlightStatus(Context context, Flight flight) {
+        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber());
+    }
 
 
 
