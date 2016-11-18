@@ -32,7 +32,7 @@ public class AddFlightActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             pDialog.hide();
-            FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra("RESPONSE");
+            FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
             parent.addFlight(flGson);
         }
     }
@@ -46,7 +46,7 @@ public class AddFlightActivity extends AppCompatActivity {
             text.setText(flGson.toString());
             add.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra("RESPONSE", flGson));
+                    setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra(ApiService.DATA_FLIGHT_GSON, flGson));
                     finish();
                 }
             });

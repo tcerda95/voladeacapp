@@ -26,6 +26,8 @@ import java.lang.reflect.Type;
  */
 public class ApiService extends IntentService {
 
+    public static final String DATA_FLIGHT_GSON = "hci.voladeacapp.data.DATA_FLIGHT_GSON";
+
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET";
 
     // TODO: Rename parameters
@@ -52,15 +54,9 @@ public class ApiService extends IntentService {
         intent.putExtra(CALLBACK_INTENT, callback);
         context.startService(intent);
     }
-<<<<<<< HEAD
-    
+
     public static void startActionGetFlightStatus(Context context, Flight flight, String callbackAction) {
         startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber(), callbackAction);
-=======
-
-    public static void startActionGetFlightStatus(Context context, Flight flight) {
-        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber());
->>>>>>> 38605fc49ee1978a9ac3d6cd49a47bddd2fb817c
     }
 
 
@@ -90,7 +86,7 @@ public class ApiService extends IntentService {
         requestQueue = Volley.newRequestQueue(this);
 
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
-                + airline.toUpperCase() + "&flight_number=" + number;
+                + airline + "&flight_number=" + number;
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -112,7 +108,7 @@ public class ApiService extends IntentService {
                                 status = null;
                             }
 
-                            sendBroadcast(new Intent(callback).putExtra("RESPONSE", status));
+                            sendBroadcast(new Intent(callback).putExtra(DATA_FLIGHT_GSON, status));
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -121,7 +117,6 @@ public class ApiService extends IntentService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println(error);
-
 
             }
         });

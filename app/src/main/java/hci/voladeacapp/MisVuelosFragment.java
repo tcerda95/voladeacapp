@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -34,13 +35,23 @@ import java.util.Set;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.content.Context.MODE_PRIVATE;
+import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 
 public class MisVuelosFragment extends Fragment {
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra("RESPONSE");
+            FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
+            if(updatedGson == null)
+                return;
+            int idx = flight_details.indexOf(new Flight(updatedGson));
+            if(idx == -1){
+                return;
+            }
+            Flight toUpdate = flight_details.get(idx);
+            toUpdate.update(updatedGson);
+            System.out.println("Updated!");
         }
     }
 
@@ -55,14 +66,10 @@ public class MisVuelosFragment extends Fragment {
 
     private ListView flightsListView;
 
-<<<<<<< HEAD
     ArrayList<Flight> flight_details;
     FlightListAdapter adapter;
     Set<Flight> refresh_bag =  new HashSet<>();
-=======
-    private ArrayList<Flight> flight_details;
-    private FlightListAdapter adapter;
->>>>>>> 38605fc49ee1978a9ac3d6cd49a47bddd2fb817c
+    RefreshReceiver receiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +96,7 @@ public class MisVuelosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
+        receiver = new RefreshReceiver();
         flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         adapter = new FlightListAdapter(getActivity(),flight_details);
@@ -184,7 +192,7 @@ public class MisVuelosFragment extends Fragment {
     private void updateFlightsStatus() {
 
         for(Flight f: flight_details){
-            ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_FLIGHT);
+            ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
         }
 
         Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
@@ -208,13 +216,28 @@ public class MisVuelosFragment extends Fragment {
             Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
                     .show();
 
-            FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra("RESPONSE");
+            FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
             if(requestCode == GET_FLIGHT){
                 addToList(new Flight(resultado));
 
             }
         }
 
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getActivity().registerReceiver(receiver, new IntentFilter(ACTION_GET_REFRESH));
+
+    }
+
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        getActivity().unregisterReceiver(receiver);
     }
 
     @Override
