@@ -56,7 +56,9 @@ public class NotificationCreator extends Activity {
         NotificationManager notificationManager = (NotificationManager)
                 c.getSystemService(NOTIFICATION_SERVICE);
         //El id está construido por el numero de vuelo
+        //TODO: ver de incluir de alguna forma la aerolinea para que no se repitan
         notificationManager.notify(Integer.parseInt(f.getNumber()),mBuilder.build());
+        //TODO: ver que pasa si se superponen ¿deberia ser asi?
     }
 
 
