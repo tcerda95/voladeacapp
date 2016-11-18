@@ -1,6 +1,18 @@
 package hci.voladeacapp;
 
+import android.os.AsyncTask;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 public class Flight implements Serializable {
@@ -32,6 +44,7 @@ public class Flight implements Serializable {
     }
 
 
+    private String imageURL;
 
     public String getAerolinea() {
         return airline;
@@ -129,4 +142,6 @@ public class Flight implements Serializable {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+
 }
