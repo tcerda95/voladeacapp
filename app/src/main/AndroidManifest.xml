@@ -70,6 +70,10 @@
         <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"></activity>
+
+        <activity
+            android:name=".FlightSettingsActivity"
+            android:label="Notificaciones de "></activity>
     </application>
 
 </manifest>
