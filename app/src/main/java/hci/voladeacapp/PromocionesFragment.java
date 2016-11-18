@@ -45,7 +45,6 @@ public class PromocionesFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         cardListView.setAdapter(new PromoCardAdapter(getActivity(), dummyList()));
 

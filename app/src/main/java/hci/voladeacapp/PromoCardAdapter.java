@@ -1,9 +1,7 @@
 package hci.voladeacapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -53,25 +50,7 @@ public class PromoCardAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.promo_card, null);
-            holder = new ViewHolder();
-            holder.cityView = (TextView) convertView.findViewById(R.id.city_info_text);
-            holder.dateView = (TextView) convertView.findViewById(R.id.promo_date);
-            holder.priceView = (TextView) convertView.findViewById(R.id.promo_price);
-            holder.overflowbtn = (ImageView) convertView.findViewById(R.id.promo_card_overflow);
-            convertView.setTag(holder);
-
-            System.out.println("setting listener");
-
-            final View finalConvertView = convertView;
-            holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ImageView dots = holder.overflowbtn;
-                    System.out.println("Clicked overflow " + position);
-                    showPopupMenu(finalConvertView.findViewById(R.id.promo_card_overflow));
-                }
-            });
-
+            fillViewHolder(convertView);
         } else {
             holder = (PromoCardAdapter.ViewHolder) convertView.getTag();
         }
@@ -81,22 +60,37 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.dateView.setText(flight.getDepartureDate().toString());
         holder.priceView.setText(String.valueOf(flight.getPrice()));
 
-
         // IMAGEN
-        holder.photoView = (ImageView) convertView.findViewById(R.id.city_photo);
+        holder.loaderView.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", holder.photoView);
 
+
+        return convertView;
+    }
+
+    private void fillViewHolder(View convertView) {
+        holder = new ViewHolder();
+        holder.cityView = (TextView) convertView.findViewById(R.id.city_info_text);
+        holder.dateView = (TextView) convertView.findViewById(R.id.promo_date);
+        holder.priceView = (TextView) convertView.findViewById(R.id.promo_price);
+        holder.overflowbtn = (ImageView) convertView.findViewById(R.id.promo_card_overflow);
+        holder.photoView = (ImageView) convertView.findViewById(R.id.city_photo);
+        holder.loaderView = ImageLoader.getInstance();
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheOnDisk(true)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(convertView.getContext())
                 .defaultDisplayImageOptions(defaultOptions)
                 .build();
-        holder.loaderView = ImageLoader.getInstance();
         holder.loaderView.init(config);
-        holder.loaderView.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", holder.photoView);
 
+        convertView.setTag(holder);
 
-        return convertView;
+        holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(view.findViewById(R.id.promo_card_overflow));
+            }
+        });
     }
 
     private void showPopupMenu(View btn) {

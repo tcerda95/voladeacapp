@@ -11,7 +11,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Voladeacapp"
+        <activity
+            android:name=".Voladeacapp"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -28,32 +29,40 @@
       You need a different API key for each encryption key, including the release key that is used to
       sign the APK for publishing.
       You can define the keys for the debug and release targets in src/debug/ and src/release/.
- -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBuEqx-SSs3zmp93IkEJgHL16oeVsyifjw" />
 
-
-        <activity android:name=".FlightDetails"
+        <activity
+            android:name=".FlightDetails"
             android:launchMode="singleTop"
             android:parentActivityName=".Voladeacapp">
-        <meta-data android:name="android.app.default_searchable"
-            android:value=".SearchResults" />
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchResults" />
         </activity>
-
-        <activity android:name=".SearchResults"
+        <activity
+            android:name=".SearchResults"
             android:parentActivityName=".FlightDetails">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
+
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
-        <activity android:name=".MapActivity"
+        <activity
+            android:name=".MapActivity"
             android:label="@string/mapa"
-            android:parentActivityName=".Voladeacapp"/>
+            android:parentActivityName=".Voladeacapp" />
+
+        <service
+            android:name=".ApiService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
