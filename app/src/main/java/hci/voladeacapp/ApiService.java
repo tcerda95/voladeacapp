@@ -5,9 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.places.internal.PlaceOpeningHoursEntity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 
 
 /**
@@ -77,29 +86,51 @@ public class ApiService extends IntentService {
             }
         }
     }
+    private RequestQueue requestQueue;
+    ;
 
     /**
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
     private void handleActionGetStatus(String airline, String number) {
+        requestQueue = Volley.newRequestQueue(this);
+
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
                 + airline + "&flight_number=" + number;
+
+
+        System.out.println("HOLa");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
 
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<FlightStatusGson>() {
+                            }.getType();
+
+                            FlightStatusGson status;
+                            status = gson.fromJson(obj.getString("status"), type);
+
+                            sendBroadcast(new Intent(Intent.ACTION_ANSWER).putExtra("RESPONSE", status));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+
 
             }
         });
         // Add the request to the RequestQueue;
-        //requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);
 
 
     }

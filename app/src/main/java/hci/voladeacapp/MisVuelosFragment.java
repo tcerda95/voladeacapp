@@ -13,11 +13,17 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 public class MisVuelosFragment extends Fragment {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
+    public final static int GET_FLIGHT = 1;
 
     private ListView flightsListView;
+
+    ArrayList<Flight> flight_details;
+    FlightListAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,8 @@ public class MisVuelosFragment extends Fragment {
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"Aca se deberia agregar un vuelo", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getActivity(),"Aca se deberia agregar un vuelo", Toast.LENGTH_LONG).show();
+                startActivityForResult(new Intent(v.getContext(), AddFlightActivity.class), GET_FLIGHT);
             }
         });
 
@@ -59,8 +66,36 @@ public class MisVuelosFragment extends Fragment {
     }
 
     private void populateList() {
-        ArrayList flight_details = getListData();
-        flightsListView.setAdapter(new FlightListAdapter(getActivity(),flight_details));
+        flight_details = getListData();
+        adapter = new FlightListAdapter(getActivity(),flight_details);
+        flightsListView.setAdapter(adapter);
+    }
+
+
+    protected void addToList(Flight f){
+        flight_details.add(f);
+        adapter.notifyDataSetChanged();
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Resultado cancelado", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
+                    .show();
+
+            FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra("RESPONSE");
+            if(requestCode == GET_FLIGHT){
+                addToList(new Flight(resultado));
+
+            }
+        }
     }
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */

@@ -37,6 +37,17 @@ public class PromocionesFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        Button cheloDebug = (Button) rootView.findViewById(R.id.chelo_dbg_btn);
+        cheloDebug.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                view.getContext().startActivity(new Intent(view.getContext(), CheloActivity.class));
+            }
+        });
+
+
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         cardListView.setAdapter(new PromoCardAdapter(getActivity(), dummyList()));
 

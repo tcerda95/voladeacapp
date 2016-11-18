@@ -59,7 +59,10 @@
 
         <service
             android:name=".ApiService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".CheloActivity" />
+        <activity android:name=".AddFlightActivity"></activity>
     </application>
 
 </manifest>
