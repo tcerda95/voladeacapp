@@ -30,7 +30,6 @@ public class MisVuelosFragment extends Fragment {
     public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
     public final static int GET_FLIGHT = 1;
 
-    private boolean returningFromResult;
     private ListView flightsListView;
 
     ArrayList<Flight> flight_details;
@@ -43,21 +42,17 @@ public class MisVuelosFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
+        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
+
+        //Lleno la lista con lo que esta en shared preferences
         SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
-        String list = sp.getString(FLIGHT_LIST, null);
-
-        System.out.println(list);
-
-        if(returningFromResult) {
-            returningFromResult = false;
-            return;
-        }
+        String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
 
         if(list == null){
-            flight_details = getListData();
+            flight_details = getListData(); //TODO: Borrar
         }
         else {
             Gson gson = new Gson();
@@ -70,13 +65,6 @@ public class MisVuelosFragment extends Fragment {
         adapter = new FlightListAdapter(getActivity(),flight_details);
         flightsListView.setAdapter(adapter);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
-
-        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
 
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -133,7 +121,6 @@ public class MisVuelosFragment extends Fragment {
             }
         }
 
-        returningFromResult = true;
     }
 
     @Override
