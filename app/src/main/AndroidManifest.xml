@@ -64,14 +64,16 @@
             android:name=".ApiService"
             android:exported="false" />
 
+        <activity android:name=".CheloActivity" />
+        <activity android:name=".AddFlightActivity"
+            android:parentActivityName=".Voladeacapp"/>
         <activity
             android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".CheloActivity" />
-        <activity android:name=".AddFlightActivity" />
+            android:label="@string/title_activity_app_settings"></activity>
         <activity android:name=".AddReviewActivity"
             android:label="@string/title_dejar_resena"
             android:parentActivityName=".Voladeacapp"></activity>
+
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package hci.voladeacapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,7 +41,7 @@ public class PromoCardAdapter extends BaseAdapter {
     public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
-        rq = Volley.newRequestQueue(aContext);
+//        rq = Volley.newRequestQueue(aContext);
     }
 
     @Override
@@ -69,11 +70,12 @@ public class PromoCardAdapter extends BaseAdapter {
 
         Flight flight = (Flight) getItem(position);
         holder.cityView.setText(flight.getArrivalCity());
-        holder.dateView.setText(flight.getDepartureDate().toString());
+        System.out.println(flight.getDepartureDate());
+        holder.dateView.setText(flight.getDepartureDateInFormat("dd/MM/yyyy")); //TODO: localizar para "MM/dd/yyyy"
         holder.priceView.setText(String.valueOf(flight.getPrice()));
 
         // IMAGEN
-        setImageViewFromURL(flight);
+//        setImageViewFromURL(flight);
 
         return convertView;
     }
@@ -85,14 +87,15 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.priceView = (TextView) convertView.findViewById(R.id.promo_price);
         holder.overflowbtn = (ImageView) convertView.findViewById(R.id.promo_card_overflow);
         holder.photoView = (ImageView) convertView.findViewById(R.id.city_photo);
-        holder.loaderView = ImageLoader.getInstance();
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(convertView.getContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        holder.loaderView.init(config);
+
+//        holder.loaderView = ImageLoader.getInstance();
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                .cacheOnDisk(true)
+//                .build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(convertView.getContext())
+//                .defaultDisplayImageOptions(defaultOptions)
+//                .build();
+//        holder.loaderView.init(config);
 
 
         holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
@@ -126,58 +129,58 @@ public class PromoCardAdapter extends BaseAdapter {
         popup.show();
     }
 
-    private void setImageViewFromURL(Flight flight) {
-        String urlstr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=0634c318a11de0403f1232adbc8367f7&"
-                + "&tags=city" + "&text=" + flight.getArrivalCity() + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
-
-        new getCityImageURLTask().execute(urlstr);
-    }
-
-    // Saca el link de Flickr
-    private class getCityImageURLTask extends AsyncTask<String, Void, String> {
-        protected String doInBackground(String... apiUrl) {
-
-            System.out.println("Doing in background: " + apiUrl[0]);
-            StringRequest sr = new StringRequest(Request.Method.GET, apiUrl[0],
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                System.out.println("RESPONSE");
-                                System.out.println(response);
-                                String url = getImageURL(new JSONObject(response));
-                                holder.loaderView.displayImage(url, holder.photoView);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
-            rq.add(sr);
-
-            return null;
-        }
-
-        private String getImageURL(JSONObject obj) {
-            try {
-                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-                String url = "https://farm"
-                        + photo.getString("farm") + ".staticflickr.com/"
-                        + photo.getString("server") + "/"
-                        + photo.getString("id") + "_"
-                        + photo.getString("secret") + ".jpg";
-
-                return url;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-    }
+//    private void setImageViewFromURL(Flight flight) {
+//        String urlstr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=0634c318a11de0403f1232adbc8367f7&"
+//                + "&tags=city" + "&text=" + flight.getArrivalCity() + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+//
+//        new getCityImageURLTask().execute(urlstr);
+//    }
+//
+//    // Saca el link de Flickr
+//    private class getCityImageURLTask extends AsyncTask<String, Void, String> {
+//        protected String doInBackground(String... apiUrl) {
+//
+//            System.out.println("Doing in background: " + apiUrl[0]);
+//            StringRequest sr = new StringRequest(Request.Method.GET, apiUrl[0],
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            try {
+//                                System.out.println("RESPONSE");
+//                                System.out.println(response);
+//                                String url = getImageURL(new JSONObject(response));
+//                                holder.loaderView.displayImage(url, holder.photoView);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                }
+//            });
+//            rq.add(sr);
+//
+//            return null;
+//        }
+//
+//        private String getImageURL(JSONObject obj) {
+//            try {
+//                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
+//                String url = "https://farm"
+//                        + photo.getString("farm") + ".staticflickr.com/"
+//                        + photo.getString("server") + "/"
+//                        + photo.getString("id") + "_"
+//                        + photo.getString("secret") + ".jpg";
+//
+//                return url;
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//    }
 
     private static class ViewHolder {
         TextView cityView;

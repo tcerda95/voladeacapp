@@ -13,7 +13,9 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Flight implements Serializable {
     private String number;
@@ -24,11 +26,11 @@ public class Flight implements Serializable {
     private String departureCity;
     private String arrivalAirport;
     private String arrivalCity;
+    private String baggageClaim;
+
     private Date departureDate;
     private Date arrivalDate;
     private int duration;
-
-
     public Flight(FlightStatusGson seed){
         setArrivalCity(seed.arrival.airport.city.name);
         setNumber("" + seed.number);
@@ -36,8 +38,8 @@ public class Flight implements Serializable {
         setState(seed.status);
     }
 
-    public Flight(){}
 
+    public Flight(){}
 
     public void update(FlightStatusGson status){
 
@@ -45,6 +47,7 @@ public class Flight implements Serializable {
 
 
     private String imageURL;
+
 
     public String getAerolinea() {
         return airline;
@@ -62,10 +65,10 @@ public class Flight implements Serializable {
         this.state = state;
     }
 
-
     public String getNumber() {
         return number;
     }
+
 
     public void setNumber(String number) {
         this.number = number;
@@ -141,6 +144,22 @@ public class Flight implements Serializable {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public String getArrivalDateInFormat(String format) {
+        return new SimpleDateFormat(format, Locale.ENGLISH).format(arrivalDate);
+    }
+
+    public String getDepartureDateInFormat(String format) {
+        return new SimpleDateFormat(format, Locale.ENGLISH).format(departureDate);
+    }
+
+    public String getBaggageClaim() {
+        return baggageClaim;
+    }
+
+    public void setBaggageClaim(String baggageClaim) {
+        this.baggageClaim = baggageClaim;
     }
 
     @Override

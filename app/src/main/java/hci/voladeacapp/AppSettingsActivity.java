@@ -1,34 +1,47 @@
 package hci.voladeacapp;
 
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.MenuItem;
 
-import java.util.List;
-
-public class AppSettingsActivity extends AppCompatActivity {
+public class AppSettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_appsettings);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+    }
+
+    public static class MyPreferenceFragment extends PreferenceFragment
+    {
+        @Override
+        public void onCreate(final Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+
+
+            SharedPreferences.OnSharedPreferenceChangeListener spChanged = new
+                    SharedPreferences.OnSharedPreferenceChangeListener() {
+                        @Override
+                        public void onSharedPreferenceChanged(SharedPreferences SP,
+                                                              String key) {
+                            if ("notifications_switch".equals(key)) {
+                                Boolean val = SP.getBoolean(key, true);
+                                System.out.println(key + "Changed to: " + val);
+                            } else {
+                                String val = SP.getString(key, "NULL");
+                                System.out.println(key + "Changed to: " + val);
+                            }
+                        }
+                    };
+
+            SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SP.registerOnSharedPreferenceChangeListener(spChanged);
+        }
     }
 
 }
