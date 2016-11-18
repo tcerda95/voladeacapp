@@ -1,6 +1,7 @@
 package hci.voladeacapp;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,9 +11,19 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -24,11 +35,12 @@ public class PromoCardAdapter extends BaseAdapter {
     private ArrayList<Flight> cardsData;
     private LayoutInflater inflater;
     private ViewHolder holder;
-
+    RequestQueue rq;
 
     public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
+        rq = Volley.newRequestQueue(aContext);
     }
 
     @Override
@@ -61,8 +73,7 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.priceView.setText(String.valueOf(flight.getPrice()));
 
         // IMAGEN
-        holder.loaderView.displayImage("http://itba.edu.ar/sites/default/themes/itba/assets/images/back.jpg", holder.photoView);
-
+        setImageViewFromURL(flight);
 
         return convertView;
     }
@@ -83,7 +94,6 @@ public class PromoCardAdapter extends BaseAdapter {
                 .build();
         holder.loaderView.init(config);
 
-        convertView.setTag(holder);
 
         holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +101,8 @@ public class PromoCardAdapter extends BaseAdapter {
                 showPopupMenu(view.findViewById(R.id.promo_card_overflow));
             }
         });
+
+        convertView.setTag(holder);
     }
 
     private void showPopupMenu(View btn) {
@@ -114,6 +126,58 @@ public class PromoCardAdapter extends BaseAdapter {
         popup.show();
     }
 
+    private void setImageViewFromURL(Flight flight) {
+        String urlstr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=0634c318a11de0403f1232adbc8367f7&"
+                + "&tags=city" + "&text=" + flight.getArrivalCity() + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+
+        new getCityImageURLTask().execute(urlstr);
+    }
+
+    // Saca el link de Flickr
+    private class getCityImageURLTask extends AsyncTask<String, Void, String> {
+        protected String doInBackground(String... apiUrl) {
+
+            System.out.println("Doing in background: " + apiUrl[0]);
+            StringRequest sr = new StringRequest(Request.Method.GET, apiUrl[0],
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                System.out.println("RESPONSE");
+                                System.out.println(response);
+                                String url = getImageURL(new JSONObject(response));
+                                holder.loaderView.displayImage(url, holder.photoView);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+            rq.add(sr);
+
+            return null;
+        }
+
+        private String getImageURL(JSONObject obj) {
+            try {
+                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
+                String url = "https://farm"
+                        + photo.getString("farm") + ".staticflickr.com/"
+                        + photo.getString("server") + "/"
+                        + photo.getString("id") + "_"
+                        + photo.getString("secret") + ".jpg";
+
+                return url;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
 
     private static class ViewHolder {
         TextView cityView;
