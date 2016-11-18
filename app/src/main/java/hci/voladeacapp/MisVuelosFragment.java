@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,17 +90,31 @@ public class MisVuelosFragment extends Fragment {
             }
         });
 
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh_mis_vuelos);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateFlightsStatus();
+            }
+        });
+
         return rootView;
     }
 
-
+    /**
+     * Realiza la lógica del refresh. En este caso refreshear el estado de los vuelos.
+     */
+    private void updateFlightsStatus() {
+        Toast.makeText(getActivity(), "Refreshed", Toast.LENGTH_SHORT).show();
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh_mis_vuelos);
+        swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh
+    }
 
     protected void addToList(Flight f){
         flight_details.add(f);
         adapter.notifyDataSetChanged();
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -170,4 +185,6 @@ public class MisVuelosFragment extends Fragment {
 
         return results;
     }
+
+
 }

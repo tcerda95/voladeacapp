@@ -47,13 +47,16 @@ public class ApiService extends IntentService {
      *
      * @see IntentService
      */
-    // TODO: Customize helper method
     public static void startActionGetFlightStatus(Context context, String airline, String num) {
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_STATUS);
         intent.putExtra(EXTRA_PARAM1, airline);
         intent.putExtra(EXTRA_PARAM2, num);
         context.startService(intent);
+    }
+    
+    public static void startActionGetFlightStatus(Context context, Flight flight) {
+        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber());
     }
 
     /**
