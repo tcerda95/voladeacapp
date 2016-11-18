@@ -16,6 +16,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/map_button" />
 
+    <Button
+        android:text="Chelo debug entrypoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chelo_dbg_btn" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

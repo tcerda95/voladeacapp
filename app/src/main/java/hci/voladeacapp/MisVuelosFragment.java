@@ -2,6 +2,7 @@ package hci.voladeacapp;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -11,13 +12,28 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.content.Context.MODE_PRIVATE;
 
 public class MisVuelosFragment extends Fragment {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
+    public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
+    public final static int GET_FLIGHT = 1;
 
     private ListView flightsListView;
+
+    ArrayList<Flight> flight_details;
+    FlightListAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,9 +44,28 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+
         flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
-        populateList();
+        //Lleno la lista con lo que esta en shared preferences
+        SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
+        String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
+
+        if(list == null){
+            flight_details = getListData(); //TODO: Borrar
+        }
+        else {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Flight>>() {
+            }.getType();
+
+            flight_details = gson.fromJson(list, type);
+        }
+
+        adapter = new FlightListAdapter(getActivity(),flight_details);
+        flightsListView.setAdapter(adapter);
+
+
 
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -51,17 +86,57 @@ public class MisVuelosFragment extends Fragment {
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"Aca se deberia agregar un vuelo", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getActivity(),"Aca se deberia agregar un vuelo", Toast.LENGTH_LONG).show();
+                startActivityForResult(new Intent(v.getContext(), AddFlightActivity.class), GET_FLIGHT);
             }
         });
 
         return rootView;
     }
 
-    private void populateList() {
-        ArrayList flight_details = getListData();
-        flightsListView.setAdapter(new FlightListAdapter(getActivity(),flight_details));
+
+
+    protected void addToList(Flight f){
+        flight_details.add(f);
+        adapter.notifyDataSetChanged();
     }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Resultado cancelado", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
+                    .show();
+
+            FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra("RESPONSE");
+            if(requestCode == GET_FLIGHT){
+                addToList(new Flight(resultado));
+
+            }
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        // Save the user's current game state
+        super.onPause();
+
+        Gson gson = new Gson();
+        String s = gson.toJson(flight_details);
+
+        SharedPreferences.Editor editor = getActivity().getPreferences(MODE_PRIVATE).edit();
+        editor.putString(FLIGHT_LIST, s);
+        editor.commit();
+
+    }
+
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */
     public ArrayList getListData() {

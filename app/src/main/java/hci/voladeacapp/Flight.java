@@ -28,6 +28,22 @@ public class Flight implements Serializable {
     private Date arrivalDate;
     private int duration;
 
+
+    public Flight(FlightStatusGson seed){
+        setArrivalCity(seed.arrival.airport.city.name);
+        setNumber("" + seed.number);
+        setDepartureCity(seed.departure.airport.city.name);
+        setState(seed.status);
+    }
+
+    public Flight(){}
+
+
+    public void update(FlightStatusGson status){
+
+    }
+
+
     private String imageURL;
 
     public String getAerolinea() {
