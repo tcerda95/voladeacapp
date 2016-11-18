@@ -78,14 +78,14 @@ public class Voladeacapp extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
 
-        menu.findItem(R.id.action_configuration).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent settingsIntent = new Intent(getApplicationContext(), AppSettingsActivity.class);
-                startActivity(settingsIntent);
-                return true;
-            }
-        });
+//        menu.findItem(R.id.action_configuration).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                Intent settingsIntent = new Intent(getApplicationContext(), AppSettingsActivity.class);
+//                startActivity(settingsIntent);
+//                return true;
+//            }
+//        });
 
         return true;
     }

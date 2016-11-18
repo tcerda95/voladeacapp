@@ -65,8 +65,6 @@ public class MisVuelosFragment extends Fragment {
         adapter = new FlightListAdapter(getActivity(),flight_details);
         flightsListView.setAdapter(adapter);
 
-
-
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             //ACA A LO QUE PASA CUANDO HACE CLICK

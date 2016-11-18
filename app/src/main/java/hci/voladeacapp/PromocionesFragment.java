@@ -1,31 +1,40 @@
 package hci.voladeacapp;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class PromocionesFragment extends Fragment {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
 
     private ListView cardListView;
-
-    ImageLoader imageLoader;
-    ImageView imageView;
+    private ImageLoader imageLoader;
+    private ImageView imageView;
+    private Calendar fromCalendar;
+    private TextView fromDateText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,34 @@ public class PromocionesFragment extends Fragment {
         });
 
 
+        fromCalendar = Calendar.getInstance();
+        fromDateText = (TextView) rootView.findViewById(R.id.from_date_edit_text);
+        updateLabel();
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                fromCalendar.set(Calendar.YEAR, year);
+                fromCalendar.set(Calendar.MONTH, monthOfYear);
+                fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+        };
+
+        fromDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Clicked edit text" + fromDateText.getText());
+                new DatePickerDialog(getActivity(), date, fromCalendar
+                        .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
+                        fromCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
+
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         cardListView.setAdapter(new PromoCardAdapter(getActivity(), dummyList()));
 
@@ -78,6 +115,13 @@ public class PromocionesFragment extends Fragment {
 
         return rootView;
 
+    }
+
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        fromDateText.setText("Fecha de salida: " + sdf.format(fromCalendar.getTime()));
     }
 
     private ArrayList<Flight> dummyList() {
