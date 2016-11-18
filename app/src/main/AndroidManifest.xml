@@ -65,7 +65,8 @@
             android:exported="false" />
 
         <activity android:name=".CheloActivity" />
-        <activity android:name=".AddFlightActivity" />
+        <activity android:name=".AddFlightActivity"
+            android:parentActivityName=".Voladeacapp"/>
         <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"></activity>

@@ -54,7 +54,7 @@ public class ApiService extends IntentService {
         intent.putExtra(EXTRA_PARAM2, num);
         context.startService(intent);
     }
-    
+
     public static void startActionGetFlightStatus(Context context, Flight flight) {
         startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber());
     }
@@ -100,7 +100,7 @@ public class ApiService extends IntentService {
         requestQueue = Volley.newRequestQueue(this);
 
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
-                + airline + "&flight_number=" + number;
+                + airline.toUpperCase() + "&flight_number=" + number;
 
 
         System.out.println("HOLa");

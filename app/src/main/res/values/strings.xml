@@ -9,7 +9,7 @@
     <string name="title_resenas">Reseñas</string>
     <string name="title_promociones">Promociones</string>
     <string name="configuration">Configuración</string>
-    <string name="salida_label">Sallida</string>
+    <string name="salida_label">Salida</string>
     <string name="date_label">Fecha:</string>
     <string name="boarding_time_label">Embarque:</string>
     <string name="airport_label">Aeropuerto:</string>
@@ -21,6 +21,12 @@
     <string name="more_details">Ver detalles</string>
     <string name="title_activity_settings">Settings</string>
 
+
+    <string name="eliminar">Eliminar</string>
+    <string name="singular_eliminado">Vuelo eliminado</string>
+    <string name="plural_eliminado">Vuelos eliminados</string>
+
+    <!-- Strings related to Settings -->
 
     <string name="title_activity_app_settings">Configuración</string>
 
