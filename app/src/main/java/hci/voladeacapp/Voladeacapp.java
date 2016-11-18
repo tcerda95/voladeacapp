@@ -5,12 +5,14 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -75,6 +77,15 @@ public class Voladeacapp extends AppCompatActivity {
 
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
+
+        menu.findItem(R.id.action_configuration).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Intent settingsIntent = new Intent(getApplicationContext(), AppSettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+            }
+        });
 
         return true;
     }

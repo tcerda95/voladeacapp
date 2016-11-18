@@ -127,5 +127,21 @@ public class Flight implements Serializable {
         this.duration = duration;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Flight flight = (Flight) o;
+
+        if (!number.equals(flight.number)) return false;
+        return airline.equals(flight.airline);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = number.hashCode();
+        result = 31 * result + airline.hashCode();
+        return result;
+    }
 }

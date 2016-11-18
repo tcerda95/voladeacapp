@@ -62,7 +62,11 @@
 
         <service
             android:name=".ApiService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity
+            android:name=".AppSettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
