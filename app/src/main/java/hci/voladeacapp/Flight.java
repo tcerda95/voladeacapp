@@ -36,12 +36,13 @@ public class Flight implements Serializable {
         setState(seed.status);
     }
 
-    public Flight(){}
 
 
-    public void update(FlightStatusGson status){
+    public boolean update(FlightStatusGson newStatus){
 
     }
+
+
 
 
     private String imageURL;
