@@ -30,23 +30,22 @@ public class NotificationCreator extends Activity {
 
     }
 
+    //TODO:el stack,ya probe de todo(incluyendo poner todos estos metodos directo en el fragment y cambiar flags), pero se cierra la aplicacion (!!)
     private static void createNotification(Context c, Flight f, NotificationCompat.Builder builder) {
         Intent intent = new Intent(c, FlightDetails.class);
         intent.putExtra("Flight", f);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
         stackBuilder.addParentStack(FlightDetails.class);
-        stackBuilder.addNextIntentWithParentStack(intent);
+        stackBuilder.addNextIntent(intent);
         PendingIntent pIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(pIntent);
-        NotificationManager notificationManager = (NotificationManager)
-                c.getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE);
         //El id está construido por el numero de vuelo
         //TODO: ver de incluir de alguna forma la aerolinea para que no se repitan
         notificationManager.notify(Integer.parseInt(f.getNumber()), builder.build());
-        //TODO: ver que pasa si se superponen ¿deberia ser asi?
+        //TODO: ver que pasa si se superponen ¿deberia ser asi?¿ o las agrupo?
     }
 
 
