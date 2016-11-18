@@ -12,7 +12,7 @@ public class FlightStatusGson implements Serializable {
     public class AirportDetails implements Serializable{
         private static final long serialVersiouUID = 1L;
 
-        // public String city;
+        public CityDetails city;
         public String description;
         public String gate;
         public String id;
@@ -39,6 +39,15 @@ public class FlightStatusGson implements Serializable {
         String id;
         String name;
         String logo;
+    }
+
+    public class CityDetails implements Serializable{
+        private static final long serialVersionUID = 1L;
+
+        public String id;
+        public double latitude;
+        public double longitude;
+        public String name;
     }
 
     public AirlineDetails airline;

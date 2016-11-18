@@ -114,7 +114,12 @@ public class ApiService extends IntentService {
                             }.getType();
 
                             FlightStatusGson status;
-                            status = gson.fromJson(obj.getString("status"), type);
+                            if(obj.has("status")) {
+                                status = gson.fromJson(obj.getString("status"), type);
+                            } else{
+                                //No existe el vuelo
+                                status = null;
+                            }
 
                             sendBroadcast(new Intent(Intent.ACTION_ANSWER).putExtra("RESPONSE", status));
                         }catch(Exception e){

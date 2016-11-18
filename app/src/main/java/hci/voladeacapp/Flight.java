@@ -30,9 +30,9 @@ public class Flight implements Serializable {
 
 
     public Flight(FlightStatusGson seed){
-        setArrivalCity(seed.arrival.airport.description);
+        setArrivalCity(seed.arrival.airport.city.name);
         setNumber("" + seed.number);
-        setDepartureCity(seed.arrival.airport.description);
+        setDepartureCity(seed.departure.airport.city.name);
         setState(seed.status);
     }
 
