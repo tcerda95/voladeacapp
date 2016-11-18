@@ -5,12 +5,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -49,27 +55,25 @@ public class MisVuelosFragment extends Fragment {
 
     private ListView flightsListView;
 
+<<<<<<< HEAD
     ArrayList<Flight> flight_details;
     FlightListAdapter adapter;
     Set<Flight> refresh_bag =  new HashSet<>();
+=======
+    private ArrayList<Flight> flight_details;
+    private FlightListAdapter adapter;
+>>>>>>> 38605fc49ee1978a9ac3d6cd49a47bddd2fb817c
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
-
-        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         //Lleno la lista con lo que esta en shared preferences
         SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
 
-        if(list == null){
+        if(list == null || list.length() < 1){
             flight_details = getListData(); //TODO: Borrar
         }
         else {
@@ -79,15 +83,20 @@ public class MisVuelosFragment extends Fragment {
 
             flight_details = gson.fromJson(list, type);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+
+        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         adapter = new FlightListAdapter(getActivity(),flight_details);
         flightsListView.setAdapter(adapter);
 
-
-
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            //ACA A LO QUE PASA CUANDO HACE CLICK
+            //ACA VA LO QUE PASA CUANDO HACE CLICK
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = flightsListView.getItemAtPosition(position);
@@ -99,6 +108,42 @@ public class MisVuelosFragment extends Fragment {
                 startActivity(detailIntent);
 
             }
+        });
+
+        flightsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int position,
+                                                  long lid, boolean checked) {}
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                actionMode.getMenuInflater().inflate(R.menu.delete_menu, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        Resources res = getResources();
+                        String feedback = flightsListView.getCheckedItemCount() > 1 ?
+                                res.getString(R.string.plural_eliminado) : res.getString(R.string.singular_eliminado);
+                        deleteChecked();
+                        Toast.makeText(getActivity(), feedback, Toast.LENGTH_SHORT).show();
+                        actionMode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {}
         });
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
@@ -119,6 +164,18 @@ public class MisVuelosFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void deleteChecked() {
+        SparseBooleanArray checked = flightsListView.getCheckedItemPositions();
+        int size = flight_details.size();
+        int removed = 0;
+
+        for (int i = 0; i < size; i++)
+            if (checked.get(i))
+                flight_details.remove(i-removed++);
+
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -161,9 +218,9 @@ public class MisVuelosFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
+    public void onStop() {
         // Save the user's current game state
-        super.onPause();
+        super.onStop();
 
         Gson gson = new Gson();
         String s = gson.toJson(flight_details);
@@ -171,9 +228,7 @@ public class MisVuelosFragment extends Fragment {
         SharedPreferences.Editor editor = getActivity().getPreferences(MODE_PRIVATE).edit();
         editor.putString(FLIGHT_LIST, s);
         editor.commit();
-
     }
-
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */
     public ArrayList getListData() {

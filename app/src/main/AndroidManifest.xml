@@ -64,8 +64,12 @@
             android:name=".ApiService"
             android:exported="false" />
 
+        <activity android:name=".CheloActivity" />
+        <activity android:name=".AddFlightActivity"
+            android:parentActivityName=".Voladeacapp"/>
         <activity
             android:name=".AppSettingsActivity"
+            android:label="@string/title_activity_app_settings"
             android:label="@string/title_activity_settings" />
         <activity android:name=".CheloActivity" />
         <activity android:name=".AddFlightActivity" />
@@ -74,6 +78,7 @@
             android:name=".RefreshReceiver"
             android:enabled="true"
             android:exported="true"></receiver>
+
     </application>
 
 </manifest>
