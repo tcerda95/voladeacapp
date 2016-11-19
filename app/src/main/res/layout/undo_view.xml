@@ -23,5 +23,7 @@
         android:background="@color/black"
         android:textAlignment="textEnd"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"/>
+        android:paddingEnd="20dp"
+        android:paddingTop="33dp"
+        android:paddingBottom="33dp"/>
 </LinearLayout>
