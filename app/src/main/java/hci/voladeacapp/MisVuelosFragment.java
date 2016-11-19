@@ -222,9 +222,7 @@ public class MisVuelosFragment extends Fragment {
 
             }
         }
-
     }
-
 
     @Override
     public void onResume(){
@@ -232,7 +230,6 @@ public class MisVuelosFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter(ACTION_GET_REFRESH));
 
     }
-
 
     @Override
     public void onPause(){
