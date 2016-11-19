@@ -68,7 +68,6 @@ public class FlightDetails extends AppCompatActivity {
                             // User cancelled the dialog
                         }
                     });
-            // Create the AlertDialog object and return it
             return builder.create();
         }
     }
@@ -91,6 +90,7 @@ public class FlightDetails extends AppCompatActivity {
         MenuItem removeButton = menu.findItem(R.id.action_remove_flight);
         MenuItem addButton = menu.findItem(R.id.action_add_flight);
 
+        //TODO
         if (true) { /* flightIsInMyFlights */
             notificationsButton.setVisible(true);
             removeButton.setVisible(true);

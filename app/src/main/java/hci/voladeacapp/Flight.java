@@ -41,15 +41,12 @@ public class Flight implements Serializable {
     }
 
 
-    public Flight(){}
+    public Flight(){} //TODO:Sacar
 
 
     public boolean update(FlightStatusGson newStatus){
         return true;
     }
-
-
-
 
     private String imageURL;
 
