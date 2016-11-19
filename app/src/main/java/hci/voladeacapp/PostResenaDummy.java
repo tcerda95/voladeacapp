@@ -24,7 +24,9 @@ public class PostResenaDummy extends AppCompatActivity {
                         "Puntualidad: " + res.getPuntualidad() + "\n" +
                         "Viajero frecuente: " + res.getViajerosFrec() + "\n" +
                         "Total: " + res.getPuntuacion() + "\n" +
-                        "Recomendado: " + res.getRecomendado() + "\n")
+                        "Recomendado: " + res.getRecomendado() + "\n"
+                        + "Comentario: " + res.getComentario()
+                )
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

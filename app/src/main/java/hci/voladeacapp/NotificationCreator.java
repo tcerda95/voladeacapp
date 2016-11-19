@@ -41,7 +41,7 @@ public class NotificationCreator extends Activity {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
         stackBuilder.addParentStack(FlightDetails.class);
         stackBuilder.addNextIntent(intent);
-        PendingIntent pIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntent = stackBuilder.getPendingIntent(f.hashCode(), PendingIntent.FLAG_CANCEL_CURRENT);
 
         builder.setContentIntent(pIntent);
         NotificationManager notificationManager = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);

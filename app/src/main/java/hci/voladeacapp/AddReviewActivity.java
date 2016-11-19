@@ -1,12 +1,9 @@
 package hci.voladeacapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +21,7 @@ public class AddReviewActivity extends AppCompatActivity {
 
     private String aerolinea;
     private String numeroVuelo;
+    private String comentario;
     private DiscreteSeekBar amabilidad;
     private DiscreteSeekBar confort;
     private DiscreteSeekBar comida;
@@ -48,6 +46,7 @@ public class AddReviewActivity extends AppCompatActivity {
         viajerosFrec = (DiscreteSeekBar) findViewById(R.id.viajeros_frecuentes_bar);
         stars = (RatingBar) findViewById(R.id.ratingBar);
 
+
         HashMap<DiscreteSeekBar,TextView> map = new HashMap<>();
         map.put(amabilidad,(TextView)findViewById(R.id.amabilidad_data));
         map.put(confort,(TextView)findViewById(R.id.confort_data));
@@ -70,10 +69,12 @@ public class AddReviewActivity extends AppCompatActivity {
                 //Aca se tienen que chequear cosas
                 EditText aerolineaText = (EditText)findViewById(R.id.airline_input);
                 EditText numeroVueloText = (EditText)findViewById(R.id.flight_number_input);
+                EditText comentarioText = (EditText) findViewById(R.id.comment_data);
                 numeroVuelo = numeroVueloText.getText().toString();
                 aerolinea = aerolineaText.getText().toString();
+                comentario = comentarioText.getText().toString();
                 Resena res = new Resena(aerolinea,numeroVuelo,amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
-                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), stars.getRating(),recommended);
+                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(),2*stars.getRating(),recommended,comentario);
                 Intent intent = new Intent(getApplication(),PostResenaDummy.class);
                 intent.putExtra("resena", res);
 
