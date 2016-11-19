@@ -37,10 +37,11 @@
         <activity
             android:name=".FlightDetails"
             android:launchMode="singleTop"
-            android:parentActivityName=".Voladeacapp">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".SearchResults" />
+            android:parentActivityName=".Voladeacapp"
+            >
+            <!--<meta-data-->
+                <!--android:name="android.app.default_searchable"-->
+                <!--android:value=".SearchResults" />-->
         </activity>
 
         <activity
@@ -71,17 +72,20 @@
             android:parentActivityName=".Voladeacapp"/>
         <activity
             android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_app_settings" />
-        <![CDATA[
-            android:label="@string/title_activity_app_settings">]]>
+            android:label="@string/title_activity_app_settings"
+            android:launchMode="singleTop"
+            android:parentActivityName=".Voladeacapp"
+            />
 
         <activity
             android:name=".FlightSettingsActivity"
-            android:label="Notificaciones de "></activity>
+            android:launchMode="singleTop"
+            android:parentActivityName=".FlightDetails"
+            android:label="Notificaciones de "/>
 
         <activity android:name=".AddReviewActivity"
             android:label="@string/title_dejar_resena"
-            android:parentActivityName=".Voladeacapp"></activity>
+            android:parentActivityName=".Voladeacapp"/>
     </application>
 
 </manifest>
