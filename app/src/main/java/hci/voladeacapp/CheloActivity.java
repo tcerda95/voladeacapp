@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static hci.voladeacapp.BackgroundRefreshReceiver.TIME_TO_PULL;
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_REFRESH;
 
@@ -63,6 +64,8 @@ public class CheloActivity extends AppCompatActivity {
                 TextView txt = (TextView)findViewById(R.id.dbg_text);
                 txt.setText("OK");
                 ApiService.startActionGetFlightStatus(view.getContext(), "8R", "8700", ACTION_GET_FLIGHT);
+
+                sendBroadcast(new Intent(TIME_TO_PULL));
           }
         });
 

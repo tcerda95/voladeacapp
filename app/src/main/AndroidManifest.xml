@@ -43,9 +43,8 @@
                 android:value=".SearchResults" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Voladeacapp"/>
+                android:value=".Voladeacapp" />
         </activity>
-
         <activity
             android:name=".SearchResults"
             android:parentActivityName=".FlightDetails">
@@ -69,27 +68,34 @@
             android:exported="false" />
 
         <activity android:name=".CheloActivity" />
-
-        <activity android:name=".AddFlightActivity"
-            android:parentActivityName=".Voladeacapp"/>
+        <activity
+            android:name=".AddFlightActivity"
+            android:parentActivityName=".Voladeacapp" />
         <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
             android:launchMode="singleTop"
-            android:parentActivityName=".Voladeacapp"
-            />
-
+            android:parentActivityName=".Voladeacapp" />
         <activity
             android:name=".FlightSettingsActivity"
+            android:label="Notificaciones de "
             android:launchMode="singleTop"
-            android:parentActivityName=".FlightDetails"
-            android:label="Notificaciones de "/>
-
-        <activity android:name=".AddReviewActivity"
+            android:parentActivityName=".FlightDetails" />
+        <activity
+            android:name=".AddReviewActivity"
             android:label="@string/title_dejar_resena"
-            android:parentActivityName=".Voladeacapp"/>
+            android:parentActivityName=".Voladeacapp" />
+        <activity android:name=".PostResenaDummy" />
 
-        <activity android:name=".PostResenaDummy"/>
+        <receiver android:name=".BackgroundRefreshReceiver">
+            <intent-filter>
+                <action android:name="hci.voladeacapp.TIME_TO_PULL" />
+                <action android:name="hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH" />
+            </intent-filter>
+        </receiver>
+
+
+
     </application>
 
 </manifest>
