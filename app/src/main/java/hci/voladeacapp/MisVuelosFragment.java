@@ -58,6 +58,7 @@ public class MisVuelosFragment extends Fragment {
             Flight toUpdate = flight_details.get(idx);
             toUpdate.update(updatedGson);
             System.out.println("Updated!");
+            abortBroadcast();
         }
     }
 
