@@ -83,7 +83,7 @@ public class MisVuelosFragment extends Fragment {
         setRetainInstance(true);
 
         //Lleno la lista con lo que esta en shared app_preferences
-        SharedPreferences sp = getActivity().getPreferences(MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("FLIGHTS", MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
 
         if(list == null || list.length() < 1){
@@ -268,7 +268,7 @@ public class MisVuelosFragment extends Fragment {
         Gson gson = new Gson();
         String s = gson.toJson(flight_details);
 
-        SharedPreferences.Editor editor = getActivity().getPreferences(MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getActivity().getApplicationContext().getSharedPreferences("FLIGHTS", MODE_PRIVATE).edit();
         editor.putString(FLIGHT_LIST, s);
         editor.commit();
     }
@@ -307,6 +307,5 @@ public class MisVuelosFragment extends Fragment {
 
         return results;
     }
-
 
 }
