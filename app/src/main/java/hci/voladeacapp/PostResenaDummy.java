@@ -8,13 +8,13 @@ public class PostResenaDummy extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("hola");
+        setTitle("Carli es la mejor");
 
         Resena res = (Resena)this.getIntent().getSerializableExtra("resena");
 
 
         new AlertDialog.Builder(this)
-                .setTitle("Datos de la resena")
+                .setTitle("Datos de la reseña")
                 .setMessage("Numero de vuelo: " + res.getFlightNumber() + "\n" +
                         "Nombre Aerolinea: " + res.getFlightAirline() + "\n" +
                         "Amabilidad: " + res.getAmabilidad() + "\n" +
