@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.SparseBooleanArray;
@@ -21,6 +22,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
+import com.nineoldandroids.view.ViewHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,11 +42,12 @@ public class MisVuelosFragment extends Fragment {
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
     public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
     public final static int GET_FLIGHT = 1;
+    private final static long UNDO_TIMEOUT = 3000;
 
-    private ListView flightsListView;
+    private DynamicListView flightsListView;
 
     private ArrayList<Flight> flight_details;
-    private FlightListAdapter adapter;
+    private TimedUndoAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,10 +74,24 @@ public class MisVuelosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
-        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
+        flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
-        adapter = new FlightListAdapter(getActivity(),flight_details);
+        FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
+
+        adapter = new TimedUndoAdapter(flightListAdapter, getActivity(), new OnDismissCallback() {
+            @Override
+            public void onDismiss(@NonNull ViewGroup listView, @NonNull int[] reverseSortedPositions) {
+                for (int position : reverseSortedPositions)
+                    flight_details.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        adapter.setTimeoutMs(UNDO_TIMEOUT);
+
+        adapter.setAbsListView(flightsListView);
         flightsListView.setAdapter(adapter);
+        flightsListView.enableSimpleSwipeUndo();
 
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
