@@ -69,11 +69,12 @@
             android:parentActivityName=".Voladeacapp"/>
         <activity
             android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_app_settings"></activity>
+            android:label="@string/title_activity_app_settings"/>
         <activity android:name=".AddReviewActivity"
             android:label="@string/title_dejar_resena"
-            android:parentActivityName=".Voladeacapp"></activity>
+            android:parentActivityName=".Voladeacapp"/>
 
+        <activity android:name=".PostResenaDummy"/>
     </application>
 
 </manifest>
