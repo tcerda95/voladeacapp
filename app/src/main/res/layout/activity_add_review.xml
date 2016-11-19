@@ -56,7 +56,8 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/flight_number_input"/>
+                    android:id="@+id/flight_number_input"
+                    android:inputType="number"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -256,11 +257,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageButton
+                android:id="@+id/happy_button"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_sentiment_satisfied_black_24px"
                 android:layout_weight="1"/>
             <ImageButton
+                android:id="@+id/sad_button"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_sentiment_dissatisfied_black_24px"
@@ -279,8 +282,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5"
-            android:stepSize="1.0"
-            android:rating="2.0"
+            android:stepSize="0.1"
+            android:rating="0"
             android:layout_gravity="center"
             android:clickable="false"
             android:focusableInTouchMode="false"
@@ -292,6 +295,7 @@
         android:layout_height="70dip"
         android:text="@string/enviar_resena"
         android:layout_gravity="center"
+        android:id="@+id/send_review_button"
         />
     </LinearLayout>
     </ScrollView>
