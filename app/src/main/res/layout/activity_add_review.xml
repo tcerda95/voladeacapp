@@ -269,6 +269,17 @@
                 android:src="@drawable/ic_sentiment_dissatisfied_black_24px"
                 android:layout_weight="1"/>
         </LinearLayout>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/comentario_label"/>
+        
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_data"
+            android:layout_gravity="center"/>
 
         <TextView
             android:layout_width="match_parent"

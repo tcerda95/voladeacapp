@@ -55,5 +55,6 @@
     <string name="undo">Deshacer</string>
     <string name="deleted">Eliminado</string>
     <string name="refreshed">Actualizado</string>
+    <string name="comentario_label">Comentario:</string>
 
 </resources>
