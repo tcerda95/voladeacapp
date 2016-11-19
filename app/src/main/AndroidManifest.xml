@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Voladeacapp"
             android:launchMode="singleTop"
@@ -36,7 +37,6 @@
 
         <activity
             android:name=".FlightDetails"
-            android:launchMode="singleTop"
             android:parentActivityName=".Voladeacapp">
             <meta-data
                 android:name="android.app.default_searchable"
