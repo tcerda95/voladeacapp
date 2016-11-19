@@ -41,6 +41,8 @@
     <string name="puntuacion_total_label">Puntuación total:</string>
     <string name="enviar_resena">Enviar Reseña</string>
     <string name="title_activity_app_settings">Configuración</string>
-
+    <string name="undo">Deshacer</string>
+    <string name="deleted">Eliminado</string>
+    <string name="refreshed">Actualizado</string>
 
 </resources>

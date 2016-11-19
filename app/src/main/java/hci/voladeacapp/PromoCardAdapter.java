@@ -117,10 +117,7 @@ public class PromoCardAdapter extends BaseAdapter {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.overflow_more_details:
-                        Intent settingsIntent = new Intent(btn.getContext(), FlightSettingsActivity.class);
-                        settingsIntent.putExtra("Flight", fl);
                         System.out.println("More Details");
-                        btn.getContext().startActivity(settingsIntent);
                         return true;
                     case R.id.overflow_add_flight:
                         System.out.println("Agregar a mis vuelos");
