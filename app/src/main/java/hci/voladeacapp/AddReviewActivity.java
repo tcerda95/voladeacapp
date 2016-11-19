@@ -23,7 +23,7 @@ public class AddReviewActivity extends AppCompatActivity {
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
 
     private String aerolinea;
-    private String numeroVuelo;
+    private int numeroVuelo;
     private DiscreteSeekBar amabilidad;
     private DiscreteSeekBar confort;
     private DiscreteSeekBar comida;
@@ -70,10 +70,12 @@ public class AddReviewActivity extends AppCompatActivity {
                 //Aca se tienen que chequear cosas
                 EditText aerolineaText = (EditText)findViewById(R.id.airline_input);
                 EditText numeroVueloText = (EditText)findViewById(R.id.flight_number_input);
-                numeroVuelo = numeroVueloText.getText().toString();
+                numeroVuelo = new Integer(numeroVueloText.getText().toString());
                 aerolinea = aerolineaText.getText().toString();
-                Resena res = new Resena(aerolinea,numeroVuelo,amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
-                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), stars.getRating(),recommended);
+
+                ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
+                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
+
                 Intent intent = new Intent(getApplication(),PostResenaDummy.class);
                 intent.putExtra("resena", res);
 
