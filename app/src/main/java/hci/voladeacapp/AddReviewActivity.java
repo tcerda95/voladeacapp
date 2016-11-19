@@ -1,7 +1,10 @@
 package hci.voladeacapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,16 +19,19 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import java.util.HashMap;
 
 public class AddReviewActivity extends AppCompatActivity {
-    String aerolinea;
-    String numeroVuelo;
-    DiscreteSeekBar amabilidad;
-    DiscreteSeekBar confort;
-    DiscreteSeekBar comida;
-    DiscreteSeekBar preciocalidad;
-    DiscreteSeekBar puntualidad;
-    DiscreteSeekBar viajerosFrec;
-    boolean recommended;
-    RatingBar stars;
+
+    final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
+
+    private String aerolinea;
+    private String numeroVuelo;
+    private DiscreteSeekBar amabilidad;
+    private DiscreteSeekBar confort;
+    private DiscreteSeekBar comida;
+    private DiscreteSeekBar preciocalidad;
+    private DiscreteSeekBar puntualidad;
+    private DiscreteSeekBar viajerosFrec;
+    private Boolean recommended;
+    private RatingBar stars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class AddReviewActivity extends AppCompatActivity {
         puntualidad = (DiscreteSeekBar) findViewById(R.id.puntualidad_bar);
         viajerosFrec = (DiscreteSeekBar) findViewById(R.id.viajeros_frecuentes_bar);
         stars = (RatingBar) findViewById(R.id.ratingBar);
+
         HashMap<DiscreteSeekBar,TextView> map = new HashMap<>();
         map.put(amabilidad,(TextView)findViewById(R.id.amabilidad_data));
         map.put(confort,(TextView)findViewById(R.id.confort_data));
@@ -55,6 +62,7 @@ public class AddReviewActivity extends AppCompatActivity {
         final ImageButton happyBtn = (ImageButton) findViewById(R.id.happy_button);
         final ImageButton sadBtn = (ImageButton) findViewById(R.id.sad_button) ;
         Button submitButtom = (Button)findViewById(R.id.send_review_button);
+
         submitButtom.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -80,8 +88,8 @@ public class AddReviewActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                happyBtn.setBackgroundColor(getResources().getColor(R.color.green));
-                sadBtn.setBackgroundColor(getResources().getColor(R.color.grey));
+                happyBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.green));
+                sadBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.grey));
                 recommended = true;
             }
         });
@@ -90,13 +98,19 @@ public class AddReviewActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                sadBtn.setBackgroundColor(getResources().getColor(R.color.red));
-                happyBtn.setBackgroundColor(getResources().getColor(R.color.grey));
+                sadBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.red));
+                happyBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.grey));
                 recommended = false;
             }
         });
 
-
+        if (savedInstanceState != null && savedInstanceState.containsKey(RECOMMENDED_BOOLEAN)) {
+            recommended = savedInstanceState.getBoolean(RECOMMENDED_BOOLEAN);
+            if (recommended)
+                happyBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.green));
+            else
+                sadBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.red));
+        }
     }
 
     private void addCommonMethods(final HashMap<DiscreteSeekBar,TextView> map, final RatingBar stars) {
@@ -126,15 +140,9 @@ public class AddReviewActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (recommended != null)
+            outState.putBoolean(RECOMMENDED_BOOLEAN, recommended.booleanValue());
     }
-
 }
