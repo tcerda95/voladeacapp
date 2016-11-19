@@ -76,10 +76,12 @@ public class AddReviewActivity extends AppCompatActivity {
                 ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
                         preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
 
-                Intent intent = new Intent(getApplication(),PostResenaDummy.class);
-                intent.putExtra("resena", res);
+                ApiService.startActionSendReview(view.getContext(), res);
 
-                startActivity(intent);
+//                Intent intent = new Intent(getApplication(),PostResenaDummy.class);
+ //               intent.putExtra("resena", res);
+
+//                startActivity(intent);
                 //TODO: Mandar a la api
                 //Salir de la actividad
 
