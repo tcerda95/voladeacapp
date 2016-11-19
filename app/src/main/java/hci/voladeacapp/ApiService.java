@@ -85,7 +85,7 @@ public class ApiService extends IntentService {
         requestQueue = Volley.newRequestQueue(this);
 
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
-                + airline + "&flight_number=" + number;
+                + airline.toUpperCase() + "&flight_number=" + number;
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

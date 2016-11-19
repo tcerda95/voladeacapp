@@ -37,6 +37,7 @@ public class NotificationCreator extends Activity {
         Intent intent = new Intent(c, FlightDetails.class);
         intent.putExtra("Flight", f);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
         stackBuilder.addParentStack(FlightDetails.class);
         stackBuilder.addNextIntent(intent);

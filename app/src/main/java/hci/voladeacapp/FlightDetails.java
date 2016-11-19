@@ -55,7 +55,7 @@ public class FlightDetails extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Desea dejar de seguir este vuelo?")
+            builder.setMessage("Dejar de seguir este vuelo?")
                     .setTitle("Borrar")
                     .setPositiveButton("Dejar de seguir", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
