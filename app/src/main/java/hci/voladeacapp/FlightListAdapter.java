@@ -1,15 +1,19 @@
 package hci.voladeacapp;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
+
 import java.util.ArrayList;
 
-public class FlightListAdapter extends BaseAdapter {
+public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
     private ArrayList<Flight> listData;
     private LayoutInflater layoutInflater;
@@ -38,7 +42,7 @@ public class FlightListAdapter extends BaseAdapter {
 
         ViewHolder holder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.simplerow, null);
+            convertView = layoutInflater.inflate(R.layout.simplerow, parent, false);
             holder = new ViewHolder();
             holder.originView = (TextView) convertView.findViewById(R.id.origin_city);
             holder.destinationView = (TextView) convertView.findViewById(R.id.destination_city);
@@ -62,9 +66,19 @@ public class FlightListAdapter extends BaseAdapter {
         //stateTextView.setText(flight.getState());
 
         return convertView;
-
     }
 
+    @NonNull
+    @Override
+    public View getUndoView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        return layoutInflater.inflate(R.layout.undo_view, parent, false);
+    }
+
+    @NonNull
+    @Override
+    public View getUndoClickView(@NonNull View view) {
+        return view.findViewById(R.id.undo_button);
+    }
 
 
     static class ViewHolder {
