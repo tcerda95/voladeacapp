@@ -16,14 +16,34 @@
         android:layout_height="wrap_content"
         android:id="@+id/map_button" />
 
-    <ListView
+    <Button
+        android:text="Chelo debug entrypoint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/promo_card_list"
-        android:dividerHeight="0dp"
-        android:divider="@null"
-        android:clickable="true"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        ></ListView>
+        android:layout_height="wrap_content"
+        android:id="@+id/chelo_dbg_btn" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Desde"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Fecha"
+        android:id="@+id/from_date_edit_text"/>
+
+    <ListView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/promo_card_list"
+    android:dividerHeight="0dp"
+    android:divider="@null"
+    android:clickable="true"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    >
+
+    </ListView>
 </LinearLayout>
