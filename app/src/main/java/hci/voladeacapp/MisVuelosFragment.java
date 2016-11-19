@@ -7,6 +7,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -37,7 +40,7 @@ public class MisVuelosFragment extends Fragment {
     public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
     public final static int GET_FLIGHT = 1;
 
-    private ListView flightsListView;
+    private RecyclerView flightsListView;
 
     private ArrayList<Flight> flight_details;
     private FlightListAdapter adapter;
@@ -67,27 +70,18 @@ public class MisVuelosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
-        flightsListView = (ListView) rootView.findViewById(R.id.text_mis_vuelos);
+        flightsListView = (RecyclerView) rootView.findViewById(R.id.text_mis_vuelos);
 
-        adapter = new FlightListAdapter(getActivity(),flight_details);
+        adapter = new FlightListAdapter(getActivity(), flight_details);
+
+        flightsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         flightsListView.setAdapter(adapter);
 
-        flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ItemTouchHelper.Callback callback = new FlightItemTouchHelper(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(flightsListView);
 
-            //ACA VA LO QUE PASA CUANDO HACE CLICK
-            @Override
-            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                Object o = flightsListView.getItemAtPosition(position);
-                Flight flightData = (Flight) o;
-
-                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra("Flight",flightData);
-
-                startActivity(detailIntent);
-
-            }
-        });
-
+        /*
         flightsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int position,
@@ -123,6 +117,7 @@ public class MisVuelosFragment extends Fragment {
             @Override
             public void onDestroyActionMode(ActionMode actionMode) {}
         });
+        */
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +138,7 @@ public class MisVuelosFragment extends Fragment {
 
         return rootView;
     }
-
+/*
     private void deleteChecked() {
         SparseBooleanArray checked = flightsListView.getCheckedItemPositions();
         int size = flight_details.size();
@@ -155,7 +150,7 @@ public class MisVuelosFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
     }
-
+*/
     /**
      * Realiza la lógica del refresh. En este caso refreshear el estado de los vuelos.
      */

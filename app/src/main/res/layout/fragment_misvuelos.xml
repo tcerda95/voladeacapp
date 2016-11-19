@@ -10,13 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/text_mis_vuelos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/title_mis_vuelos"
-            android:choiceMode="multipleChoiceModal"
-             />
+            android:choiceMode="multipleChoiceModal" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
