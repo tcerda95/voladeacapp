@@ -229,7 +229,10 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(ACTION_GET_REFRESH));
+
+        IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
+        ifilter.setPriority(10);
+        getActivity().registerReceiver(receiver, ifilter);
 
     }
 

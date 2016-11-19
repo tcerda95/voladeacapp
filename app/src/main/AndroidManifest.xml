@@ -42,7 +42,6 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchResults" />
         </activity>
-
         <activity
             android:name=".SearchResults"
             android:parentActivityName=".FlightDetails">
@@ -66,22 +65,32 @@
             android:exported="false" />
 
         <activity android:name=".CheloActivity" />
-
-        <activity android:name=".AddFlightActivity"
-            android:parentActivityName=".Voladeacapp"/>
+        <activity
+            android:name=".AddFlightActivity"
+            android:parentActivityName=".Voladeacapp" />
         <activity
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings" />
-        <![CDATA[
-            android:label="@string/title_activity_app_settings">]]>
-
+        android:label="@string/title_activity_app_settings">
         <activity
             android:name=".FlightSettingsActivity"
-            android:label="Notificaciones de "></activity>
-
-        <activity android:name=".AddReviewActivity"
+            android:label="Notificaciones de " />
+        <activity
+            android:name=".AddReviewActivity"
             android:label="@string/title_dejar_resena"
-            android:parentActivityName=".Voladeacapp"></activity>
+            android:parentActivityName=".Voladeacapp" />
+
+        <receiver
+            android:name=".BackgroundRefreshReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter android:priority="0">
+                <action android:name="hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH" />
+            </intent-filter>
+
+
+        </receiver>
     </application>
 
 </manifest>

@@ -76,7 +76,6 @@ public class ApiService extends IntentService {
 
 
     private RequestQueue requestQueue;
-    ;
 
     /**
      * Handle action Foo in the provided background thread with the provided
@@ -108,7 +107,7 @@ public class ApiService extends IntentService {
                                 status = null;
                             }
 
-                            sendBroadcast(new Intent(callback).putExtra(DATA_FLIGHT_GSON, status));
+                            sendOrderedBroadcast(new Intent(callback).putExtra(DATA_FLIGHT_GSON, status), null);
                         }catch(Exception e){
                             e.printStackTrace();
                         }
