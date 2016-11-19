@@ -78,17 +78,6 @@
             android:parentActivityName=".Voladeacapp" />
         />
 
-        <receiver
-            android:name=".BackgroundRefreshReceiver"
-            android:enabled="true"
-            android:exported="true">
-
-            <intent-filter android:priority="0">
-                <action android:name="hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH" />
-            </intent-filter>
-
-        </receiver>
-
         <activity
             android:name=".FlightSettingsActivity"
             android:label="Notificaciones de "
@@ -101,7 +90,7 @@
         <activity android:name=".PostResenaDummy" />
 
         <receiver android:name=".BackgroundRefreshReceiver">
-            <intent-filter>
+            <intent-filter android:priority="0">
                 <action android:name="hci.voladeacapp.TIME_TO_PULL" />
                 <action android:name="hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH" />
             </intent-filter>
