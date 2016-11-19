@@ -4,13 +4,15 @@ import java.io.Serializable;
 
 public class Resena implements Serializable {
 
-    private String flightNumber, flightAirline;
+    private String flightNumber;
+    private String flightAirline;
+    private String comentario;
     private int amabilidad, confort, comida, preciocalidad, puntualidad, viajerosFrec;
     private boolean recomendado;
     private float puntuacion;
 
 
-    public Resena(String nv, String va, int am,int con, int com, int pc, int pun, int vf, float puntuaciongeneral, boolean recom ){
+    public Resena(String nv, String va, int am,int con, int com, int pc, int pun, int vf, float puntuaciongeneral, boolean recom, String coment ){
         this.puntuacion = puntuaciongeneral;
         this.flightNumber = nv;
         this.flightAirline = va;
@@ -21,6 +23,7 @@ public class Resena implements Serializable {
         this.puntualidad = pun;
         this.viajerosFrec= vf;
         this.recomendado = recom;
+        this.comentario = coment;
 
     }
     public String getFlightNumber() {
@@ -99,8 +102,17 @@ public class Resena implements Serializable {
         return puntuacion;
     }
 
-    public void setPuntuacion() {
-        //calcular puntuacion general
-        this.puntuacion = (float)(amabilidad + confort + comida + preciocalidad + puntualidad + viajerosFrec)/ (float)6;
+    public void setPuntuacion(float puntuacion) {
+        this.puntuacion = puntuacion;
     }
+
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
 }
