@@ -8,11 +8,11 @@ public class Resena implements Serializable {
     private String flightAirline;
     private String comentario;
     private int amabilidad, confort, comida, preciocalidad, puntualidad, viajerosFrec;
-    private boolean recomendado;
+    private Boolean recomendado;
     private float puntuacion;
 
 
-    public Resena(String nv, String va, int am,int con, int com, int pc, int pun, int vf, float puntuaciongeneral, boolean recom, String coment ){
+    public Resena(String nv, String va, int am,int con, int com, int pc, int pun, int vf, float puntuaciongeneral, Boolean recom, String coment ){
         this.puntuacion = puntuaciongeneral;
         this.flightNumber = nv;
         this.flightAirline = va;
@@ -90,11 +90,11 @@ public class Resena implements Serializable {
         this.viajerosFrec = viajerosFrec;
     }
 
-    public boolean getRecomendado() {
+    public Boolean getRecomendado() {
         return recomendado;
     }
 
-    public void setRecomendado(boolean recomendado) {
+    public void setRecomendado(Boolean recomendado) {
         this.recomendado = recomendado;
     }
 

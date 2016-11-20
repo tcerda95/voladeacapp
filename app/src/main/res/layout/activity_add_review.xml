@@ -39,7 +39,8 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/airline_input"/>
+                    android:id="@+id/airline_input"
+                    android:maxLines="1"/>
 
             </LinearLayout>
             <LinearLayout
@@ -57,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/flight_number_input"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:maxLines="1"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -273,7 +275,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/comentario_label"/>
+            android:text="@string/comentario_label"
+            android:textStyle="normal|bold" />
         
         <EditText
             android:layout_width="match_parent"

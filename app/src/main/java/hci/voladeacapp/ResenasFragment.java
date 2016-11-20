@@ -7,9 +7,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class ResenasFragment extends Fragment {
-
+    private ListView cardListView;
     public final static String INSTANCE_TAG = "hci.voladeacapp.Resenas.INSTANCE_TAG";
 
     @Override
@@ -31,6 +34,19 @@ public class ResenasFragment extends Fragment {
             }
         });
 
+        cardListView = (ListView) rootView.findViewById(R.id.resenas_list);
+        cardListView.setAdapter(new ResenaCardAdapter(getActivity(), dummyList()));
+
         return rootView;
     }
+
+    private ArrayList<Resena> dummyList() {
+        ArrayList<Resena> array = new ArrayList<>();
+        Resena res = new Resena("123","lala",2,3,4,5,6,7,1,true,"hola");
+        array.add(res);
+        Resena res2 = new Resena("5667","AR",1,1,2,3,4,5,9,false,"comentario general");
+        array.add(res2);
+        return array;
+    }
+
 }

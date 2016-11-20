@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -75,12 +76,16 @@ public class AddReviewActivity extends AppCompatActivity {
                 comentario = comentarioText.getText().toString();
                 Resena res = new Resena(aerolinea,numeroVuelo,amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
                         preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(),2*stars.getRating(),recommended,comentario);
-                Intent intent = new Intent(getApplication(),PostResenaDummy.class);
-                intent.putExtra("resena", res);
-
-                startActivity(intent);
-                //TODO: Mandar a la api
-                //Salir de la actividad
+                if (checkCompletedFields(res)) {
+                    Intent intent = new Intent(getApplication(), PostResenaDummy.class);
+                    intent.putExtra("resena", res);
+                    startActivity(intent);
+                    //TODO: Mandar a la api
+                    //Salir de la actividad
+                } else {
+                    //Para debug... Faltan otras validaciones
+                    Toast.makeText(getApplication(),"Falta aerolinea,numero o recomendado",Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -112,6 +117,12 @@ public class AddReviewActivity extends AppCompatActivity {
             else
                 sadBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.red));
         }
+    }
+
+    private boolean checkCompletedFields(Resena res) {
+        if(res.getFlightAirline() == null || res.getFlightNumber() == null || res.getRecomendado() == null)
+            return false;
+        return true;
     }
 
     private void addCommonMethods(final HashMap<DiscreteSeekBar,TextView> map, final RatingBar stars) {
