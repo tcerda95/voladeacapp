@@ -24,17 +24,18 @@
 
             <ImageView
                 android:id="@+id/card_status_badge"
-                android:layout_weight="0.20"
-                android:layout_height="match_parent"
-                android:layout_width="25dp"
-                android:src="@drawable/ic_okbadge"/>
+                android:layout_weight="0.15"
+                android:src="@drawable/ic_okbadge"
+                android:layout_height="35dp"
+                android:layout_width="35dp" />
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:layout_weight="0.31"
-                android:layout_width="265dp">
+                android:layout_weight="0.85"
+                android:layout_width="wrap_content"
+                android:weightSum="1">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -42,50 +43,82 @@
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif" />
+                    android:fontFamily="sans-serif"
+                    />
 
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:weightSum="1">
 
-                    <TextView
-                        android:layout_width="66dp"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/card_departure_airport_id"
-                        android:textStyle="normal|bold"
-                        android:textSize="25sp"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        />
+                        android:layout_weight="0.33">
+
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:id="@+id/card_departure_airport_id"
+                            android:textStyle="normal|bold"
+                            android:textSize="25sp"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/card_depart_city"
+                            android:textAlignment="center" />
+                    </LinearLayout>
 
                     <ImageView
                         app:srcCompat="@drawable/ic_arrow_forward_black_24px"
                         android:id="@+id/card_arrow_image"
                         android:gravity="center"
-                        android:layout_width="100dp"
-                        android:layout_height="30dp" />
+                        android:layout_weight="0.33"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                    <TextView
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/card_arrival_airport_id"
-                        android:layout_weight="0.86"
-                        android:textStyle="normal|bold"
-                        android:textSize="25sp"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        />
+                        android:layout_weight="0.33">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/card_arrival_airport_id"
+                            android:textStyle="normal|bold"
+                            android:textSize="25sp"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/card_arrival_city"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/card_flight_number"
                     android:textAlignment="center"
                     android:textSize="18sp"
-                    android:fontFamily="monospace" />
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="normal|bold" />
 
             </LinearLayout>
 

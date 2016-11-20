@@ -32,6 +32,15 @@
     android:focusable="false"
     android:focusableInTouchMode="false"
     >
-
     </ListView>
+
+    <!-- Solo se muestra cuando no hay vuelos -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_attach_money_black_24px"
+        android:id="@+id/empty_promos_placeholder"
+        android:visibility="invisible"
+        />
+
 </LinearLayout>
