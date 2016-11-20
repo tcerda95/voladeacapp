@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -122,6 +123,14 @@ public class ApiService extends IntentService {
             }
 
         }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
             //Clase anonima StringRequest
             @Override
             public byte[] getBody(){
@@ -144,7 +153,7 @@ public class ApiService extends IntentService {
                         " \"comments\": \"Best flight ever!\"" +
                         "}";
                 System.out.println(s);
-                return s.getBytes();
+                return jsonReview.getBytes();
                 //return "{\"comments\":\"Reseñando desde VoladeAcapp\",\"flight\":{\"airline\":{\"id\":\"AA\"},\"number\":236},\"rating\":{\"comfort\":1,\"food\":1,\"friendliness\":1,\"mileage_program\":1,\"punctuality\":1,\"quality_price\":1},\"yes_recommend\":true}".getBytes()
             }
 
