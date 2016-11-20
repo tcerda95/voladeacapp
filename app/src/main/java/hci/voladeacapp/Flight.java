@@ -22,7 +22,7 @@ public class Flight implements Serializable {
 
     private int duration;
 
-    public class FlightDate implements Serializable {
+    public static class FlightDate implements Serializable {
         public Date date;
         public String timestamp;
 
@@ -53,7 +53,7 @@ public class Flight implements Serializable {
     /**
      * Agrupa la información que tanto la salida como la llegada poseen.
      */
-    public class FlightSchedule implements Serializable {
+    public static class FlightSchedule implements Serializable {
         public String airport;
         public String airportId;
         public String city;
@@ -76,7 +76,31 @@ public class Flight implements Serializable {
 
         @Override
         public String toString() {
-            return airport + " " + airportId + " " + city + " " + gate + " " + terminal + " " + baggageClaim + " " + flightDate.toString();
+            return airport + " " + airportId + " " + city + " " + gate + " " + terminal + " " + flightDate.toString();
+        }
+
+        public String getDateInFormat(String format) {
+            return new SimpleDateFormat(format, Locale.ENGLISH).format(flightDate.date);
+        }
+
+        public String getBoardingTime() {
+            return flightDate.timestamp;
+        }
+
+        public String getAirport() {
+            return airport;
+        }
+
+        public String getAirportId() {
+            return airportId;
+        }
+
+        public String getTerminal() {
+            return terminal;
+        }
+
+        public String getGate() {
+            return gate;
         }
     }
 
@@ -212,7 +236,6 @@ public class Flight implements Serializable {
     public String getDepartureAirportId() {
         return departureSchedule.airportId;
     }
-
 
     public String getDepartureBoardingTime() {
         return departureSchedule.flightDate.timestamp;
