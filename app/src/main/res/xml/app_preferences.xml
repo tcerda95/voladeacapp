@@ -4,11 +4,11 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:title="Notificaciones"
+            android:title="@string/notification_title"
             android:key="notifications_switch" />
 
         <ListPreference
-            android:title="Frecuencia de Actualización"
+            android:title="@string/update_frequency"
             android:summary="Alguna descripcion de que significa esto"
             android:key="updateFrequency"
             android:defaultValue="1"
@@ -17,9 +17,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Localización">
+    <PreferenceCategory android:title="@string/localization">
         <ListPreference
-            android:title="Idioma"
+            android:title="@string/language"
             android:summary="Seleccionado: Español"
             android:key="appLanguage"
             android:defaultValue="ES"
