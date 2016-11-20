@@ -278,32 +278,25 @@ public class MisVuelosFragment extends Fragment {
     public ArrayList getListData() {
         ArrayList<Flight> results = new ArrayList<Flight>();
         Flight flight1 = new Flight();
-        flight1.setArrivalCity("BUENOS AIRES");
-        flight1.setNumber("12345");
-        flight1.setDepartureCity("NUEVA YORK");
+        flight1.setArrivalAirport("EZE");
+        flight1.setNumber("AR 1234");
+        flight1.setDepartureAirport("JFK");
         flight1.setState("EXPLOTADO");
         results.add(flight1);
 
-        Flight flight2 = new Flight();
-        flight2.setArrivalCity("EL INFINITO");
-        flight2.setNumber("00000");
-        flight2.setDepartureCity("MAS ALLA");
-        flight2.setState("PERDIDO");
-        results.add(flight2);
+        flight1 = new Flight();
+        flight1.setArrivalAirport("BUE");
+        flight1.setNumber("EZ 904");
+        flight1.setDepartureAirport("MIA");
+        flight1.setState("EXPLOTADO");
+        results.add(flight1);
 
-        Flight flight3 = new Flight();
-        flight3.setArrivalCity("MADRID");
-        flight3.setNumber("00002");
-        flight3.setDepartureCity("BARILOCHE");
-        flight3.setState("RESTRASADO");
-        results.add(flight3);
-
-        Flight flight4 = new Flight();
-        flight4.setArrivalCity("LALA");
-        flight4.setNumber("000123");
-        flight4.setDepartureCity("ERWER");
-        flight4.setState("RESTRASADO");
-        results.add(flight4);
+        flight1 = new Flight();
+        flight1.setArrivalAirport("KIK");
+        flight1.setNumber("TA 0092");
+        flight1.setDepartureAirport("LOA");
+        flight1.setState("EXPLOTADO");
+        results.add(flight1);
 
 
         return results;

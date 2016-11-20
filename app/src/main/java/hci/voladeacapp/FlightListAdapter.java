@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
@@ -42,18 +43,18 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
         ViewHolder holder;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.simplerow, parent, false);
+            convertView = layoutInflater.inflate(R.layout.my_flight_card, parent, false);
             holder = new ViewHolder();
-            holder.originView = (TextView) convertView.findViewById(R.id.origin_city);
-            holder.destinationView = (TextView) convertView.findViewById(R.id.destination_city);
-            //holder.stateView = (TextView) convertView.findViewById(R.id.flight_state);
-            holder.numberView = (TextView) convertView.findViewById(R.id.flight_number);
+            holder.originView = (TextView) convertView.findViewById(R.id.card_departure_airport_id);
+            holder.destinationView = (TextView) convertView.findViewById(R.id.card_arrival_airport_id);
+            holder.stateView = (ImageView) convertView.findViewById(R.id.card_status_badge);
+            holder.flnumberView = (TextView) convertView.findViewById(R.id.card_flight_number);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        TextView numberTextView = holder.numberView;
+        TextView numberTextView = holder.flnumberView;
         TextView originTextView = holder.originView;
         TextView destinationTextView = holder.destinationView;
         //TextView stateTextView = holder.stateView;
@@ -61,8 +62,8 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         Flight flight = (Flight) getItem(position);
 
         numberTextView.setText(flight.getNumber());
-        originTextView.setText(flight.getDepartureCity());
-        destinationTextView.setText(flight.getArrivalCity());
+        originTextView.setText(flight.getDepartureAirport());
+        destinationTextView.setText(flight.getArrivalAirport());
         //stateTextView.setText(flight.getState());
 
         return convertView;
@@ -82,10 +83,10 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
 
     static class ViewHolder {
-        TextView numberView;
+        TextView flnumberView;
         TextView originView;
         TextView destinationView;
-        TextView stateView;
+        ImageView stateView;
     }
 
 }
