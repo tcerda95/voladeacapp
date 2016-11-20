@@ -4,18 +4,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="PROMOCIONES"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_promociones" />
-
-    <Button
-        android:text="Ver Mapa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/map_button" />
-
     <Button
         android:text="Chelo debug entrypoint"
         android:layout_width="match_parent"

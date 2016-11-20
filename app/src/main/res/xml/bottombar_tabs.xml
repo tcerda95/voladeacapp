@@ -1,7 +1,7 @@
 <tabs>
     <tab
         id="@+id/action_promociones"
-        icon="@drawable/ic_local_atm_black_24px"
+        icon="@drawable/ic_attach_money_black_24px"
         title="@string/title_promociones" />
     <tab
         id="@+id/action_mis_vuelos"
@@ -9,6 +9,6 @@
         title="@string/title_mis_vuelos" />
     <tab
         id="@+id/action_resenas"
-        icon="@drawable/ic_assignment_black_24px"
+        icon="@drawable/ic_grade_black_24px"
         title="@string/title_resenas" />
 </tabs>

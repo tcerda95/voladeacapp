@@ -39,7 +39,8 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/airline_input"/>
+                    android:id="@+id/airline_input"
+                    android:maxLines="1"/>
 
             </LinearLayout>
             <LinearLayout
@@ -57,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/flight_number_input"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:maxLines="1"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -269,6 +271,18 @@
                 android:src="@drawable/ic_sentiment_dissatisfied_black_24px"
                 android:layout_weight="1"/>
         </LinearLayout>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/comentario_label"
+            android:textStyle="normal|bold" />
+        
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_data"
+            android:layout_gravity="center"/>
 
         <TextView
             android:layout_width="match_parent"

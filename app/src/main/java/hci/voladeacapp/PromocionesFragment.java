@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,20 +43,21 @@ public class PromocionesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
-        Button mapButton = (Button) rootView.findViewById(R.id.map_button);
-        mapButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MapActivity.class);
-                startActivity(intent);
-            }
-        });
+//        Button mapButton = (Button) rootView.findViewById(R.id.map_button);
+//        mapButton.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), MapActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         Button cheloDebug = (Button) rootView.findViewById(R.id.chelo_dbg_btn);
         cheloDebug.setOnClickListener(new View.OnClickListener(){
@@ -115,6 +119,24 @@ public class PromocionesFragment extends Fragment {
 
         return rootView;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.promo_map_menu_item, menu);
+        MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
+
+        mapIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Intent intent = new Intent(getActivity(), MapActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void updateLabel() {

@@ -10,10 +10,14 @@
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/text_resenas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/title_resenas" />
+            android:id="@+id/resenas_list"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
