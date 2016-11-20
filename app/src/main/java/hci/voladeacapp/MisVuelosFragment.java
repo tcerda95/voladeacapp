@@ -142,7 +142,10 @@ public class MisVuelosFragment extends Fragment {
         flightsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int position,
-                                                  long lid, boolean checked) {}
+                                                  long lid, boolean checked) {
+                int checkedCount = flightsListView.getCheckedItemCount();
+                actionMode.setTitle(getResources().getQuantityString(R.plurals.selected_flights, checkedCount, checkedCount));
+            }
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -155,8 +158,7 @@ public class MisVuelosFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         Resources res = getResources();
-                        String feedback = flightsListView.getCheckedItemCount() > 1 ?
-                                res.getString(R.string.plural_eliminado) : res.getString(R.string.singular_eliminado);
+                        String feedback = res.getQuantityString(R.plurals.deleted_flights, flightsListView.getCheckedItemCount());
                         deleteChecked();
                         Toast.makeText(getActivity(), feedback, Toast.LENGTH_SHORT).show();
                         actionMode.finish();
