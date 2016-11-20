@@ -4,10 +4,12 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.places.internal.PlaceOpeningHoursEntity;
@@ -16,7 +18,10 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -28,12 +33,17 @@ public class ApiService extends IntentService {
 
     public static final String DATA_FLIGHT_GSON = "hci.voladeacapp.data.DATA_FLIGHT_GSON";
 
-    private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET";
+    private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
+    private static final String ACTION_SEND_REVIEW = "hci.voladeacapp.action.SEND_REVIEW";
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "hci.voladeacapp.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "hci.voladeacapp.extra.PARAM2";
     private static final String CALLBACK_INTENT = "hci.voladeacapp.extra.CALLBACK";
+
+
+    private RequestQueue requestQueue;
+
 
     public ApiService() {
         super("ApiService");
@@ -55,11 +65,82 @@ public class ApiService extends IntentService {
         context.startService(intent);
     }
 
+
     public static void startActionGetFlightStatus(Context context, Flight flight, String callbackAction) {
         startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber(), callbackAction);
     }
 
 
+    public static void startActionSendReview(Context context, ReviewGson review) {
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_SEND_REVIEW);
+        intent.putExtra(EXTRA_PARAM1, review); //SerializableExtra
+        context.startService(intent);
+    }
+
+
+
+
+    private void handleActionSendReview(ReviewGson review) {
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+
+
+        String url = "http://hci.it.itba.edu.ar/v1/api/review.groovy?method=reviewairline";
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ReviewGson>() {
+        }.getType();
+
+        final String jsonReview = gson.toJson(review ,type);
+        System.out.println(jsonReview);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            System.out.println(response);
+                            if(obj.has("review") && obj.getBoolean("review")) {
+                                System.out.println("SENT REVIEW SUCCESSFULLY!");
+                            } else{
+                                //No existe el vuelo
+                            }
+
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("ERROR SENDING REVIEW:");
+                System.out.println(error);
+
+            }
+
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            //Clase anonima StringRequest
+            @Override
+            public byte[] getBody(){
+                return jsonReview.getBytes();
+            }
+
+        };
+
+        requestQueue.add(stringRequest);
+
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -71,18 +152,27 @@ public class ApiService extends IntentService {
                 final String callback = intent.getStringExtra(CALLBACK_INTENT);
                 handleActionGetStatus(param1, param2, callback);
             }
+            if(ACTION_SEND_REVIEW.equals(intent.getAction())){
+                final ReviewGson review = (ReviewGson)intent.getSerializableExtra(EXTRA_PARAM1);
+                handleActionSendReview(review);
+            }
         }
     }
 
 
-    private RequestQueue requestQueue;
+
+
+
+
 
     /**
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
     private void handleActionGetStatus(String airline, String number, final String callback) {
-        requestQueue = Volley.newRequestQueue(this);
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
 
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
                 + airline + "&flight_number=" + number;
