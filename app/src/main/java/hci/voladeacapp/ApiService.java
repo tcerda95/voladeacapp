@@ -106,7 +106,6 @@ public class ApiService extends IntentService {
                                 //No existe el vuelo
                                 status = null;
                             }
-
                             sendOrderedBroadcast(new Intent(callback).putExtra(DATA_FLIGHT_GSON, status), null);
                         }catch(Exception e){
                             e.printStackTrace();
