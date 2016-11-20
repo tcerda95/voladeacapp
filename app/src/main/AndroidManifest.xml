@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".Voladeacapp"
             android:launchMode="singleTop"
@@ -77,7 +77,6 @@
             android:launchMode="singleTop"
             android:parentActivityName=".Voladeacapp" />
         />
-
         <activity
             android:name=".FlightSettingsActivity"
             android:label="Notificaciones de "
@@ -91,13 +90,25 @@
 
         <receiver android:name=".BackgroundRefreshReceiver">
             <intent-filter android:priority="0">
-                <action android:name="hci.voladeacapp.TIME_TO_PULL" />
                 <action android:name="hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH" />
             </intent-filter>
         </receiver>
-
-
-
+        <receiver
+            android:name=".OnBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".PullRequestReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+            <action android:name="hci.voladeacapp.TIME_TO_PULL" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
