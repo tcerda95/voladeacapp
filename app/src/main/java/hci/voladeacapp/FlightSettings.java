@@ -1,5 +1,6 @@
 package hci.voladeacapp;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +8,10 @@ import java.util.Map;
  * Created by Bianchi on 19/11/16.
  */
 
-public class FlightSettings {
+public class FlightSettings implements Serializable{
+    private static final long serialVersiouUID = 1L;
+
+
     private boolean notificationsActive;
     private Map<NotificationCategory, Boolean> notificationSettings;
 
@@ -24,16 +28,20 @@ public class FlightSettings {
     }
 
     public boolean notificationsActive() {
+
         return notificationsActive;
     }
 
     public void enableNotifications() {
+
         notificationsActive = true;
     }
 
-    public void disableNotifications() {
+    public void disableNotifications()
+    {
         notificationsActive = false;
     }
+
 
     public boolean isActive(NotificationCategory category) {
         if (!notificationSettings.containsKey(category))

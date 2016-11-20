@@ -32,7 +32,6 @@ public class NotificationCreator extends Activity {
 
     }
 
-    //TODO: el stack, ya probe de todo(incluyendo poner todos estos metodos directo en el fragment y cambiar flags), pero se cierra la aplicacion (!!)
     private static void createNotification(Context c, Flight f, NotificationCompat.Builder builder) {
         Intent intent = new Intent(c, FlightDetails.class);
         intent.putExtra("Flight", f);

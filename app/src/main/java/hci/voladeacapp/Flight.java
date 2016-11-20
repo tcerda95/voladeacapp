@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Flight implements Serializable {
+    private static final long serialVersiouUID = 1L;
+
     private String number;
     private String airline;
     private String state;

@@ -17,10 +17,10 @@ import java.util.ArrayList;
 
 public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
-    private ArrayList<Flight> listData;
+    private ArrayList<ConfiguredFlight> listData;
     private LayoutInflater layoutInflater;
 
-    public FlightListAdapter(Context aContext, ArrayList<Flight> listData) {
+    public FlightListAdapter(Context aContext, ArrayList<ConfiguredFlight> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }
@@ -60,7 +60,7 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         TextView destinationTextView = holder.destinationView;
         //TextView stateTextView = holder.stateView;
 
-        Flight flight = (Flight) getItem(position);
+        Flight flight = (Flight)getItem(position);
 
         numberTextView.setText(flight.getNumber());
         originTextView.setText(flight.getDepartureAirportId());

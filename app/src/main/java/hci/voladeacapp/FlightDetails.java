@@ -20,13 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class FlightDetails extends AppCompatActivity {
-    private Flight flight;
+    private ConfiguredFlight flight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
-        this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
+        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
     }
@@ -95,7 +95,7 @@ public class FlightDetails extends AppCompatActivity {
         return true;
     }
 
-    private void fillDetails(Flight flight) {
+    private void fillDetails(ConfiguredFlight flight) {
         Resources res = getResources();
         FragmentManager manager = getFragmentManager();
         String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();
