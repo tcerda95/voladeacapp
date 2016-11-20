@@ -56,6 +56,7 @@ public class SearchResults extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mis_vuelos_menu, menu);
         SearchManager searchManager =
@@ -64,7 +65,7 @@ public class SearchResults extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-
+        */
         return true;
     }
 

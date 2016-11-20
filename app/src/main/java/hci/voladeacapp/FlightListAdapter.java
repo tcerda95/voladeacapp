@@ -63,8 +63,8 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         Flight flight = (Flight) getItem(position);
 
         numberTextView.setText(flight.getNumber());
-        originTextView.setText(flight.getDepartureAirport());
-        destinationTextView.setText(flight.getArrivalAirport());
+        originTextView.setText(flight.getDepartureAirportId());
+        destinationTextView.setText(flight.getArrivalAirportId());
         //stateTextView.setText(flight.getState());
 
         return convertView;

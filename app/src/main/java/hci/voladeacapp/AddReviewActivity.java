@@ -21,8 +21,8 @@ public class AddReviewActivity extends AppCompatActivity {
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
 
     private String aerolinea;
-    private String numeroVuelo;
     private String comentario;
+    private Integer numeroVuelo;
     private DiscreteSeekBar amabilidad;
     private DiscreteSeekBar confort;
     private DiscreteSeekBar comida;
@@ -70,22 +70,35 @@ public class AddReviewActivity extends AppCompatActivity {
                 //Aca se tienen que chequear cosas
                 EditText aerolineaText = (EditText)findViewById(R.id.airline_input);
                 EditText numeroVueloText = (EditText)findViewById(R.id.flight_number_input);
-                EditText comentarioText = (EditText) findViewById(R.id.comment_data);
-                numeroVuelo = numeroVueloText.getText().toString();
+
+                try {
+                    numeroVuelo = new Integer(numeroVueloText.getText().toString());
+                }catch(NumberFormatException e){
+                    numeroVuelo = null; //TODO: Hacer esto es un a s c o
+                }
+
                 aerolinea = aerolineaText.getText().toString();
+
+                EditText comentarioText = (EditText) findViewById(R.id.comment_data);
                 comentario = comentarioText.getText().toString();
-                Resena res = new Resena(aerolinea,numeroVuelo,amabilidad.getProgress(),confort.getProgress(),comida.getProgress(),
-                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(),2*stars.getRating(),recommended,comentario);
+
+                ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, comentario, amabilidad.getProgress(), confort.getProgress(),comida.getProgress(),
+                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
+
                 if (checkCompletedFields(res)) {
-                    Intent intent = new Intent(getApplication(), PostResenaDummy.class);
-                    intent.putExtra("resena", res);
-                    startActivity(intent);
-                    //TODO: Mandar a la api
-                    //Salir de la actividad
+                    ApiService.startActionSendReview(view.getContext(), res);
+                    Toast.makeText(getApplication(),"¡Reseña enviada!",Toast.LENGTH_SHORT).show();
                 } else {
                     //Para debug... Faltan otras validaciones
                     Toast.makeText(getApplication(),"Falta aerolinea,numero o recomendado",Toast.LENGTH_SHORT).show();
                 }
+
+//                Intent intent = new Intent(getApplication(),PostResenaDummy.class);
+ //               intent.putExtra("resena", res);
+
+//                startActivity(intent);
+                //TODO: Mandar a la api
+                //Salir de la actividad
 
             }
         });
@@ -119,8 +132,8 @@ public class AddReviewActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkCompletedFields(Resena res) {
-        if(res.getFlightAirline() == null || res.getFlightNumber() == null || res.getRecomendado() == null)
+    private boolean checkCompletedFields(ReviewGson res) {
+        if(res.flight.airline.id == null || res.flight.number == null || res.yes_recommend == null)
             return false;
         return true;
     }

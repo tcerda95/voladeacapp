@@ -2,10 +2,12 @@ package hci.voladeacapp;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,20 +27,8 @@ public class FlightDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
-        setTitle(flight.getNumber());
-//        fillDetails(flight);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        setTitle(flight.getAirline() + " " + flight.getNumber());
+        fillDetails(flight);
     }
 
     private class goToConfigurationActivityListener implements MenuItem.OnMenuItemClickListener {
@@ -106,17 +96,16 @@ public class FlightDetails extends AppCompatActivity {
     }
 
     private void fillDetails(Flight flight) {
-        getTextView(R.id.from_date_data).setText(flight.getDepartureDate().toString());
-        getTextView(R.id.to_date_data).setText(flight.getArrivalDate().toString());
-        getTextView(R.id.from_boarding_data).setText("");
-        getTextView(R.id.to_boarding_data).setText("");
-        getTextView(R.id.from_airport_data).setText(flight.getDepartureAirport());
-        getTextView(R.id.to_airport_data).setText(flight.getArrivalAirport());
-        getTextView(R.id.from_terminal_data).setText("");
-        getTextView(R.id.to_terminal_data).setText("");
-        getTextView(R.id.from_gate_data).setText("");
-        getTextView(R.id.to_gate_data).setText("");
-        getTextView(R.id.baggage_claim_data).setText("");
+        Resources res = getResources();
+        FragmentManager manager = getFragmentManager();
+        String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();
+
+        ScheduleFragment departureFragment = (ScheduleFragment) manager.findFragmentById(R.id.fragment_salida);
+        ScheduleFragment arrivalFragment = (ScheduleFragment) manager.findFragmentById(R.id.fragment_llegada);
+
+        departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
+        arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
+
         getTextView(R.id.state_data).setText(flight.getState());
     }
 

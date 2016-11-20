@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -64,7 +65,6 @@ public class MisVuelosFragment extends Fragment {
 
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
-    public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
 
     public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
     public final static String ACTION_GET_REFRESH = "hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH";
@@ -84,19 +84,7 @@ public class MisVuelosFragment extends Fragment {
         setRetainInstance(true);
 
         //Lleno la lista con lo que esta en shared app_preferences
-        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("FLIGHTS", MODE_PRIVATE);
-        String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
-
-        if(list == null || list.length() < 1){
-            flight_details = getListData(); //TODO: Borrar
-        }
-        else {
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Flight>>() {
-            }.getType();
-
-            flight_details = gson.fromJson(list, type);
-        }
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
     }
 
     @Override
@@ -142,7 +130,10 @@ public class MisVuelosFragment extends Fragment {
         flightsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int position,
-                                                  long lid, boolean checked) {}
+                                                  long lid, boolean checked) {
+                int checkedCount = flightsListView.getCheckedItemCount();
+                actionMode.setTitle(getResources().getQuantityString(R.plurals.selected_flights, checkedCount, checkedCount));
+            }
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -155,8 +146,7 @@ public class MisVuelosFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         Resources res = getResources();
-                        String feedback = flightsListView.getCheckedItemCount() > 1 ?
-                                res.getString(R.string.plural_eliminado) : res.getString(R.string.singular_eliminado);
+                        String feedback = res.getQuantityString(R.plurals.deleted_flights, flightsListView.getCheckedItemCount());
                         deleteChecked();
                         Toast.makeText(getActivity(), feedback, Toast.LENGTH_SHORT).show();
                         actionMode.finish();
@@ -266,12 +256,7 @@ public class MisVuelosFragment extends Fragment {
         // Save the user's current game state
         super.onStop();
 
-        Gson gson = new Gson();
-        String s = gson.toJson(flight_details);
-
-        SharedPreferences.Editor editor = getActivity().getApplicationContext().getSharedPreferences("FLIGHTS", MODE_PRIVATE).edit();
-        editor.putString(FLIGHT_LIST, s);
-        editor.commit();
+        StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
 
     /* PROBANDO UNA ARRAYLIST CUALQUIERA */

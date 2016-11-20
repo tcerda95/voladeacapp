@@ -17,6 +17,7 @@ public class FlightStatusGson implements Serializable {
         public String gate;
         public String id;
         public String terminal;
+        public String baggage;
     }
 
     public class Schedule implements Serializable{
@@ -28,17 +29,18 @@ public class FlightStatusGson implements Serializable {
         public String runway_delay;
         public String scheduled_gate_time;
         public String scheduled_time;
+        public String actual_time;
         public String estimate_runway_time;
 
-        AirportDetails airport;
+        public AirportDetails airport;
     }
 
     public class AirlineDetails implements Serializable{
         private static final long serialVersiouUID = 1L;
 
-        String id;
-        String name;
-        String logo;
+        public String id;
+        public String name;
+        public String logo;
     }
 
     public class CityDetails implements Serializable{

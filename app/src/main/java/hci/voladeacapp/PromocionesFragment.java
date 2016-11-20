@@ -95,8 +95,6 @@ public class PromocionesFragment extends Fragment {
             }
         });
 
-
-
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         cardListView.setAdapter(new PromoCardAdapter(getActivity(), dummyList()));
 
@@ -113,9 +111,6 @@ public class PromocionesFragment extends Fragment {
                 startActivity(detailIntent);
             }
         });
-
-
-
 
         return rootView;
 
@@ -140,7 +135,7 @@ public class PromocionesFragment extends Fragment {
     }
 
     private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //TODO: Localizar formato
+        String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         fromDateText.setText("Fecha de salida: " + sdf.format(fromCalendar.getTime()));
