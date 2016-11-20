@@ -3,14 +3,11 @@ package hci.voladeacapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,17 +45,18 @@ public class Voladeacapp extends AppCompatActivity {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
+                Resources res = getResources();
                 switch (tabId) {
                     case R.id.action_mis_vuelos:
-                        setTitle("Mis Vuelos"); // TODO: agarrar los textos de un string resource
+                        setTitle(res.getString(R.string.title_mis_vuelos));
                         transaction.replace(R.id.fragment_main_container, misVuelosFragment, MisVuelosFragment.INSTANCE_TAG).commit();
                         break;
                     case R.id.action_promociones:
-                        setTitle("Promociones");
+                        setTitle(res.getString(R.string.title_promociones));
                         transaction.replace(R.id.fragment_main_container, promocionesFragment, PromocionesFragment.INSTANCE_TAG).commit();
                         break;
                     case R.id.action_resenas:
-                        setTitle("Reseñas");
+                        setTitle(res.getString(R.string.title_resenas));
                         transaction.replace(R.id.fragment_main_container, resenasFragment, ResenasFragment.INSTANCE_TAG).commit();
                         break;
                 }
@@ -71,13 +69,6 @@ public class Voladeacapp extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mis_vuelos_menu, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
 
         menu.findItem(R.id.action_configuration).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

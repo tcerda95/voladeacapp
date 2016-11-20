@@ -56,5 +56,6 @@
     <string name="deleted">Eliminado</string>
     <string name="refreshed">Actualizado</string>
     <string name="comentario_label">Comentario:</string>
+    <string name="ver_en_mapa">Ver en mapa</string>
 
 </resources>
