@@ -2,6 +2,7 @@ package hci.voladeacapp;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -96,24 +97,15 @@ public class FlightDetails extends AppCompatActivity {
 
     private void fillDetails(Flight flight) {
         Resources res = getResources();
-        String dateFormat = res.getString(R.string.formato_fecha);
+        FragmentManager manager = getFragmentManager();
+        String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();
 
-        getTextView(R.id.from_date_data).setText(flight.getDepartureDateInFormat(dateFormat));
-        getTextView(R.id.to_date_data).setText(flight.getArrivalDateInFormat(dateFormat));
+        ScheduleFragment departureFragment = (ScheduleFragment) manager.findFragmentById(R.id.fragment_salida);
+        ScheduleFragment arrivalFragment = (ScheduleFragment) manager.findFragmentById(R.id.fragment_llegada);
 
-        getTextView(R.id.from_boarding_data).setText(flight.getDepartureBoardingTime());
-        getTextView(R.id.to_boarding_data).setText(flight.getArrivalBoardingTime());
+        departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
+        arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
 
-        getTextView(R.id.from_airport_data).setText(flight.getDepartureAirport());
-        getTextView(R.id.to_airport_data).setText(flight.getArrivalAirport());
-
-        getTextView(R.id.from_terminal_data).setText(flight.getDepartureTerminal() == null ? res.getString(R.string.a_confirmar) : flight.getDepartureTerminal());
-        getTextView(R.id.to_terminal_data).setText(flight.getArrivalTerminal() == null ? res.getString(R.string.a_confirmar) : flight.getArrivalTerminal());
-
-        getTextView(R.id.from_gate_data).setText(flight.getDepartureGate() == null ? res.getString(R.string.a_confirmar) : flight.getDepartureGate());
-        getTextView(R.id.to_gate_data).setText(flight.getArrivalGate() == null ? res.getString(R.string.a_confirmar) : flight.getArrivalGate());
-
-        getTextView(R.id.baggage_claim_data).setText(flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim());
         getTextView(R.id.state_data).setText(flight.getState());
     }
 
