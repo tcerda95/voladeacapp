@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="selected_flights">
-        <item quantity="one">1 Vuelo Seleccionado</item>
-        <item quantity="other">%d Vuelos Seleccionados</item>
+        <item quantity="one">1 Vuelo seleccionado</item>
+        <item quantity="other">%d Vuelos seleccionados</item>
     </plurals>
     <plurals name="deleted_flights">
         <item quantity="one">Vuelo eliminado</item>

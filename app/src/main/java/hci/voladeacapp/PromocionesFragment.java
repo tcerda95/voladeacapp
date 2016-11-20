@@ -135,7 +135,7 @@ public class PromocionesFragment extends Fragment {
     }
 
     private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //TODO: Localizar formato
+        String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         fromDateText.setText("Fecha de salida: " + sdf.format(fromCalendar.getTime()));
