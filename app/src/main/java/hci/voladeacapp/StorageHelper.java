@@ -33,7 +33,7 @@ public class StorageHelper {
 
         } else {
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Flight>>() {
+            Type type = new TypeToken<ArrayList<ConfiguredFlight>>() {
             }.getType();
 
             flight_details = gson.fromJson(list, type);
