@@ -13,7 +13,7 @@ public class Flight implements Serializable {
     private String number;
     private String airline;
     private String state;
-    private double price;
+    private double price; // in USD
 
     private FlightSchedule departureSchedule = new FlightSchedule(); // Para que no tire NPE
     private FlightSchedule arrivalSchedule = new FlightSchedule();

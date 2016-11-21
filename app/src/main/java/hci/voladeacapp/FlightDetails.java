@@ -19,8 +19,12 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class FlightDetails extends AppCompatActivity {
     private Flight flight;
+    private ArrayList<Flight> saved_flights;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,8 @@ public class FlightDetails extends AppCompatActivity {
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
+
+        saved_flights = StorageHelper.getFlights(getApplicationContext());
     }
 
     private class goToConfigurationActivityListener implements MenuItem.OnMenuItemClickListener {
@@ -41,58 +47,85 @@ public class FlightDetails extends AppCompatActivity {
         }
     }
 
-    public static class removeFlightDialog extends DialogFragment {
+    private class removeFlightListener implements MenuItem.OnMenuItemClickListener {
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        public boolean onMenuItemClick(final MenuItem menuItem) {
+            if (!saved_flights.contains(flight)) {
+                throw new IllegalStateException("Not following this flight!");
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(FlightDetails.this);
             builder.setMessage("Dejar de seguir este vuelo?")
                     .setTitle("Borrar")
-                    .setPositiveButton("Dejar de seguir", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Toast.makeText(getActivity(), "Vuelo Borrado", Toast.LENGTH_LONG).show();
-                            // Remover Vuelo de seguidos y todo eso
-                        }
-                    })
-                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            return builder.create();
+                    .setPositiveButton("Dejar de seguir", new Dialog.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    saved_flights.remove(flight);
+                    Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
+                    dialog.cancel();
+                    updateOptionsMenuVisibility();
+                }
+
+            });
+
+            builder.setNegativeButton("Cancelar", new Dialog.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "No paso nada", Toast.LENGTH_LONG).show();
+                    dialog.cancel();
+                }
+
+            });
+
+            builder.show();
+            return true;
         }
     }
 
-    private class removeFlightListener implements MenuItem.OnMenuItemClickListener {
+    private class addFlightListener implements MenuItem.OnMenuItemClickListener {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            DialogFragment dialogFragment = new removeFlightDialog();
-            dialogFragment.show(getFragmentManager(), "removeQuestion");
+            if (saved_flights.contains(flight)) {
+                throw new IllegalStateException("Already followed flight!");
+            }
+
+            saved_flights.add(flight);
+            Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
+            updateOptionsMenuVisibility();
             return true;
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu m) {
+        this.menu = m;
         MenuInflater inflater = getMenuInflater();
-
         inflater.inflate(R.menu.flight_details_menu, menu);
+
         MenuItem notificationsButton = menu.findItem(R.id.action_flight_config);
         MenuItem removeButton = menu.findItem(R.id.action_remove_flight);
         MenuItem addButton = menu.findItem(R.id.action_add_flight);
 
-        //TODO
-        if (true) { /* flightIsInMyFlights */
-            notificationsButton.setVisible(true);
-            removeButton.setVisible(true);
+        notificationsButton.setOnMenuItemClickListener(new goToConfigurationActivityListener());
+        removeButton.setOnMenuItemClickListener(new removeFlightListener());
+        addButton.setOnMenuItemClickListener(new addFlightListener());
 
-            notificationsButton.setOnMenuItemClickListener(new goToConfigurationActivityListener());
-            removeButton.setOnMenuItemClickListener(new removeFlightListener());
-        }
-        else {
-            addButton.setVisible(true);
-        }
-
+        updateOptionsMenuVisibility();
         return true;
+    }
+
+    private void updateOptionsMenuVisibility() {
+        MenuItem notificationsButton = menu.findItem(R.id.action_flight_config);
+        MenuItem removeButton = menu.findItem(R.id.action_remove_flight);
+        MenuItem addButton = menu.findItem(R.id.action_add_flight);
+
+        boolean added = saved_flights.contains(flight);
+
+        notificationsButton.setVisible(added);
+        removeButton.setVisible(added);
+        addButton.setVisible(!added);
     }
 
     private void fillDetails(Flight flight) {
@@ -113,5 +146,9 @@ public class FlightDetails extends AppCompatActivity {
         return (TextView) findViewById(id);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        StorageHelper.saveFlights(getApplicationContext(), saved_flights);
+        super.onDestroy();
+    }
 }

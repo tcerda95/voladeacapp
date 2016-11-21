@@ -59,14 +59,14 @@ public class PromocionesFragment extends Fragment {
 //            }
 //        });
 
-        Button cheloDebug = (Button) rootView.findViewById(R.id.chelo_dbg_btn);
-        cheloDebug.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-                view.getContext().startActivity(new Intent(view.getContext(), CheloActivity.class));
-            }
-        });
+//        Button cheloDebug = (Button) rootView.findViewById(R.id.chelo_dbg_btn);
+//        cheloDebug.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View view) {
+//                view.getContext().startActivity(new Intent(view.getContext(), CheloActivity.class));
+//            }
+//        });
 
 
         fromCalendar = Calendar.getInstance();
@@ -96,7 +96,8 @@ public class PromocionesFragment extends Fragment {
         });
 
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
-        cardListView.setAdapter(new PromoCardAdapter(getActivity(), dummyList()));
+        PromoCardAdapter adapter = new PromoCardAdapter(getActivity(), dummyList());
+        cardListView.setAdapter(adapter);
 
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -138,7 +139,7 @@ public class PromocionesFragment extends Fragment {
         String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        fromDateText.setText("Fecha de salida: " + sdf.format(fromCalendar.getTime()));
+        fromDateText.setText(sdf.format(fromCalendar.getTime()));
     }
 
     private ArrayList<Flight> dummyList() {
@@ -148,30 +149,51 @@ public class PromocionesFragment extends Fragment {
         f.setDepartureDate(new Date());
         f.setPrice(400.43);
         f.setNumber("1234");
+        f.setAirline("Hola");
         ar.add(f);
+
+
         f = new Flight();
         f.setArrivalCity("Paris");
         f.setDepartureDate(new Date());
         f.setPrice(1990.43);
         f.setNumber("12355");
+        f.setAirline("Hola");
+
         ar.add(f);
         f = new Flight();
-        f.setArrivalCity("Cubolandia");
+        f.setArrivalCity("Berlin");
         f.setDepartureDate(new Date());
         f.setPrice(2000.43);
         f.setNumber("955");
-        ar.add(f);
-        f = new Flight();
-        f.setArrivalCity("Bs As");
-        f.setDepartureDate(new Date());
-        f.setPrice(40.43);
-        f.setNumber("575");
+        f.setAirline("Hola");
+
         ar.add(f);
         f = new Flight();
         f.setArrivalCity("Guatemala");
         f.setDepartureDate(new Date());
         f.setPrice(4000.43);
         f.setNumber("0129");
+        f.setAirline("Hola");
+
+        ar.add(f);
+
+        f = new Flight();
+        f.setArrivalCity("Tucuman");
+        f.setDepartureDate(new Date());
+        f.setPrice(4000.43);
+        f.setNumber("0129");
+        f.setAirline("Hola");
+
+        ar.add(f);
+
+        f = new Flight();
+        f.setArrivalCity("Iceland");
+        f.setDepartureDate(new Date());
+        f.setPrice(4000.43);
+        f.setNumber("0129");
+        f.setAirline("Hola");
+
         ar.add(f);
         return ar;
     }
