@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -52,7 +51,6 @@ public class ResenaCardAdapter extends BaseAdapter{
             holder.airlineView = (TextView) convertView.findViewById(R.id.flight_airline_text);
             holder.numberView = (TextView) convertView.findViewById(R.id.flight_number_text);
             holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingbar_resena);
-            holder.icon = (ImageView) convertView.findViewById(R.id.icon_recommend);
             holder.percentageView = (TextView) convertView.findViewById(R.id.percentage);
             convertView.setTag(holder);
         } else {
@@ -63,7 +61,6 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView airlineTextView = holder.airlineView;
         RatingBar ratingBarView = holder.ratingBar;
         TextView percentageView = holder.percentageView;
-        ImageView iconView = holder.icon;
         ratingBarView.setClickable(false);
 
 
@@ -73,14 +70,7 @@ public class ResenaCardAdapter extends BaseAdapter{
         airlineTextView.setText(resena.airline());
         ratingBarView.setRating((float)resena.getRating()/2);
 
-        percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()));
-
-        if ( resena.getRating() > SAD_RATING_BOUND){
-        iconView.setImageResource(R.drawable.ic_sentiment_satisfied_black_24px);
-        }
-        else {
-            iconView.setImageResource(R.drawable.ic_sentiment_dissatisfied_black_24px);
-        }
+        percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()) +"%");
 
         return convertView;
     }
@@ -89,7 +79,6 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView airlineView;
         TextView numberView;
         TextView percentageView;
-        ImageView icon;
         RatingBar ratingBar;
     }
 }

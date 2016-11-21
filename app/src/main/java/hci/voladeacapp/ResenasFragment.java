@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -97,8 +98,22 @@ public class ResenasFragment extends Fragment {
         cardListView = (ListView) rootView.findViewById(R.id.resenas_list);
         adapter = new ResenaCardAdapter(getActivity(), reviewList);
         cardListView.setAdapter(adapter);
-
         fillList();
+
+        cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                Object o = cardListView.getItemAtPosition(position);
+                GlobalReview review = (GlobalReview) o;
+
+                Intent detailIntent = new Intent(getActivity(), ReviewDetail.class);
+                detailIntent.putExtra("review",review);
+
+                startActivity(detailIntent);
+
+            }
+        });
         System.out.println("onCreateView");
         return rootView;
     }

@@ -63,5 +63,6 @@
     <string name="refreshed">Actualizado</string>
     <string name="comentario_label">Comentario</string>
     <string name="ver_en_mapa">Ver en mapa</string>
+    <string name="lo_recomienda">lo recomienda</string>
 
 </resources>
