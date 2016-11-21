@@ -1,28 +1,78 @@
 package hci.voladeacapp;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.ApiService.DATA_GLOBAL_REVIEW;
+
 public class ResenasFragment extends Fragment {
-    private ListView cardListView;
     public final static String INSTANCE_TAG = "hci.voladeacapp.Resenas.INSTANCE_TAG";
+    private static final String ACTION_FILL_REVIEWS = "hci.voladeacapp.Resenas.FILL_REVIEWS";
+
+    private ListView cardListView;
+    private ResenaCardAdapter adapter;
+
+    private int refreshCount;
+
+    private ArrayList<GlobalReview> reviewList;
+    private BroadcastReceiver receiver;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        reviewList = new ArrayList<>();
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                GlobalReview review = (GlobalReview) intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
+                reviewList.add(review);
+                adapter.notifyDataSetChanged();
+                System.out.println("RECEIVED: " + review.airline() + "  " + review.flightNumber());
+            }
+        };
+
+
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
+
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        getActivity().registerReceiver(receiver, new IntentFilter(ACTION_FILL_REVIEWS));
+    }
+
+    public void onStop(){
+        super.onStop();
+        getActivity().unregisterReceiver(receiver);
+    }
+
+
+    private void fillList() {
+        refreshCount = 0;
+        ArrayList<ConfiguredFlight> flights = StorageHelper.getFlights(getActivity().getApplicationContext());
+        System.out.println("SIIIIIIIIIIIIIZE: "+ flights.size());
+        for(ConfiguredFlight f: flights){
+            ApiService.startActionGetReviews(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_FILL_REVIEWS);
+            refreshCount++;
+        }
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -42,19 +92,15 @@ public class ResenasFragment extends Fragment {
             }
         });
 
+        reviewList = new ArrayList<>();
+
         cardListView = (ListView) rootView.findViewById(R.id.resenas_list);
-        cardListView.setAdapter(new ResenaCardAdapter(getActivity(), dummyList()));
+        adapter = new ResenaCardAdapter(getActivity(), reviewList);
+        cardListView.setAdapter(adapter);
 
+        fillList();
+        System.out.println("onCreateView");
         return rootView;
-    }
-
-    private ArrayList<Resena> dummyList() {
-        ArrayList<Resena> array = new ArrayList<>();
-        Resena res = new Resena("123","lala",2,3,4,5,6,7,1,true,"hola");
-        array.add(res);
-        Resena res2 = new Resena("5667","AR",1,1,2,3,4,5,9,false,"comentario general");
-        array.add(res2);
-        return array;
     }
 
 }

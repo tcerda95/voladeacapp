@@ -1,13 +1,10 @@
 package hci.voladeacapp;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +16,8 @@ import java.util.List;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
-import static hci.voladeacapp.ApiService.DATA_REVIEW_LIST;
-import static hci.voladeacapp.BackgroundRefreshReceiver.TIME_TO_PULL;
+import static hci.voladeacapp.ApiService.DATA_GLOBAL_REVIEW;
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
-import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_REFRESH;
 
 public class CheloActivity extends AppCompatActivity {
 
@@ -65,12 +60,11 @@ public class CheloActivity extends AppCompatActivity {
         reviewrcv = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                List<ReviewGson> list = (List<ReviewGson>)intent.getSerializableExtra(DATA_REVIEW_LIST);
-                for(ReviewGson r : list){
+                GlobalReview global = (GlobalReview)intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
+                for(ReviewGson r : global.list){
                     System.out.println(r.comments);
                 }
 
-                GlobalReview global = new GlobalReview(list);
                 System.out.println("GLOBAL:");
                 System.out.println(global.getRating());
                 System.out.println(global.comfort());

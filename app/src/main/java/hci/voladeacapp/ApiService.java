@@ -11,17 +11,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.api.Api;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -33,7 +30,7 @@ import java.util.Map;
 public class ApiService extends IntentService {
 
     public static final String DATA_FLIGHT_GSON = "hci.voladeacapp.data.DATA_FLIGHT_GSON";
-    public static final String DATA_REVIEW_LIST = "hci.voladeacapp.data.DATA_REVIEW_LIST";
+    public static final String DATA_GLOBAL_REVIEW = "hci.voladeacapp.data.DATA_REVIEW_LIST";
     public static final String DATA_DEAL_LIST = "hci.voladeacapp.data.DATA_DEAL_LIST";
 
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
@@ -200,7 +197,7 @@ public class ApiService extends IntentService {
 
 
 
-    private void handleActionGetReviews(String airline, String number, final String callback) {
+    private void handleActionGetReviews(final String airline, final String number, final String callback) {
 
         if(requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);
@@ -228,10 +225,10 @@ public class ApiService extends IntentService {
                                 reviewList = gson.fromJson(obj.getString("reviews"), type);
                             } else{
                                 //Error
-                                System.out.println("ERROR WITH URL: " + url);
                                 reviewList = null;
                             }
-                            sendOrderedBroadcast(new Intent(callback).putExtra(DATA_REVIEW_LIST, reviewList), null);
+                            GlobalReview global = new GlobalReview(airline, number, reviewList);
+                            sendBroadcast(new Intent(callback).putExtra(DATA_GLOBAL_REVIEW, global));
                         }catch(Exception e){
                             e.printStackTrace();
                         }
@@ -279,7 +276,6 @@ public class ApiService extends IntentService {
                                 dealList = gson.fromJson(obj.getString("deals"), type);
                             } else{
                                 //Error
-                                System.out.println("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRROR");
                                 dealList = null;
                             }
                             sendOrderedBroadcast(new Intent(callback).putExtra(DATA_DEAL_LIST, dealList), null);

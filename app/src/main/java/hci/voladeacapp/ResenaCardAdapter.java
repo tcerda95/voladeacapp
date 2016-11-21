@@ -11,16 +11,18 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 //TODO: ARREGLAR TODOS LOS MAGIC NUMBERS
 public class ResenaCardAdapter extends BaseAdapter{
-    private ArrayList<Resena> cardsData;
+    private static final double SAD_RATING_BOUND = 7.0;
+    private ArrayList<GlobalReview> cardsData;
     private LayoutInflater inflater;
     private ViewHolder holder;
     RequestQueue rq;
 
-    public ResenaCardAdapter(Context aContext, ArrayList<Resena> listData) {
+    public ResenaCardAdapter(Context aContext, ArrayList<GlobalReview> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
 //        rq = Volley.newRequestQueue(aContext);
@@ -65,15 +67,15 @@ public class ResenaCardAdapter extends BaseAdapter{
         ratingBarView.setClickable(false);
 
 
-        Resena resena = (Resena) getItem(position);
+        GlobalReview resena = (GlobalReview) getItem(position);
 
-        numberTextView.setText(resena.getFlightNumber());
-        airlineTextView.setText(resena.getFlightAirline());
-        ratingBarView.setRating(resena.getPuntuacion()/2);
-        //TODO:arreglar el porcentaje de personas que lo recomiendan (no se como se guarda eso o si lo devuelve la api)
-        percentageView.setText(resena.getRecomendado().toString());
+        numberTextView.setText(resena.flightNumber().toString());
+        airlineTextView.setText(resena.airline());
+        ratingBarView.setRating((float)resena.getRating()/2);
 
-        if ( resena.getPuntuacion() > 7){
+        percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()));
+
+        if ( resena.getRating() > SAD_RATING_BOUND){
         iconView.setImageResource(R.drawable.ic_sentiment_satisfied_black_24px);
         }
         else {
