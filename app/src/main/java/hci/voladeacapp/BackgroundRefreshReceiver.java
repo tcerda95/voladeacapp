@@ -34,7 +34,7 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                 FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
                 if(updatedGson == null)
                      return;
-                 int idx = flight_details.indexOf(new Flight(updatedGson));
+                 int idx = flight_details.indexOf(new ConfiguredFlight(updatedGson));
                  if(idx == -1){
                     return;
                  }
