@@ -67,15 +67,6 @@ public class PromocionesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
-//        Button cheloDebug = (Button) rootView.findViewById(R.id.chelo_dbg_btn);
-//        cheloDebug.setOnClickListener(new View.OnClickListener(){
-//
-//            @Override
-//            public void onClick(View view) {
-//                view.getContext().startActivity(new Intent(view.getContext(), CheloActivity.class));
-//            }
-//        });
-
 
         fromCalendar = Calendar.getInstance();
         fromDateText = (TextView) rootView.findViewById(R.id.from_date_edit_text);
