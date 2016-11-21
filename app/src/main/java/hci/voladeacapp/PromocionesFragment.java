@@ -8,13 +8,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +36,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,15 +47,20 @@ public class PromocionesFragment extends Fragment {
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
 
-    private ListView cardListView;
     private Calendar fromCalendar;
-    private TextView fromDateText;
+
+    private ListView cardListView;
+    private TextView fromDateTextView;
+    private AutoCompleteTextView fromCityTextView;
+
     private RequestQueue requestQueue;
+
     private ArrayList<DealGson> deals;
     private HashMap<DealGson, String> imageURLs;
-    private PromoCardAdapter promoAdapter;
     private BroadcastReceiver dealsReceiver;
     private boolean registeredReceiver = false;
+
+    private PromoCardAdapter promoAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,10 +75,11 @@ public class PromocionesFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
 
         fromCalendar = Calendar.getInstance();
-        fromDateText = (TextView) rootView.findViewById(R.id.from_date_edit_text);
+        fromDateTextView = (TextView) rootView.findViewById(R.id.from_date_edit_text);
+        fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
         updateLabel();
 
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
@@ -79,14 +88,15 @@ public class PromocionesFragment extends Fragment {
                 fromCalendar.set(Calendar.MONTH, monthOfYear);
                 fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabel();
+                refreshResults();
             }
         };
 
-        fromDateText.setOnClickListener(new View.OnClickListener() {
+        fromDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Clicked edit text" + fromDateText.getText());
-                new DatePickerDialog(getActivity(), date, fromCalendar
+                System.out.println("Clicked edit text" + fromDateTextView.getText());
+                new DatePickerDialog(getActivity(), dateListener, fromCalendar
                         .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
                         fromCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -99,10 +109,21 @@ public class PromocionesFragment extends Fragment {
         promoAdapter = new PromoCardAdapter(getActivity(), deals, imageURLs);
         cardListView.setAdapter(promoAdapter);
 
-
+        fromCityTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    refreshResults();
+                    handled = true;
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+                }
+                return handled;
+            }
+        });
 
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 //TODO: Sacar el vuelo en base al deal para hacer la pantalla de detalles
@@ -120,28 +141,36 @@ public class PromocionesFragment extends Fragment {
         dealsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("Received with " + RECEIVER_TAG);
                 List<DealGson> list = (List<DealGson>)intent.getSerializableExtra(DATA_DEAL_LIST);
-                for (DealGson d : list) {
-                    System.out.println("" + d.city.name + ": " + d.price);
-                    deals.add(d);
-                    new getCityImageURLTask().execute(d);
+                if (list == null) {
+                    System.out.println("NULL LIST");
                 }
-                promoAdapter.notifyDataSetChanged();
+                else {
+                    for (DealGson d : list) {
+                        deals.add(d);
+                        new getCityImageURLTask().execute(d);
+                    }
+                    promoAdapter.notifyDataSetChanged();
+                }
             }
         };
 
+        refreshResults();
+
+        return rootView;
+    }
+
+    private void refreshResults() {
+        deals.clear();
         if (!registeredReceiver) {
             getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
             registeredReceiver = true;
         }
 
-        ApiService.startActionGetDeals(rootView.getContext(), "BUE", RECEIVER_TAG);
-
-        return rootView;
+        System.out.println("Promos from " + fromCityTextView.getText().toString());
+        ApiService.startActionGetDeals(getActivity().getApplicationContext(),
+                fromCityTextView.getText().toString(), RECEIVER_TAG);
     }
-
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -165,7 +194,7 @@ public class PromocionesFragment extends Fragment {
         String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        fromDateText.setText(sdf.format(fromCalendar.getTime()));
+        fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
 
 
@@ -177,7 +206,6 @@ public class PromocionesFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
                             try {
-                                System.out.println(response);
                                 imageURLs.put(deal[0], getImageURL(new JSONObject(response)));
                                 promoAdapter.notifyDataSetChanged();
                             } catch (JSONException e) {

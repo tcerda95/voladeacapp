@@ -30,7 +30,11 @@
                 android:id="@+id/promo_from_city_autocomplete"
                 android:textSize="16sp"
                 android:paddingStart="10dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="BUE"
+                android:inputType="text"
+                android:imeOptions="actionSend"
+                />
 
         </LinearLayout>
 
