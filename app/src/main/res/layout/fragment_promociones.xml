@@ -28,7 +28,7 @@
             <AutoCompleteTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/autoCompleteTextView2"
+                android:id="@+id/promo_from_city_autocomplete"
                 android:textSize="16sp"
                 android:paddingStart="10dp"
                 android:layout_weight="1"/>

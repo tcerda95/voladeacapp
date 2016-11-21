@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -38,25 +40,12 @@ public class PromoCardAdapter extends BaseAdapter {
     private HashMap<Flight, String> flightImages;
     private LayoutInflater inflater;
     private ViewHolder holder;
-    private ImageLoader imgLoader;
-    RequestQueue rq;
 
-    public PromoCardAdapter(Context aContext, ArrayList<Flight> listData) {
-        this.cardsData = listData;
+    public PromoCardAdapter(Context aContext, ArrayList<Flight> flights, HashMap<Flight, String> flightImages) {
         inflater = LayoutInflater.from(aContext);
-        rq = Volley.newRequestQueue(aContext);
-        flightImages = new HashMap<>();
-
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(aContext)
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        imgLoader = ImageLoader.getInstance();
-        imgLoader.init(config);
+        this.flightImages = flightImages;
+        this.cardsData = flights;
     }
-
 
     @Override
     public int getCount() {
@@ -88,7 +77,7 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.priceView.setText("U$D " + String.valueOf(flight.getPrice()));
 
         // IMAGEN
-        setImageViewFromURL(flight, holder.photoView);
+        setImageView(flight, holder.photoView);
 
         return convertView;
     }
@@ -131,73 +120,14 @@ public class PromoCardAdapter extends BaseAdapter {
         popup.show();
     }
 
-    private void setImageViewFromURL(Flight flight, ImageView img) {
+    private void setImageView(Flight flight, ImageView imgView) {
         if (flightImages.containsKey(flight)) {
-            imgLoader.displayImage(flightImages.get(flight), img);
+            Glide.with(imgView.getContext())
+                    .load(flightImages.get(flight))
+                    .centerCrop()
+                    .crossFade()
+                    .into(imgView);
         }
-        else {
-            String urlstr = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=3fc73140f600953c1eea5e534bac4670&"
-                    + "&tags=city" + "&text=" + flight.getArrivalCity() + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
-
-            Box box = new Box();
-            box.petition = urlstr;
-            box.img = img;
-            box.flight = flight;
-
-            new getCityImageURLTask().execute(box);
-        }
-    }
-
-    // Saca el link de Flickr
-    private class getCityImageURLTask extends AsyncTask<Box, Void, String> {
-        protected String doInBackground(final Box... box) {
-
-            System.out.println("Doing in background: " + box[0].petition);
-            StringRequest sr = new StringRequest(Request.Method.GET, box[0].petition,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                System.out.println(response);
-                                String url = getImageURL(new JSONObject(response));
-                                imgLoader.displayImage(url, box[0].img);
-                                flightImages.put(box[0].flight, url);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
-
-            rq.add(sr);
-
-            return null;
-        }
-
-        private String getImageURL(JSONObject obj) {
-            try {
-                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-                String url = "https://farm"
-                        + photo.getString("farm") + ".staticflickr.com/"
-                        + photo.getString("server") + "/"
-                        + photo.getString("id") + "_"
-                        + photo.getString("secret") + ".jpg";
-
-                return url;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    private static class Box {
-        String petition;
-        ImageView img;
-        Flight flight;
     }
 
     private static class ViewHolder {

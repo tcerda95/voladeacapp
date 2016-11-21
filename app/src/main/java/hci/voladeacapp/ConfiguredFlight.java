@@ -26,7 +26,5 @@ public class ConfiguredFlight extends Flight implements Serializable {
         return settings;
     }
 
-
-
 }
 

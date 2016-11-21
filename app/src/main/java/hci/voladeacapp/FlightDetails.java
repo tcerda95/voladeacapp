@@ -19,19 +19,21 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 public class FlightDetails extends AppCompatActivity {
     private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
-    private ConfiguredFlight flight;
+    private Flight flight;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
-        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
+        this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
@@ -62,9 +64,10 @@ public class FlightDetails extends AppCompatActivity {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    saved_flights.remove(flight);
+                    System.out.println("Removed? " + saved_flights.remove(flight));
                     Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
                     dialog.cancel();
+                    //TODO: no anda, no borra nada
                     updateOptionsMenuVisibility();
                 }
 
@@ -92,7 +95,7 @@ public class FlightDetails extends AppCompatActivity {
                 throw new IllegalStateException("Already followed flight!");
             }
 
-            saved_flights.add(flight);
+//            saved_flights.add(); TODO: Se rompio esto!
             Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
             updateOptionsMenuVisibility();
             return true;
@@ -129,7 +132,7 @@ public class FlightDetails extends AppCompatActivity {
         addButton.setVisible(!added);
     }
 
-    private void fillDetails(ConfiguredFlight flight) {
+    private void fillDetails(Flight flight) {
         Resources res = getResources();
         FragmentManager manager = getFragmentManager();
         String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();
