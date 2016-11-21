@@ -4,23 +4,67 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:text="Chelo debug entrypoint"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/chelo_dbg_btn" />
+        android:paddingLeft="20dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginTop="-5dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Desde"
-        />
+            <TextView
+                android:text="Desde"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:textSize="18sp"
+                android:hint="Ciudad"
+                />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Fecha"
-        android:id="@+id/from_date_edit_text"/>
+            <AutoCompleteTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/promo_from_city_autocomplete"
+                android:textSize="16sp"
+                android:paddingStart="10dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            >
+
+            <TextView
+                android:text="Saliendo el"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/from_date_edit_text"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:paddingLeft="10dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Solo se muestra cuando no hay vuelos -->
 
     <ListView
     android:layout_width="match_parent"
@@ -31,10 +75,11 @@
     android:clickable="true"
     android:focusable="false"
     android:focusableInTouchMode="false"
-    >
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
     </ListView>
 
-    <!-- Solo se muestra cuando no hay vuelos -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
