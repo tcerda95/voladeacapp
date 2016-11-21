@@ -22,15 +22,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class FlightDetails extends AppCompatActivity {
-    private Flight flight;
-    private ArrayList<Flight> saved_flights;
+    private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
+    private ConfiguredFlight flight;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
-        this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
+        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
@@ -128,7 +129,7 @@ public class FlightDetails extends AppCompatActivity {
         addButton.setVisible(!added);
     }
 
-    private void fillDetails(Flight flight) {
+    private void fillDetails(ConfiguredFlight flight) {
         Resources res = getResources();
         FragmentManager manager = getFragmentManager();
         String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();

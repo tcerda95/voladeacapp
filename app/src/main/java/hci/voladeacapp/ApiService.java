@@ -106,7 +106,7 @@ public class ApiService extends IntentService {
                             if(obj.has("review") && obj.getBoolean("review")) {
                                 System.out.println("SENT REVIEW SUCCESSFULLY!");
                             } else{
-                                //No existe el vuelo
+
                             }
 
                         }catch(Exception e){

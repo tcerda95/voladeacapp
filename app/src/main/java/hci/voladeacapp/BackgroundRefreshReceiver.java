@@ -28,17 +28,17 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        ArrayList<Flight> flight_details = StorageHelper.getFlights(context.getApplicationContext());
+        ArrayList<ConfiguredFlight> flight_details = StorageHelper.getFlights(context.getApplicationContext());
 
         if(intent.getAction().equals(ACTION_GET_REFRESH)){
                 FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
                 if(updatedGson == null)
                      return;
-                 int idx = flight_details.indexOf(new Flight(updatedGson));
+                 int idx = flight_details.indexOf(new ConfiguredFlight(updatedGson));
                  if(idx == -1){
                     return;
                  }
-                Flight toUpdate = flight_details.get(idx);
+                ConfiguredFlight toUpdate = flight_details.get(idx);
                 toUpdate.update(updatedGson);
                 NotificationCreator.createNotification(context, toUpdate, NotificationType.DELAYED);
         }

@@ -22,8 +22,8 @@ public class StorageHelper {
     public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
     public final static String FLIGHTS = "hci.voladeacapp.data.FLIGHTS";
 
-    public static ArrayList<Flight> getFlights(Context context) {
-        ArrayList<Flight> flight_details;
+    public static ArrayList<ConfiguredFlight> getFlights(Context context) {
+        ArrayList<ConfiguredFlight> flight_details;
 
         SharedPreferences sp = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
@@ -33,7 +33,7 @@ public class StorageHelper {
 
         } else {
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Flight>>() {
+            Type type = new TypeToken<ArrayList<ConfiguredFlight>>() {
             }.getType();
 
             flight_details = gson.fromJson(list, type);
@@ -44,10 +44,10 @@ public class StorageHelper {
 
 
 
-    public static void saveFlights(Context context, List<Flight> flight_details){
+    public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
         Gson gson = new Gson();
         String s = gson.toJson(flight_details);
-
+        System.out.println("JSOOOOOOOOOOOON" + s);
         SharedPreferences.Editor editor = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE).edit();
         editor.putString(FLIGHT_LIST, s);
         editor.commit();
