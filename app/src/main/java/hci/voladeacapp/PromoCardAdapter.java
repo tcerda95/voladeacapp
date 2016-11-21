@@ -36,12 +36,12 @@ import java.util.HashMap;
  */
 
 public class PromoCardAdapter extends BaseAdapter {
-    private ArrayList<Flight> cardsData;
-    private HashMap<Flight, String> flightImages;
+    private ArrayList<DealGson> cardsData;
+    private HashMap<DealGson, String> flightImages;
     private LayoutInflater inflater;
     private ViewHolder holder;
 
-    public PromoCardAdapter(Context aContext, ArrayList<Flight> flights, HashMap<Flight, String> flightImages) {
+    public PromoCardAdapter(Context aContext, ArrayList<DealGson> flights, HashMap<DealGson, String> flightImages) {
         inflater = LayoutInflater.from(aContext);
         this.flightImages = flightImages;
         this.cardsData = flights;
@@ -66,23 +66,22 @@ public class PromoCardAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.promo_card, null);
-            fillViewHolder(convertView, (Flight) getItem(position));
+            fillViewHolder(convertView, (DealGson) getItem(position));
         } else {
             holder = (PromoCardAdapter.ViewHolder) convertView.getTag();
         }
 
-        Flight flight = (Flight) getItem(position);
-        holder.cityView.setText(flight.getArrivalCity());
-        System.out.println(flight.getDepartureDate());
-        holder.priceView.setText("U$D " + String.valueOf(flight.getPrice()));
+        DealGson deal = (DealGson) getItem(position);
+        holder.cityView.setText(deal.city.name.split(",")[0]);
+        holder.priceView.setText("U$D " + deal.price);
 
         // IMAGEN
-        setImageView(flight, holder.photoView);
+        setImageView(deal, holder.photoView);
 
         return convertView;
     }
 
-    private void fillViewHolder(View convertView, final Flight flight) {
+    private void fillViewHolder(View convertView, final DealGson deal) {
         holder = new ViewHolder();
         holder.cityView = (TextView) convertView.findViewById(R.id.city_info_text);
         holder.priceView = (TextView) convertView.findViewById(R.id.promo_price);
@@ -92,14 +91,14 @@ public class PromoCardAdapter extends BaseAdapter {
         holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(view.findViewById(R.id.promo_card_overflow), flight);
+                showPopupMenu(view.findViewById(R.id.promo_card_overflow), deal);
             }
         });
 
         convertView.setTag(holder);
     }
 
-    private void showPopupMenu(final View btn, final Flight fl) {
+    private void showPopupMenu(final View btn, final DealGson deal) {
         PopupMenu popup = new PopupMenu(btn.getContext(), btn);
         popup.getMenuInflater().inflate(R.menu.promo_item_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -120,10 +119,10 @@ public class PromoCardAdapter extends BaseAdapter {
         popup.show();
     }
 
-    private void setImageView(Flight flight, ImageView imgView) {
-        if (flightImages.containsKey(flight)) {
+    private void setImageView(DealGson deal, ImageView imgView) {
+        if (flightImages.containsKey(deal)) {
             Glide.with(imgView.getContext())
-                    .load(flightImages.get(flight))
+                    .load(flightImages.get(deal))
                     .centerCrop()
                     .crossFade()
                     .into(imgView);
@@ -135,7 +134,6 @@ public class PromoCardAdapter extends BaseAdapter {
         TextView priceView;
         ImageView overflowbtn;
         ImageView photoView;
-        //MAS
     }
 }
 

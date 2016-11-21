@@ -28,5 +28,4 @@ public class DealGson implements Serializable{
 
     public CityDetail city;
     public Double price;
-
 }

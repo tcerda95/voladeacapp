@@ -47,7 +47,6 @@ public class StorageHelper {
     public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
         Gson gson = new Gson();
         String s = gson.toJson(flight_details);
-        System.out.println("JSOOOOOOOOOOOON" + s);
         SharedPreferences.Editor editor = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE).edit();
         editor.putString(FLIGHT_LIST, s);
         editor.commit();
