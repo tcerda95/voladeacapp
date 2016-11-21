@@ -40,6 +40,10 @@
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
+                    android:isIndicator="true"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
                     android:numStars="5"/>
             </LinearLayout>
 
@@ -61,7 +65,11 @@
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
-                    android:numStars="5"/>
+                    android:numStars="5"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
+                    android:isIndicator="true" />
             </LinearLayout>
 
             <LinearLayout
@@ -81,6 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
+                    android:isIndicator="true"
                     android:scaleY="0.5"
                     android:numStars="5"/>
             </LinearLayout>
@@ -103,6 +112,9 @@
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
                     android:numStars="5"/>
             </LinearLayout>
 
@@ -124,6 +136,10 @@
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
+                    android:isIndicator="true"
                     android:numStars="5"/>
             </LinearLayout>
 
@@ -145,6 +161,9 @@
                     android:layout_height="wrap_content"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
                     android:numStars="5"/>
             </LinearLayout>
 
