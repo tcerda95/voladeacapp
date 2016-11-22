@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -32,13 +33,14 @@ public class ApiService extends IntentService {
     public static final String DATA_FLIGHT_GSON = "hci.voladeacapp.data.DATA_FLIGHT_GSON";
     public static final String DATA_GLOBAL_REVIEW = "hci.voladeacapp.data.DATA_REVIEW_LIST";
     public static final String DATA_DEAL_LIST = "hci.voladeacapp.data.DATA_DEAL_LIST";
+    public static final String DATA_AIRLINE_ID_MAP = "hci.voladeacapp.data.DATA_AIRLINE_ID_MAP";
 
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
     private static final String ACTION_SEND_REVIEW = "hci.voladeacapp.action.SEND_REVIEW";
     private static final String ACTION_GET_REVIEWS = "hci.voladeacapp.action.GET_REVIEWS";
     private static final String ACTION_GET_DEALS = "hci.voladeacapp.action.GET_DEALS";
+    private static final String ACTION_GET_AIRLINES = "hci.voladeacapp.action.GET_AIRLINES";
 
-    // TODO: Rename parameters
     private static final String PARAM_AIRLINE = "hci.voladeacapp.extra.PARAM_AIRLINE";
     private static final String PARAM_FLNUMBER = "hci.voladeacapp.extra.PARAM_FLNUMBER";
     private static final String PARAM_REVIEW = "hci.voladeacapp.extra.PARAM_REVIEW";
@@ -90,6 +92,18 @@ public class ApiService extends IntentService {
         context.startService(intent);
     }
 
+
+    public static void startActionGetAirlines(Context context, String callback) {
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_GET_AIRLINES);
+
+        intent.putExtra(CALLBACK_INTENT, callback);
+
+        context.startService(intent);
+
+    }
+
+
     public static void startActionGetDeals(Context context, String originID, String callback){
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_DEALS);
@@ -127,7 +141,76 @@ public class ApiService extends IntentService {
                 final String callback = intent.getStringExtra(CALLBACK_INTENT);
                 handleActionGetDeals(id, callback);
             }
+
+            if(ACTION_GET_AIRLINES.equals(intent.getAction())){
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetAirlines(callback);
+            }
         }
+    }
+
+    private class AirlineDescriptor{
+        public String id;
+        public String logo;
+        public String name;
+    };
+
+
+    private void handleActionGetAirlines(final String callback) {
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+
+        String url = "http://hci.it.itba.edu.ar/v1/api/misc.groovy?method=getairlines";
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            HashMap<String, String> idMap = new HashMap<>();
+
+                            if(obj.has("airlines")){
+
+                                Gson gson = new Gson();
+
+                                Type type = new TypeToken<ArrayList<AirlineDescriptor>>() {
+                                }.getType();
+
+                                System.out.println(obj.getJSONArray("airlines").toString());
+                                ArrayList<AirlineDescriptor> list = gson.fromJson(obj.getJSONArray("airlines").toString(), type);
+                                System.out.println("List" + list + "  first elem " + list.get(0));
+                                for(AirlineDescriptor air : list){
+                                    idMap.put(air.name, air.id);
+                                }
+
+                            } else{
+                                idMap = null;
+                            }
+
+                        sendBroadcast(new Intent(callback).putExtra(DATA_AIRLINE_ID_MAP, idMap));
+
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+        });
+
+        requestQueue.add(stringRequest);
+
+
+
     }
 
 
@@ -140,6 +223,7 @@ public class ApiService extends IntentService {
 
 
         String url = "http://hci.it.itba.edu.ar/v1/api/review.groovy?method=reviewairline";
+
 
         Gson gson = new Gson();
         Type type = new TypeToken<ReviewGson>() {
@@ -156,7 +240,6 @@ public class ApiService extends IntentService {
                             JSONObject obj = new JSONObject(response);
                             System.out.println(response);
                             if(obj.has("review") && obj.getBoolean("review")) {
-                                System.out.println("SENT REVIEW SUCCESSFULLY!");
                             } else{
 
                             }
@@ -168,7 +251,6 @@ public class ApiService extends IntentService {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println("ERROR SENDING REVIEW:");
                 System.out.println(error);
 
             }

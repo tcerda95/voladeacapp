@@ -26,6 +26,7 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StorageHelper.initialize(this);
         setContentView(R.layout.activity_voladeacapp);
 
         final FragmentManager fragmentManager = getFragmentManager();
