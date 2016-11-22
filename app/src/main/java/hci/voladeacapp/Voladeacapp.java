@@ -32,15 +32,13 @@ public class Voladeacapp extends AppCompatActivity {
 
         // TODO: preservar el estado de los fragments
 
+        misVuelosFragment = new MisVuelosFragment();
         promocionesFragment = new PromocionesFragment();
         resenasFragment = new ResenasFragment();
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
-        misVuelosFragment = fragmentManager.findFragmentByTag(MisVuelosFragment.INSTANCE_TAG);
 
-        if (misVuelosFragment == null)
-            misVuelosFragment = new MisVuelosFragment();
 
         /* Comienza en el fragmento Mis Vuelos */
         if (savedInstanceState == null) {
