@@ -62,4 +62,6 @@
     <string name="update_frequency">Update frequency</string>
     <string name="arrival_time">Arrival Time</string>
     <string name="lo_recomienda">recommends</string>
+    <string name="english">English</string>
+    <string name="spanish">Spanish</string>
 </resources>

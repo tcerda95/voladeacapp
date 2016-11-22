@@ -62,4 +62,6 @@
     <string name="language">Idioma</string>
     <string name="arrival_time">Llegada</string>
     <string name="lo_recomienda">lo recomienda</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
 </resources>

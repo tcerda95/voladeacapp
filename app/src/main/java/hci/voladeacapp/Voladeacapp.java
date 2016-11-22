@@ -3,7 +3,10 @@ package hci.voladeacapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -20,13 +23,15 @@ public class Voladeacapp extends AppCompatActivity {
     private Fragment promocionesFragment;
     private Fragment resenasFragment;
 
+    private BroadcastReceiver mLangaugeChangedReceiver;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voladeacapp);
 
         final FragmentManager fragmentManager = getFragmentManager();
-
         // TODO: preservar el estado de los fragments
 
         misVuelosFragment = new MisVuelosFragment();
@@ -63,6 +68,19 @@ public class Voladeacapp extends AppCompatActivity {
 
             }
         });
+
+        mLangaugeChangedReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                startActivity(getIntent());
+                finish();
+            }
+        };
+
+        // Register receiver
+        registerReceiver(mLangaugeChangedReceiver, new IntentFilter("Language.changed"));
+
     }
 
     @Override
@@ -80,5 +98,17 @@ public class Voladeacapp extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mLangaugeChangedReceiver != null) {
+            try {
+                unregisterReceiver(mLangaugeChangedReceiver);
+                mLangaugeChangedReceiver = null;
+            } catch (final Exception e) {
+            }
+        }
     }
 }

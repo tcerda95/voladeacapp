@@ -20,9 +20,8 @@
     <PreferenceCategory android:title="@string/localization">
         <ListPreference
             android:title="@string/language"
-            android:summary=""
             android:key="appLanguage"
-            android:defaultValue="ES"
+            android:defaultValue="es"
             android:entries="@array/languageArray"
             android:entryValues="@array/languageValues" />
     </PreferenceCategory>
