@@ -1,7 +1,7 @@
 package hci.voladeacapp;
 
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.Locale;
 
+//TODO: TEMAS DE EL STACK PARA REINCIAR LA ACTIVITY VOLADEACAPP Y QUE SE CARGUEN LOS STRINGS DE LAS TABS
 public class AppSettingsActivity extends AppCompatActivity {
 
     @Override
@@ -79,7 +80,7 @@ public class AppSettingsActivity extends AppCompatActivity {
                             config.setLocale(location);
                             Locale.setDefault(location);
                             getResources().updateConfiguration(config,getResources().getDisplayMetrics());
-                            getActivity().recreate();
+                            // TODO: sacar la activity del stack y reload
                             }
                     };
 
@@ -104,11 +105,19 @@ public class AppSettingsActivity extends AppCompatActivity {
         public void onDestroy() {
             super.onDestroy();
             String current = Locale.getDefault().getLanguage();
-            if(current.compareToIgnoreCase(previousLocale) != 0) {
-                getActivity().sendBroadcast(new Intent("Language.changed"));
+            /*lo guargo en Shared Preferences */
+            SharedPreferences shp = getActivity().getSharedPreferences(
+                    "hci.voladeacapp.PREFERENCES", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = shp.edit();
+            String lang;
+            if (Locale.getDefault().toString().toLowerCase().equals("en")) {
+                lang = "en";
             }
-
-
+            else {
+                lang = "es";
+            };
+            editor.putString("USER_LANGUAGE",lang );
+            editor.commit();
         }
     }
 

@@ -3,10 +3,10 @@ package hci.voladeacapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -18,17 +18,17 @@ import android.view.MenuItem;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.util.Locale;
+
 public class Voladeacapp extends AppCompatActivity {
     private Fragment misVuelosFragment;
     private Fragment promocionesFragment;
     private Fragment resenasFragment;
 
-    private BroadcastReceiver mLangaugeChangedReceiver;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_voladeacapp);
 
         final FragmentManager fragmentManager = getFragmentManager();
@@ -39,6 +39,7 @@ public class Voladeacapp extends AppCompatActivity {
         resenasFragment = new ResenasFragment();
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+
 
     /* Comienza en el fragmento Mis Vuelos */
         if (savedInstanceState == null) {
@@ -69,18 +70,18 @@ public class Voladeacapp extends AppCompatActivity {
             }
         });
 
-        mLangaugeChangedReceiver = new BroadcastReceiver() {
+    }
 
-            @Override
-            public void onReceive(final Context context, final Intent intent) {
-                startActivity(getIntent());
-                finish();
-            }
-        };
+    private void loadLanguage() {
+        SharedPreferences shp = getSharedPreferences(
+                "hci.voladeacapp.PREFERENCES",Context.MODE_PRIVATE);
+        String language = shp.getString("USER_LANGUAGE", "es");
 
-        // Register receiver
-        registerReceiver(mLangaugeChangedReceiver, new IntentFilter("Language.changed"));
-
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
     @Override
@@ -103,6 +104,7 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        /*
         if (mLangaugeChangedReceiver != null) {
             try {
                 unregisterReceiver(mLangaugeChangedReceiver);
@@ -110,5 +112,6 @@ public class Voladeacapp extends AppCompatActivity {
             } catch (final Exception e) {
             }
         }
+        */
     }
 }
