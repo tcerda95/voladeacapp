@@ -64,10 +64,12 @@ public class FlightDetails extends AppCompatActivity {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    System.out.println("Removed? " + saved_flights.remove(flight));
+
+                    saved_flights.remove(flight);
+                    StorageHelper.saveFlights(getApplicationContext(), saved_flights);
+
                     Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
                     dialog.cancel();
-                    //TODO: no anda, no borra nada
                     updateOptionsMenuVisibility();
                 }
 
@@ -148,11 +150,5 @@ public class FlightDetails extends AppCompatActivity {
 
     private TextView getTextView(int id) {
         return (TextView) findViewById(id);
-    }
-
-    @Override
-    protected void onDestroy() {
-        StorageHelper.saveFlights(getApplicationContext(), saved_flights);
-        super.onDestroy();
     }
 }

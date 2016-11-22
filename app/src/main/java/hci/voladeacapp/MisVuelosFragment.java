@@ -82,14 +82,13 @@ public class MisVuelosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        //Lleno la lista con lo que esta en shared app_preferences
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
 
         receiver = new RefreshReceiver();
         flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
@@ -212,7 +211,6 @@ public class MisVuelosFragment extends Fragment {
     }
 
     protected void addToList(ConfiguredFlight f){
-
         flight_details.add(f);
         adapter.notifyDataSetChanged();
     }
@@ -239,7 +237,6 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
         IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
         ifilter.setPriority(10);
         getActivity().registerReceiver(receiver, ifilter);
