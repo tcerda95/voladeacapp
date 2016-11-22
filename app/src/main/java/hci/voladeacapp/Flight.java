@@ -110,6 +110,7 @@ public class Flight implements Serializable {
         setNumber("" + seed.number);
         setAirline(seed.airline.id);
         setState(seed.status);
+        setBaggageClaim(seed.arrival.airport.baggage);
 
         departureSchedule = new FlightSchedule(seed.departure);
         arrivalSchedule = new FlightSchedule(seed.arrival);

@@ -42,9 +42,12 @@ public class ScheduleFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.gate_data)).setText(schedule.getGate() == null ? res.getString(R.string.a_confirmar) : schedule.getGate());
 
-        if (baggageClaim != null)
+        if (baggageClaim != null) {
             ((TextView) view.findViewById(R.id.baggage_claim_data)).setText(baggageClaim);
-        else
+            ((TextView)view.findViewById(R.id.embarque_change_label)).setText(R.string.arrival_time);
+        }
+        else {
             view.findViewById(R.id.baggage_layout).setVisibility(View.GONE);
+        }
     }
 }

@@ -25,8 +25,8 @@
         android:layout_height="56dp"
         android:layout_gravity="bottom|end"
         android:src="@drawable/ic_add_white_24px"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/add_button"/>
 
     <!-- Solo se muestra cuando no hay vuelos -->

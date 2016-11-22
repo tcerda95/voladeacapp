@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:text="@string/boarding_time_label"
+                android:id="@+id/embarque_change_label"
                 android:textSize="14sp"
                 android:textIsSelectable="false"
                 android:textStyle="normal|bold" />

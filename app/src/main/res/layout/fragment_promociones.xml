@@ -13,8 +13,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:layout_marginTop="-5dp">
+            android:layout_weight="0.5">
 
             <TextView
                 android:text="Desde"
@@ -31,7 +30,11 @@
                 android:id="@+id/promo_from_city_autocomplete"
                 android:textSize="16sp"
                 android:paddingStart="10dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="BUE"
+                android:inputType="text"
+                android:imeOptions="actionSend"
+                />
 
         </LinearLayout>
 
