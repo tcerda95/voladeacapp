@@ -1,7 +1,9 @@
 package hci.voladeacapp;
 
 
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -81,10 +83,20 @@ public class AppSettingsActivity extends AppCompatActivity {
                             Locale.setDefault(location);
                             getResources().updateConfiguration(config,getResources().getDisplayMetrics());
                             // TODO: sacar la activity del stack y reload
+                            buildStack();
                             }
                     };
 
             SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        }
+
+        private void buildStack() {
+            // Construct the Intent you want to end up at
+            Intent intent = new Intent(getActivity(), AppSettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+            stackBuilder.addNextIntentWithParentStack(intent);
+            stackBuilder.startActivities();
         }
 
         @Override
@@ -105,6 +117,10 @@ public class AppSettingsActivity extends AppCompatActivity {
         public void onDestroy() {
             super.onDestroy();
             String current = Locale.getDefault().getLanguage();
+            saveLanguage();
+        }
+
+        private void saveLanguage() {
             /*lo guargo en Shared Preferences */
             SharedPreferences shp = getActivity().getSharedPreferences(
                     "hci.voladeacapp.PREFERENCES", Context.MODE_PRIVATE);
