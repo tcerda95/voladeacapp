@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
@@ -108,7 +109,15 @@ public class CheloActivity extends AppCompatActivity {
                 ApiService.startActionGetFlightStatus(view.getContext(), "8R", "8700", ACTION_GET_FLIGHT);
                 ApiService.startActionGetReviews(view.getContext(), "AR", "5620", "GET_REVIEWS");
                 ApiService.startActionGetDeals(view.getContext(), "BUE", "GET_DEALS");
-             /*   AlarmManager alarmMgr;
+
+                Map<String, String> idMap = StorageHelper.getAirlineIdMap(view.getContext());
+
+                if(idMap != null) {
+                    txt.setText(idMap.toString());
+                } else {
+                    txt.setText("NULL MAP");
+                }
+                /*   AlarmManager alarmMgr;
                 PendingIntent alarmIntent;
 
                 alarmMgr = (AlarmManager)view.getContext().getSystemService(Context.ALARM_SERVICE);

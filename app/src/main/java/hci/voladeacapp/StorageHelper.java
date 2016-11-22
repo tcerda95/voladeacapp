@@ -53,7 +53,7 @@ public class StorageHelper {
 
 
     public static Map<String, String> getAirlineIdMap(Context context){
-        HashMap<String, String> map;
+        Map<String, String> map;
 
         SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
         String mapString = sp.getString(AIRLINE_LIST, null); //Si no hay nada devuelve null
@@ -64,6 +64,7 @@ public class StorageHelper {
             map = gson.fromJson(mapString, type);
         } else {
             map = null;
+            initialize(context);
         }
 
         return map;
