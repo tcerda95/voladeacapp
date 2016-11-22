@@ -63,7 +63,6 @@ public class MisVuelosFragment extends Fragment {
         }
     }
 
-
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
 
     public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
@@ -72,11 +71,16 @@ public class MisVuelosFragment extends Fragment {
     public final static int GET_FLIGHT = 1;
     private final static long UNDO_TIMEOUT = 3000;
 
+    private final static String CHECKED_POSITIONS = "hci.voladeacapp.MisVuelos.CHECKED_POSITIONS";
+
     private DynamicListView flightsListView;
 
     RefreshReceiver receiver;
     private ArrayList<ConfiguredFlight> flight_details;
+
     private TimedUndoAdapter adapter;
+
+    private View rootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,12 +93,13 @@ public class MisVuelosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+        rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
         receiver = new RefreshReceiver();
-        flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
+
+        flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         adapter = new TimedUndoAdapter(flightListAdapter, getActivity(), new OnDismissCallback() {
             @Override
@@ -123,7 +128,6 @@ public class MisVuelosFragment extends Fragment {
                 detailIntent.putExtra("Flight",flightData);
 
                 startActivity(detailIntent);
-
             }
         });
 
@@ -138,6 +142,8 @@ public class MisVuelosFragment extends Fragment {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.getMenuInflater().inflate(R.menu.delete_menu, menu);
+                hideActions();
+                
                 return true;
             }
 
@@ -162,7 +168,9 @@ public class MisVuelosFragment extends Fragment {
             }
 
             @Override
-            public void onDestroyActionMode(ActionMode actionMode) {}
+            public void onDestroyActionMode(ActionMode actionMode) {
+                showActions();
+            }
         });
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
@@ -183,6 +191,30 @@ public class MisVuelosFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void hideActions() {
+        Voladeacapp activity = (Voladeacapp) getActivity();
+        if (activity != null)
+            activity.hideActions();
+
+        FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.GONE);
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh_mis_vuelos);
+        swipeRefreshLayout.setEnabled(false);
+    }
+
+    private void showActions() {
+        Voladeacapp activity = (Voladeacapp) getActivity();
+        if (activity != null)
+            activity.showActions();
+
+        FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.VISIBLE);
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh_mis_vuelos);
+        swipeRefreshLayout.setEnabled(true);
     }
 
     private void deleteChecked() {
@@ -212,7 +244,6 @@ public class MisVuelosFragment extends Fragment {
     }
 
     protected void addToList(ConfiguredFlight f){
-
         flight_details.add(f);
         adapter.notifyDataSetChanged();
     }
@@ -250,15 +281,6 @@ public class MisVuelosFragment extends Fragment {
     public void onPause(){
         super.onPause();
         getActivity().unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onStop() {
-        // Save the user's current game state
-        super.onStop();
-
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
-
-
 }

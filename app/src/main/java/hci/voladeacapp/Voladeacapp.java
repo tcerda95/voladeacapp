@@ -6,11 +6,14 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -29,13 +32,17 @@ public class Voladeacapp extends AppCompatActivity {
 
         // TODO: preservar el estado de los fragments
 
-        misVuelosFragment = new MisVuelosFragment();
         promocionesFragment = new PromocionesFragment();
         resenasFragment = new ResenasFragment();
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
-    /* Comienza en el fragmento Mis Vuelos */
+        misVuelosFragment = fragmentManager.findFragmentByTag(MisVuelosFragment.INSTANCE_TAG);
+
+        if (misVuelosFragment == null)
+            misVuelosFragment = new MisVuelosFragment();
+
+        /* Comienza en el fragmento Mis Vuelos */
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().add(R.id.fragment_main_container, misVuelosFragment, MisVuelosFragment.INSTANCE_TAG).commit();
             bottomBar.selectTabWithId(R.id.action_mis_vuelos);
@@ -63,6 +70,16 @@ public class Voladeacapp extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void hideActions() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setVisibility(View.GONE);
+    }
+
+    public void showActions() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setVisibility(View.VISIBLE);
     }
 
     @Override
