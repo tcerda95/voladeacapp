@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Actualizaciones">
+    <PreferenceCategory android:title="@string/updates">
 
         <SwitchPreference
             android:defaultValue="true"
-            android:title="Notificaciones"
+            android:title="@string/notification_title"
             android:key="notifications_switch" />
 
         <ListPreference
-            android:title="Frecuencia de Actualización"
-            android:summary="Alguna descripcion de que significa esto"
+            android:title="@string/update_frequency"
+            android:summary="@string/update_frequency_description"
             android:key="updateFrequency"
             android:defaultValue="1"
             android:entries="@array/intervalArray"
@@ -17,12 +17,11 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Localización">
+    <PreferenceCategory android:title="@string/localization">
         <ListPreference
-            android:title="Idioma"
-            android:summary="Seleccionado: Español"
+            android:title="@string/language"
             android:key="appLanguage"
-            android:defaultValue="ES"
+            android:defaultValue="es"
             android:entries="@array/languageArray"
             android:entryValues="@array/languageValues" />
     </PreferenceCategory>

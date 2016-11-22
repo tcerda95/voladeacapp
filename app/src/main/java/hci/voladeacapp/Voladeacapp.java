@@ -3,7 +3,10 @@ package hci.voladeacapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -18,6 +21,8 @@ import android.widget.Toast;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.util.Locale;
+
 public class Voladeacapp extends AppCompatActivity {
     private Fragment misVuelosFragment;
     private Fragment promocionesFragment;
@@ -26,11 +31,14 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
+        loadLanguage();
+=======
         StorageHelper.initialize(this);
+>>>>>>> master
         setContentView(R.layout.activity_voladeacapp);
 
         final FragmentManager fragmentManager = getFragmentManager();
-
         // TODO: preservar el estado de los fragments
 
         misVuelosFragment = new MisVuelosFragment();
@@ -40,8 +48,12 @@ public class Voladeacapp extends AppCompatActivity {
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
 
+<<<<<<< HEAD
+    /* Comienza en el fragmento Mis Vuelos */
+=======
 
         /* Comienza en el fragmento Mis Vuelos */
+>>>>>>> master
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().add(R.id.fragment_main_container, misVuelosFragment, MisVuelosFragment.INSTANCE_TAG).commit();
             bottomBar.selectTabWithId(R.id.action_mis_vuelos);
@@ -69,6 +81,19 @@ public class Voladeacapp extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void loadLanguage() {
+        SharedPreferences shp = getSharedPreferences(
+                "hci.voladeacapp.PREFERENCES",Context.MODE_PRIVATE);
+        String language = shp.getString("USER_LANGUAGE", "es");
+
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
     public void hideActions() {
@@ -96,5 +121,10 @@ public class Voladeacapp extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

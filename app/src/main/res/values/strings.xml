@@ -17,9 +17,9 @@
     <string name="terminal_label">Terminal</string>
     <string name="gate_label">Puerta</string>
     <string name="llegada_label">Llegada</string>
-    <string name="baggage_claim_label">Retiro de equipaje</string>
+    <string name="baggage_claim_label">Recolección de equipaje</string>
 
-    <string name="formato_fecha">dd/MM/yyyy</string>
+    <string name="formato_fecha" translatable="false">dd/MM/yyyy</string>
 
     <string name="a_confirmar">A confirmar</string>
 
@@ -36,7 +36,7 @@
     <string name="exitGateNotif">Puerta de salida </string>
     <string name="tookOffNotif"> ha despegado</string>
     <string name="the_flight_notif">El vuelo </string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">Configuración</string>
 
 
     <string name="eliminar">Eliminar</string>
@@ -63,7 +63,18 @@
     <string name="refreshed">Actualizado</string>
     <string name="comentario_label">Comentario</string>
     <string name="ver_en_mapa">Ver en mapa</string>
+    <string name="notification_title">Notificaciones</string>
+    <string name="update_frequency">Frecuencia de actualización</string>
+    <string name="localization">Localización</string>
+    <string name="language">Idioma</string>
     <string name="lo_recomienda">lo recomienda</string>
     <string name="arrival_time">Llegada</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    <string name="updates">Actualizaciones</string>
+    <string name="update_frequency_description">Alguna descripcion de que significa esto</string>
+    <string name="from">Desde</string>
+    <string name="departing_on">Saliendo el</string>
+
 
 </resources>

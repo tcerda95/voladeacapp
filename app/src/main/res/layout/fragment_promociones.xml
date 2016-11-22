@@ -16,7 +16,7 @@
             android:layout_weight="0.5">
 
             <TextView
-                android:text="Desde"
+                android:text="@string/from"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView3"
@@ -46,7 +46,7 @@
             >
 
             <TextView
-                android:text="Saliendo el"
+                android:text="@string/departing_on"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView2"
