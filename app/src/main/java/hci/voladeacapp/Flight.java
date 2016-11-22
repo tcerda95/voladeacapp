@@ -10,10 +10,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Flight implements Serializable {
+    private static final long serialVersiouUID = 1L;
+
     private String number;
     private String airline;
     private String state;
-    private double price;
+    private double price; // in USD
 
     private FlightSchedule departureSchedule = new FlightSchedule(); // Para que no tire NPE
     private FlightSchedule arrivalSchedule = new FlightSchedule();
@@ -108,6 +110,7 @@ public class Flight implements Serializable {
         setNumber("" + seed.number);
         setAirline(seed.airline.id);
         setState(seed.status);
+        setBaggageClaim(seed.arrival.airport.baggage);
 
         departureSchedule = new FlightSchedule(seed.departure);
         arrivalSchedule = new FlightSchedule(seed.arrival);

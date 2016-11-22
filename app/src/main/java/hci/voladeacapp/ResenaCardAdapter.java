@@ -5,22 +5,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 //TODO: ARREGLAR TODOS LOS MAGIC NUMBERS
 public class ResenaCardAdapter extends BaseAdapter{
-    private ArrayList<Resena> cardsData;
+    private static final double SAD_RATING_BOUND = 7.0;
+    private ArrayList<GlobalReview> cardsData;
     private LayoutInflater inflater;
     private ViewHolder holder;
     RequestQueue rq;
 
-    public ResenaCardAdapter(Context aContext, ArrayList<Resena> listData) {
+    public ResenaCardAdapter(Context aContext, ArrayList<GlobalReview> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
 //        rq = Volley.newRequestQueue(aContext);
@@ -50,7 +51,6 @@ public class ResenaCardAdapter extends BaseAdapter{
             holder.airlineView = (TextView) convertView.findViewById(R.id.flight_airline_text);
             holder.numberView = (TextView) convertView.findViewById(R.id.flight_number_text);
             holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingbar_resena);
-            holder.icon = (ImageView) convertView.findViewById(R.id.icon_recommend);
             holder.percentageView = (TextView) convertView.findViewById(R.id.percentage);
             convertView.setTag(holder);
         } else {
@@ -61,24 +61,16 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView airlineTextView = holder.airlineView;
         RatingBar ratingBarView = holder.ratingBar;
         TextView percentageView = holder.percentageView;
-        ImageView iconView = holder.icon;
         ratingBarView.setClickable(false);
 
 
-        Resena resena = (Resena) getItem(position);
+        GlobalReview resena = (GlobalReview) getItem(position);
 
-        numberTextView.setText(resena.getFlightNumber());
-        airlineTextView.setText(resena.getFlightAirline());
-        ratingBarView.setRating(resena.getPuntuacion()/2);
-        //TODO:arreglar el porcentaje de personas que lo recomiendan (no se como se guarda eso o si lo devuelve la api)
-        percentageView.setText(resena.getRecomendado().toString());
+        numberTextView.setText(resena.flightNumber().toString());
+        airlineTextView.setText(resena.airline());
+        ratingBarView.setRating((float)resena.getRating()/2);
 
-        if ( resena.getPuntuacion() > 7){
-        iconView.setImageResource(R.drawable.ic_sentiment_satisfied_black_24px);
-        }
-        else {
-            iconView.setImageResource(R.drawable.ic_sentiment_dissatisfied_black_24px);
-        }
+        percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()) +"%");
 
         return convertView;
     }
@@ -87,7 +79,6 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView airlineView;
         TextView numberView;
         TextView percentageView;
-        ImageView icon;
         RatingBar ratingBar;
     }
 }

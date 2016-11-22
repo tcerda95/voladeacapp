@@ -1,5 +1,6 @@
 package hci.voladeacapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -63,7 +64,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             button.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new FillMapTask().execute("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getflightdeals&from=" + txt.getText().toString());
+                    v.getContext().startActivity(new Intent(v.getContext(), CheloActivity.class));
+                    //   new FillMapTask().execute("http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getflightdeals&from=" + txt.getText().toString());
                 }
             });
 

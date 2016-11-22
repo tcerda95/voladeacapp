@@ -13,14 +13,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Voladeacapp"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustPan">
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".Voladeacapp"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <!--
@@ -37,6 +48,7 @@
 
         <activity
             android:name=".FlightDetails"
+            android:launchMode="singleTop"
             android:parentActivityName=".Voladeacapp">
             <meta-data
                 android:name="android.app.default_searchable"
@@ -106,9 +118,12 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-            <action android:name="hci.voladeacapp.TIME_TO_PULL" />
+                <action android:name="hci.voladeacapp.TIME_TO_PULL" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".ReviewDetail"
+            android:parentActivityName=".Voladeacapp"/>
     </application>
 
 </manifest>

@@ -9,17 +9,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.places.internal.PlaceOpeningHoursEntity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +30,19 @@ import java.util.Map;
 public class ApiService extends IntentService {
 
     public static final String DATA_FLIGHT_GSON = "hci.voladeacapp.data.DATA_FLIGHT_GSON";
+    public static final String DATA_GLOBAL_REVIEW = "hci.voladeacapp.data.DATA_REVIEW_LIST";
+    public static final String DATA_DEAL_LIST = "hci.voladeacapp.data.DATA_DEAL_LIST";
 
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
     private static final String ACTION_SEND_REVIEW = "hci.voladeacapp.action.SEND_REVIEW";
+    private static final String ACTION_GET_REVIEWS = "hci.voladeacapp.action.GET_REVIEWS";
+    private static final String ACTION_GET_DEALS = "hci.voladeacapp.action.GET_DEALS";
 
     // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "hci.voladeacapp.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "hci.voladeacapp.extra.PARAM2";
+    private static final String PARAM_AIRLINE = "hci.voladeacapp.extra.PARAM_AIRLINE";
+    private static final String PARAM_FLNUMBER = "hci.voladeacapp.extra.PARAM_FLNUMBER";
+    private static final String PARAM_REVIEW = "hci.voladeacapp.extra.PARAM_REVIEW";
+    private static final String PARAM_ORIGIN_ID = "hci.voladeacapp.extra.PARAM_ORIGIN_ID";
     private static final String CALLBACK_INTENT = "hci.voladeacapp.extra.CALLBACK";
 
 
@@ -59,23 +63,71 @@ public class ApiService extends IntentService {
     public static void startActionGetFlightStatus(Context context, String airline, String num, String callback) {
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_STATUS);
-        intent.putExtra(EXTRA_PARAM1, airline);
-        intent.putExtra(EXTRA_PARAM2, num);
+        intent.putExtra(PARAM_AIRLINE, airline);
+        intent.putExtra(PARAM_FLNUMBER, num);
         intent.putExtra(CALLBACK_INTENT, callback);
         context.startService(intent);
-    }
-
-
-    public static void startActionGetFlightStatus(Context context, Flight flight, String callbackAction) {
-        startActionGetFlightStatus(context, flight.getAirline(), flight.getNumber(), callbackAction);
     }
 
 
     public static void startActionSendReview(Context context, ReviewGson review) {
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_SEND_REVIEW);
-        intent.putExtra(EXTRA_PARAM1, review); //SerializableExtra
+        intent.putExtra(PARAM_REVIEW, review); //SerializableExtra
         context.startService(intent);
+    }
+
+
+    public static void startActionGetReviews(Context context, String airline, String number, String callback){
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_GET_REVIEWS);
+
+        intent.putExtra(PARAM_AIRLINE, airline);
+        intent.putExtra(PARAM_FLNUMBER, number);
+        intent.putExtra(CALLBACK_INTENT, callback);
+
+
+        context.startService(intent);
+    }
+
+    public static void startActionGetDeals(Context context, String originID, String callback){
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_GET_DEALS);
+
+        intent.putExtra(PARAM_ORIGIN_ID, originID);
+        intent.putExtra(CALLBACK_INTENT, callback);
+
+        context.startService(intent);
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent != null) {
+            final String action = intent.getAction();
+            if (ACTION_GET_STATUS.equals(action)) {
+                final String airline = intent.getStringExtra(PARAM_AIRLINE);
+                final String number = intent.getStringExtra(PARAM_FLNUMBER);
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetStatus(airline, number, callback);
+            }
+            if(ACTION_SEND_REVIEW.equals(intent.getAction())){
+                final ReviewGson review = (ReviewGson)intent.getSerializableExtra(PARAM_REVIEW);
+                handleActionSendReview(review);
+            }
+
+            if(ACTION_GET_REVIEWS.equals(intent.getAction())){
+                final String airline = intent.getStringExtra(PARAM_AIRLINE);
+                final String number = intent.getStringExtra(PARAM_FLNUMBER);
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetReviews(airline, number, callback);
+            }
+
+            if(ACTION_GET_DEALS.equals(intent.getAction())){
+                final String id = intent.getStringExtra(PARAM_ORIGIN_ID);
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetDeals(id, callback);
+            }
+        }
     }
 
 
@@ -106,7 +158,7 @@ public class ApiService extends IntentService {
                             if(obj.has("review") && obj.getBoolean("review")) {
                                 System.out.println("SENT REVIEW SUCCESSFULLY!");
                             } else{
-                                //No existe el vuelo
+
                             }
 
                         }catch(Exception e){
@@ -142,33 +194,110 @@ public class ApiService extends IntentService {
 
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_GET_STATUS.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                final String callback = intent.getStringExtra(CALLBACK_INTENT);
-                handleActionGetStatus(param1, param2, callback);
-            }
-            if(ACTION_SEND_REVIEW.equals(intent.getAction())){
-                final ReviewGson review = (ReviewGson)intent.getSerializableExtra(EXTRA_PARAM1);
-                handleActionSendReview(review);
-            }
+
+
+
+    private void handleActionGetReviews(final String airline, final String number, final String callback) {
+
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
         }
+
+
+        final String url = "http://hci.it.itba.edu.ar/v1/api/review.groovy?method=getairlinereviews"
+                        + "&airline_id=" + airline + "&flight_number=" + number;
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<ArrayList<ReviewGson>>() {
+                            }.getType();
+
+                            ArrayList<ReviewGson> reviewList;
+
+                            if(obj.has("reviews")) {
+                                reviewList = gson.fromJson(obj.getString("reviews"), type);
+                            } else{
+                                //Error
+                                reviewList = null;
+                            }
+                            GlobalReview global = new GlobalReview(airline, number, reviewList);
+                            sendBroadcast(new Intent(callback).putExtra(DATA_GLOBAL_REVIEW, global));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+
+            }
+        });
+        // Add the request to the RequestQueue;
+        requestQueue.add(stringRequest);
+
     }
 
 
 
 
+    private void handleActionGetDeals(String originId, final String callback) {
+
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+
+
+        String url = "http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getflightdeals"
+                + "&from=" + originId;
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<ArrayList<DealGson>>() {
+                            }.getType();
+
+                            ArrayList<DealGson> dealList;
+
+                            if(obj.has("deals")) {
+                                dealList = gson.fromJson(obj.getString("deals"), type);
+                            } else{
+                                //Error
+                                dealList = null;
+                            }
+                            sendOrderedBroadcast(new Intent(callback).putExtra(DATA_DEAL_LIST, dealList), null);
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+
+            }
+        });
+        // Add the request to the RequestQueue;
+        requestQueue.add(stringRequest);
+
+    }
 
 
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
+
     private void handleActionGetStatus(String airline, String number, final String callback) {
         if(requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);

@@ -52,11 +52,11 @@ public class MisVuelosFragment extends Fragment {
             FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
             if(updatedGson == null)
                 return;
-            int idx = flight_details.indexOf(new Flight(updatedGson));
+            int idx = flight_details.indexOf(new ConfiguredFlight(updatedGson));
             if(idx == -1){
                 return;
             }
-            Flight toUpdate = flight_details.get(idx);
+            ConfiguredFlight toUpdate = flight_details.get(idx);
             toUpdate.update(updatedGson);
             System.out.println("Updated!");
             abortBroadcast();
@@ -75,7 +75,7 @@ public class MisVuelosFragment extends Fragment {
     private DynamicListView flightsListView;
 
     RefreshReceiver receiver;
-    private ArrayList<Flight> flight_details;
+    private ArrayList<ConfiguredFlight> flight_details;
     private TimedUndoAdapter adapter;
 
     @Override
@@ -117,7 +117,7 @@ public class MisVuelosFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = flightsListView.getItemAtPosition(position);
-                Flight flightData = (Flight) o;
+                ConfiguredFlight flightData = (ConfiguredFlight) o;
 
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
                 detailIntent.putExtra("Flight",flightData);
@@ -202,7 +202,7 @@ public class MisVuelosFragment extends Fragment {
      */
     private void updateFlightsStatus() {
 
-        for(Flight f: flight_details){
+        for(ConfiguredFlight f: flight_details){
             ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
         }
 
@@ -211,7 +211,8 @@ public class MisVuelosFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh
     }
 
-    protected void addToList(Flight f){
+    protected void addToList(ConfiguredFlight f){
+
         flight_details.add(f);
         adapter.notifyDataSetChanged();
     }
@@ -229,7 +230,7 @@ public class MisVuelosFragment extends Fragment {
 
             FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
             if(requestCode == GET_FLIGHT){
-                addToList(new Flight(resultado));
+                addToList(new ConfiguredFlight(resultado));
 
             }
         }
@@ -259,32 +260,5 @@ public class MisVuelosFragment extends Fragment {
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
 
-    /* PROBANDO UNA ARRAYLIST CUALQUIERA */
-    public ArrayList getListData() {
-        ArrayList<Flight> results = new ArrayList<Flight>();
-        Flight flight1 = new Flight();
-        flight1.setArrivalAirport("EZE");
-        flight1.setNumber("AR 1234");
-        flight1.setDepartureAirport("JFK");
-        flight1.setState("EXPLOTADO");
-        results.add(flight1);
-
-        flight1 = new Flight();
-        flight1.setArrivalAirport("BUE");
-        flight1.setNumber("EZ 904");
-        flight1.setDepartureAirport("MIA");
-        flight1.setState("EXPLOTADO");
-        results.add(flight1);
-
-        flight1 = new Flight();
-        flight1.setArrivalAirport("KIK");
-        flight1.setNumber("TA 0092");
-        flight1.setDepartureAirport("LOA");
-        flight1.setState("EXPLOTADO");
-        results.add(flight1);
-
-
-        return results;
-    }
 
 }
