@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
 import java.text.SimpleDateFormat;
@@ -85,8 +87,7 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         return view.findViewById(R.id.undo_button);
     }
 
-
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView flnumberView;
         TextView origAirView;
         TextView destAirView;

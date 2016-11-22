@@ -1,5 +1,6 @@
 package hci.voladeacapp;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -26,14 +27,14 @@ import java.util.ArrayList;
 public class FlightDetails extends AppCompatActivity {
     private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
-    private Flight flight;
+    private ConfiguredFlight flight;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
-        this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
+        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
@@ -67,7 +68,8 @@ public class FlightDetails extends AppCompatActivity {
                     System.out.println("Removed? " + saved_flights.remove(flight));
                     Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
                     dialog.cancel();
-                    //TODO: no anda, no borra nada
+                    StorageHelper.saveFlights(getApplicationContext(), saved_flights);
+                    setRemovedFlightResult(flight, true);
                     updateOptionsMenuVisibility();
                 }
 
@@ -88,6 +90,12 @@ public class FlightDetails extends AppCompatActivity {
         }
     }
 
+    private void setRemovedFlightResult(Flight flight, boolean isRemoved) {
+        Intent intent = getIntent();
+        intent.putExtra(MisVuelosFragment.FLIGHT_REMOVED, isRemoved);
+        setResult(Activity.RESULT_OK, intent);
+    }
+
     private class addFlightListener implements MenuItem.OnMenuItemClickListener {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
@@ -95,8 +103,10 @@ public class FlightDetails extends AppCompatActivity {
                 throw new IllegalStateException("Already followed flight!");
             }
 
-//            saved_flights.add(); TODO: Se rompio esto!
+            saved_flights.add(flight);
+            StorageHelper.saveFlights(getApplicationContext(), saved_flights);
             Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
+            setRemovedFlightResult(flight, false);
             updateOptionsMenuVisibility();
             return true;
         }
@@ -152,7 +162,7 @@ public class FlightDetails extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        StorageHelper.saveFlights(getApplicationContext(), saved_flights);
         super.onDestroy();
+        StorageHelper.saveFlights(getApplicationContext(), saved_flights);
     }
 }

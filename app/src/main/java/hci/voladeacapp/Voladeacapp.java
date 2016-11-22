@@ -9,11 +9,14 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -28,7 +31,11 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
         loadLanguage();
+=======
+        StorageHelper.initialize(this);
+>>>>>>> master
         setContentView(R.layout.activity_voladeacapp);
 
         final FragmentManager fragmentManager = getFragmentManager();
@@ -41,7 +48,12 @@ public class Voladeacapp extends AppCompatActivity {
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
 
+<<<<<<< HEAD
     /* Comienza en el fragmento Mis Vuelos */
+=======
+
+        /* Comienza en el fragmento Mis Vuelos */
+>>>>>>> master
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().add(R.id.fragment_main_container, misVuelosFragment, MisVuelosFragment.INSTANCE_TAG).commit();
             bottomBar.selectTabWithId(R.id.action_mis_vuelos);
@@ -82,6 +94,16 @@ public class Voladeacapp extends AppCompatActivity {
         Configuration config = new Configuration();
         config.setLocale(locale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    public void hideActions() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setVisibility(View.GONE);
+    }
+
+    public void showActions() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setVisibility(View.VISIBLE);
     }
 
     @Override

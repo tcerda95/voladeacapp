@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,28 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
-import com.nineoldandroids.view.ViewHelper;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static android.app.Activity.RESULT_CANCELED;
-import static android.content.Context.MODE_PRIVATE;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 
 public class MisVuelosFragment extends Fragment {
@@ -63,11 +49,14 @@ public class MisVuelosFragment extends Fragment {
         }
     }
 
-
     public final static String INSTANCE_TAG = "hci.voladeacapp.MisVuelos.INSTANCE_TAG";
 
     public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
     public final static String ACTION_GET_REFRESH = "hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH";
+
+    public final static String FLIGHT_REMOVED = "hci.voladeacapp.MisVuelos.FLIGHT_REMOVED";
+
+    private final static int DETAILS_REQUEST_CODE = 2;
 
     public final static int GET_FLIGHT = 1;
     private final static long UNDO_TIMEOUT = 3000;
@@ -76,12 +65,14 @@ public class MisVuelosFragment extends Fragment {
 
     RefreshReceiver receiver;
     private ArrayList<ConfiguredFlight> flight_details;
+
     private TimedUndoAdapter adapter;
+
+    private View rootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
 
         //Lleno la lista con lo que esta en shared app_preferences
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
@@ -89,12 +80,13 @@ public class MisVuelosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+        rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
         receiver = new RefreshReceiver();
-        flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
+
+        flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
         adapter = new TimedUndoAdapter(flightListAdapter, getActivity(), new OnDismissCallback() {
             @Override
@@ -122,8 +114,7 @@ public class MisVuelosFragment extends Fragment {
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
                 detailIntent.putExtra("Flight",flightData);
 
-                startActivity(detailIntent);
-
+                startActivityForResult(detailIntent, DETAILS_REQUEST_CODE);
             }
         });
 
@@ -138,6 +129,8 @@ public class MisVuelosFragment extends Fragment {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.getMenuInflater().inflate(R.menu.delete_menu, menu);
+                hideActions();
+                
                 return true;
             }
 
@@ -162,7 +155,9 @@ public class MisVuelosFragment extends Fragment {
             }
 
             @Override
-            public void onDestroyActionMode(ActionMode actionMode) {}
+            public void onDestroyActionMode(ActionMode actionMode) {
+                showActions();
+            }
         });
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
@@ -183,6 +178,30 @@ public class MisVuelosFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void hideActions() {
+        Voladeacapp activity = (Voladeacapp) getActivity();
+        if (activity != null)
+            activity.hideActions();
+
+        FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.GONE);
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh_mis_vuelos);
+        swipeRefreshLayout.setEnabled(false);
+    }
+
+    private void showActions() {
+        Voladeacapp activity = (Voladeacapp) getActivity();
+        if (activity != null)
+            activity.showActions();
+
+        FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_button);
+        addButton.setVisibility(View.VISIBLE);
+
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh_mis_vuelos);
+        swipeRefreshLayout.setEnabled(true);
     }
 
     private void deleteChecked() {
@@ -212,7 +231,6 @@ public class MisVuelosFragment extends Fragment {
     }
 
     protected void addToList(ConfiguredFlight f){
-
         flight_details.add(f);
         adapter.notifyDataSetChanged();
     }
@@ -221,10 +239,15 @@ public class MisVuelosFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == DETAILS_REQUEST_CODE && resultCode == AddFlightActivity.RESULT_OK) {
+            flight_details = StorageHelper.getFlights(getActivity());
+        }
+
         if (resultCode == RESULT_CANCELED) {
             Toast.makeText(getActivity(), "Resultado cancelado", Toast.LENGTH_SHORT)
                     .show();
-        } else {
+        }
+        else {
             Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
                     .show();
 
@@ -243,22 +266,12 @@ public class MisVuelosFragment extends Fragment {
         IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
         ifilter.setPriority(10);
         getActivity().registerReceiver(receiver, ifilter);
-
     }
 
     @Override
     public void onPause(){
         super.onPause();
         getActivity().unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onStop() {
-        // Save the user's current game state
-        super.onStop();
-
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
-
-
 }

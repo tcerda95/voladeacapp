@@ -26,5 +26,9 @@ public class ConfiguredFlight extends Flight implements Serializable {
         return settings;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 }
 

@@ -68,7 +68,8 @@ public class Flight implements Serializable {
         }
 
         public FlightSchedule(FlightStatusGson.Schedule schedule) {
-            airport = schedule.airport.description;
+            String[] splittedAirport = schedule.airport.description.split(",");
+            airport = splittedAirport[0];
             airportId = schedule.airport.id;
             city = schedule.airport.city.name;
             gate = schedule.airport.gate;
