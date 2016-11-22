@@ -19,6 +19,7 @@ public class AppSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null)
             getFragmentManager().beginTransaction().add(android.R.id.content, new AppPreferenceFragment()).commit();
+        setTitle(getResources().getString(R.string.title_activity_app_settings));
     }
 
     public static class AppPreferenceFragment extends PreferenceFragment {

@@ -71,6 +71,10 @@
     <string name="arrival_time">Llegada</string>
     <string name="english">Inglés</string>
     <string name="spanish">Español</string>
+    <string name="updates">Actualizaciones</string>
+    <string name="update_frequency_description">Alguna descripcion de que significa esto</string>
+    <string name="from">Desde</string>
+    <string name="departing_on">Saliendo el</string>
 
 
 </resources>

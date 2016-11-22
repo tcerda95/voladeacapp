@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Actualizaciones">
+    <PreferenceCategory android:title="@string/updates">
 
         <SwitchPreference
             android:defaultValue="true"
@@ -9,7 +9,7 @@
 
         <ListPreference
             android:title="@string/update_frequency"
-            android:summary="Alguna descripcion de que significa esto"
+            android:summary="@string/update_frequency_description"
             android:key="updateFrequency"
             android:defaultValue="1"
             android:entries="@array/intervalArray"
