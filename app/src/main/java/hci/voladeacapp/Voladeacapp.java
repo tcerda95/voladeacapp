@@ -104,14 +104,5 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /*
-        if (mLangaugeChangedReceiver != null) {
-            try {
-                unregisterReceiver(mLangaugeChangedReceiver);
-                mLangaugeChangedReceiver = null;
-            } catch (final Exception e) {
-            }
-        }
-        */
     }
 }
