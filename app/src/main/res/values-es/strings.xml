@@ -60,4 +60,6 @@
     <string name="update_frequency">Frecuencia de actualización</string>
     <string name="localization">Localización</string>
     <string name="language">Idioma</string>
+    <string name="arrival_time">Llegada</string>
+    <string name="lo_recomienda">lo recomienda</string>
 </resources>

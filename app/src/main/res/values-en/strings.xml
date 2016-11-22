@@ -55,9 +55,11 @@
     <string name="tookOffNotif">" has taken off"</string>
     <string name="undo">Undo</string>
     <string name="ver_en_mapa">View on map</string>
-    <string name="viajeros_frecuentes_label">Frequent flyer program:</string>
+    <string name="viajeros_frecuentes_label">Milleage program</string>
     <string name="notification_title">Notifications</string>
     <string name="language">Language</string>
     <string name="localization">Location</string>
     <string name="update_frequency">Update frequency</string>
+    <string name="arrival_time">Arrival Time</string>
+    <string name="lo_recomienda">recommends</string>
 </resources>
