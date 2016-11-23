@@ -91,8 +91,6 @@ public class CheloActivity extends AppCompatActivity {
             }
         };
 
-        registerReceiver(reviewrcv, new IntentFilter("GET_REVIEWS"));
-        registerReceiver(dealrcv, new IntentFilter("GET_DEALS"));
 
         cheloDebug.setOnClickListener(new View.OnClickListener(){
 
@@ -162,6 +160,9 @@ public class CheloActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         registerReceiver(rcv, new IntentFilter(ACTION_GET_FLIGHT));
+        registerReceiver(reviewrcv, new IntentFilter("GET_REVIEWS"));
+        registerReceiver(dealrcv, new IntentFilter("GET_DEALS"));
+
     }
 
     @Override
