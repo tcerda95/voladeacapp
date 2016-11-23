@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
+    >
 
     <LinearLayout
         android:orientation="vertical"
@@ -13,7 +18,12 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5">
+            android:layout_weight="0.5"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:id="@+id/dummy_focus_layout"
+            >
 
             <TextView
                 android:text="@string/from"
@@ -30,12 +40,13 @@
                 android:id="@+id/promo_from_city_autocomplete"
                 android:textSize="16sp"
                 android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:layout_weight="1"
                 android:text="BUE"
                 android:inputType="text"
                 android:imeOptions="actionSend"
+                android:maxLines="1"
                 />
-
         </LinearLayout>
 
         <LinearLayout

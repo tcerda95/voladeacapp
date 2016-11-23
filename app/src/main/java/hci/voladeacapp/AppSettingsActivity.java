@@ -37,12 +37,14 @@ public class AppSettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.app_preferences);
             previousLocale = Locale.getDefault().getLanguage();
             ListPreference lp = (ListPreference)findPreference("appLanguage");
-            if (previousLocale.toString().toLowerCase().equals("en")) {
+            if (previousLocale.toString().toUpperCase().equals("EN")) {
                 lp.setSummary(getActivity().getString(R.string.english));
             }
             else { lp.setSummary(getActivity().getString(R.string.spanish)); }
 
             System.out.println(Locale.getDefault().toString().toLowerCase());
+
+            updateFrequencyDescription();
 
             spChanged = new
                     SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -58,6 +60,7 @@ public class AppSettingsActivity extends AppCompatActivity {
                                 case "updateFrequency":
                                     String value = SP.getString(key, "NULL");
                                     System.out.println(key + "Changed to: " + value);
+                                    updateFrequencyDescription();
                                     break;
 
                                 case "appLanguage":
@@ -71,7 +74,6 @@ public class AppSettingsActivity extends AppCompatActivity {
                                         ListPreference lp = (ListPreference)findPreference("appLanguage");
                                         lp.setSummary(getActivity().getString(R.string.spanish));
                                     }
-
                                     break;
                             }
 
@@ -134,6 +136,20 @@ public class AppSettingsActivity extends AppCompatActivity {
             };
             editor.putString("USER_LANGUAGE",lang );
             editor.commit();
+        }
+
+        private void updateFrequencyDescription() {
+            ListPreference updateFreq = (ListPreference) findPreference("updateFrequency");
+            Integer minutes = Integer.parseInt(updateFreq.getValue());
+
+            String str = null;
+            if (minutes < 60) { // TODO: magic number
+                str = getResources().getQuantityString(R.plurals.update_frequency_description_minutes, minutes, minutes);
+            } else {
+                int hours = minutes / 60;
+                str = getResources().getQuantityString(R.plurals.update_frequency_description_hours, hours, hours);
+            }
+            updateFreq.setSummary(str);
         }
     }
 

@@ -75,6 +75,6 @@
     <string name="update_frequency_description">Alguna descripcion de que significa esto</string>
     <string name="from">Desde</string>
     <string name="departing_on">Saliendo el</string>
-
+    <string name="every">Cada</string>
 
 </resources>

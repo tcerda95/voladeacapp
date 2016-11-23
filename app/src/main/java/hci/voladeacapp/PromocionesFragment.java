@@ -19,8 +19,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,6 +66,11 @@ public class PromocionesFragment extends Fragment {
     private boolean registeredReceiver = false;
 
     private PromoCardAdapter promoAdapter;
+    private ArrayAdapter<String> cityAutocompleteAdapter;
+
+    private static final String[] CITIES_DUMMY = new String[] {
+            "Buenos Aires", "Londres", "Neuquen", "Nueva York",
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +96,6 @@ public class PromocionesFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 fromCalendar.set(Calendar.YEAR, year);
                 fromCalendar.set(Calendar.MONTH, monthOfYear);
                 fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -109,6 +115,19 @@ public class PromocionesFragment extends Fragment {
             }
         });
 
+        cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
+                android.R.layout.select_dialog_item,  CITIES_DUMMY);
+
+        fromCityTextView.setAdapter(cityAutocompleteAdapter);
+
+        fromCityTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                hideKeyboard(rootView);
+                System.out.println("Clicked " + CITIES_DUMMY[position]);
+            }
+        });
+
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         promoAdapter = new PromoCardAdapter(getActivity(), deals, imageURLs);
         cardListView.setAdapter(promoAdapter);
@@ -120,8 +139,7 @@ public class PromocionesFragment extends Fragment {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     handled = true;
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+                    hideKeyboard(rootView);
                     refreshResults();
                 }
                 return handled;
@@ -155,6 +173,8 @@ public class PromocionesFragment extends Fragment {
                 }
             }
         };
+
+        rootView.findViewById(R.id.dummy_focus_layout).requestFocus(); // Para que el cityView no tenga focus
 
         // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
         refreshResults();
@@ -224,7 +244,6 @@ public class PromocionesFragment extends Fragment {
     private void updateLabel() {
         String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
         fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
 
@@ -290,5 +309,11 @@ public class PromocionesFragment extends Fragment {
     private void destroyPendingRequests() {
         System.out.println("Destroying pending volley requests");
         // TODO
+    }
+
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        view.findViewById(R.id.dummy_focus_layout).requestFocus();
     }
 }

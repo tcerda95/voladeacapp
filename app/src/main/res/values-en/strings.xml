@@ -23,7 +23,6 @@
     <string name="enviar_resena">Send Review</string>
     <string name="exitGateNotif">Exit gate</string>
     <string name="flight_number_label">Flight number</string>
-    <string name="formato_fecha"></string>
     <string name="gate_label">Gate</string>
     <string name="landedNotif">" has landed"</string>
     <string name="llegada">Arrival</string>
@@ -68,4 +67,5 @@
     <string name="updates">Updates</string>
     <string name="departing_on">Departing on</string>
     <string name="from">From</string>
+    <string name="every">Every</string>
 </resources>
