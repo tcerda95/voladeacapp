@@ -18,6 +18,8 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 import static hci.voladeacapp.ApiService.DATA_AIRLINE_ID_MAP;
+import static hci.voladeacapp.ApiService.DATA_CITY_MAP;
+import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
 /**
  * Created by chelo on 11/20/16.
@@ -28,6 +30,7 @@ public class StorageHelper {
     public final static String FLIGHTS = "hci.voladeacapp.data.StorageHelper.FLIGHTS";
     public final static String DATA = "hci.voladeacapp.StorageHelper.DATA";
     private static final String AIRLINE_LIST = "hci.voladeacapp.StorageHelper.AIRLINE_LIST";
+    private static final String CITY_MAP = "hci.voladeacapp.StorageHelper.CITY_MAP";
 
     public final static String DEALS_WITH_IMG = "hci.voladeacapp.data.DEALS_WITH_IMG";
     public final static String DEALS_CITY_ID = "hci.voladeacapp.data.DEALS_CITY_ID";
@@ -116,6 +119,25 @@ public class StorageHelper {
         if(mapString != null){
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String,String>>(){}.getType();
+            map = gson.fromJson(mapString, type);
+        } else {
+            map = null;
+            initialize(context);
+        }
+
+        return map;
+    }
+
+
+    public static Map<String, CityGson> getCitiesMap(Context context){
+        Map<String, CityGson> map;
+
+        SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
+        String mapString = sp.getString(CITY_MAP, null); //Si no hay nada devuelve null
+
+        if(mapString != null){
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String,CityGson>>(){}.getType();
             map = gson.fromJson(mapString, type);
         } else {
             map = null;
@@ -248,7 +270,6 @@ public class StorageHelper {
         if(airlines == null){
             //Solo si no lo tengo lo voy a buscar
             String callback = "hci.voladeacapp.initialize.AIRLINE_SAVER";
-            ApiService.startActionGetAirlines(context, callback);
 
             context.registerReceiver(new BroadcastReceiver() {
                 @Override
@@ -268,6 +289,40 @@ public class StorageHelper {
                     context.unregisterReceiver(this);
                 }
             }, new IntentFilter(callback));
+
+            ApiService.startActionGetAirlines(context, callback);
         }
+
+
+        //Cargo ciudades
+        final String cities = sp.getString(CITY_MAP, null);
+
+        if(cities == null){
+            //Solo si no lo tengo lo voy a buscar
+            String callback = "hci.voladeacapp.initialize.CITY_SAVER";
+            context.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    HashMap<String, CityGson> cityMap = (HashMap<String,CityGson>)intent.getSerializableExtra(ApiService.DATA_CITY_MAP);
+                    if(cityMap != null) {
+                        Gson gson = new Gson();
+                        String map = gson.toJson(cityMap);
+                        System.out.println(map);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString(CITY_MAP, map);
+                        editor.commit();
+                    } else{
+                    }
+
+                    //Automaticamente me desuscribo
+                    context.unregisterReceiver(this);
+                }
+            }, new IntentFilter(callback));
+
+            ApiService.startActionGetCities(context, callback);
+
+        }
+
+
     }
 }

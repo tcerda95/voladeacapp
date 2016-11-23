@@ -107,14 +107,18 @@ public class CheloActivity extends AppCompatActivity {
                 TextView txt = (TextView)findViewById(R.id.dbg_text);
                 txt.setText("OK");
 
-                ApiService.startActionGetFlightStatus(view.getContext(), "8R", "8700", ACTION_GET_FLIGHT);
-                ApiService.startActionGetReviews(view.getContext(), "AR", "5620", "GET_REVIEWS");
-                ApiService.startActionGetDeals(view.getContext(), "BUE", "GET_DEALS");
+              //  ApiService.startActionGetFlightStatus(view.getContext(), "8R", "8700", ACTION_GET_FLIGHT);
+           //     ApiService.startActionGetReviews(view.getContext(), "AR", "5620", "GET_REVIEWS");
+            //    ApiService.startActionGetDeals(view.getContext(), "BUE", "GET_DEALS");
 
                 Map<String, String> idMap = StorageHelper.getAirlineIdMap(view.getContext());
 
+                Map<String, CityGson> cityMap = StorageHelper.getCitiesMap(view.getContext());
+
+
+
                 List<ConfiguredFlight> list = StorageHelper.getFlights(view.getContext());
-                for(ConfiguredFlight f : list){
+       /*         for(ConfiguredFlight f : list){
                     System.out.println();
                     FlightSettings settings = f.getSettings();
                     System.out.println("SETTINGS FOR " + f.getAirline() + " " + f.getNumber());
@@ -126,11 +130,19 @@ public class CheloActivity extends AppCompatActivity {
                     System.out.println("ALL: " + settings.notificationsActive());
                     System.out.println();
 
-                }
+                }*/
+
+                /*
                 if(idMap != null) {
                     txt.setText(idMap.toString());
                 } else {
                     txt.setText("NULL MAP");
+                }*/
+
+                if(cityMap != null){
+                    txt.setText(cityMap.toString());
+                }else{
+                    txt.setText("NULL MAP!");
                 }
                 /*   AlarmManager alarmMgr;
                 PendingIntent alarmIntent;
