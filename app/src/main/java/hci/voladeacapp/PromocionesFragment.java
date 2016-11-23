@@ -65,8 +65,6 @@ public class PromocionesFragment extends Fragment {
 
     private PromoCardAdapter promoAdapter;
 
-    private List<AsyncTask> tasks;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +73,6 @@ public class PromocionesFragment extends Fragment {
         deals = new ArrayList<>();
         imageURLs = new HashMap<>();
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        tasks = new LinkedList<>();
     }
 
     @Override
@@ -136,13 +133,6 @@ public class PromocionesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 //TODO: Sacar el vuelo en base al deal para hacer la pantalla de detalles
-//                Object o = cardListView.getItemAtPosition(position);
-//                Flight flightData = (Flight) o;
-//
-//                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-//                detailIntent.putExtra("Flight",flightData);
-//
-//                startActivity(detailIntent);
                 System.out.println("CLICKED: " + position);
             }
         });
@@ -158,7 +148,7 @@ public class PromocionesFragment extends Fragment {
                 else {
                     for (DealGson d : list) {
                         deals.add(d);
-                        tasks.add(new getCityImageURLTask().execute(d));
+                        getCityImageURL(d);
                     }
                     saveDealsData();
                     promoAdapter.notifyDataSetChanged();
@@ -173,7 +163,7 @@ public class PromocionesFragment extends Fragment {
     }
 
     private void saveDealsData() {
-        if (getActivity() != null) { //TODO: AAAAAAAAAAA
+        if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
             System.out.println("saving");
             Context context = getActivity().getApplicationContext();
             StorageHelper.saveDeals(context, imageURLs);
@@ -187,30 +177,28 @@ public class PromocionesFragment extends Fragment {
         Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
         String prevSearchcity = StorageHelper.getDealSearchCity(context);
 
-        if (prevSearchCal == null) {
-            System.out.println("NULLLLLL");
+        boolean sameDay = prevSearchCal != null && prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR);
+        boolean sameCity = prevSearchcity != null && prevSearchcity.equals(fromCityTextView.getText().toString());
+
+        if (prevSearchCal != null && prevSearchcity != null) {
+            System.out.println("Prev city: " + prevSearchcity);
+            System.out.println("Prev cal" + prevSearchCal.get(Calendar.DAY_OF_MONTH) + "/" + prevSearchCal.get(Calendar.MONTH));
         }
 
-        String cityID = fromCityTextView.getText().toString();
-
-        if (prevSearchCal == null || prevSearchcity == null
-                || prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR)
-                    || !prevSearchcity.equals(cityID)) {
+        if (false) { //(sameCity && sameDay) TODO: se rompe todo
+            System.out.println("Using cache!");
+            imageURLs = StorageHelper.getDeals(context);
+            deals = new ArrayList<>(imageURLs.keySet());
+            promoAdapter.notifyDataSetChanged();
+        }
+        else {
+            System.out.println("NOT using cache!");
             deals.clear();
             if (!registeredReceiver) {
                 getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
                 registeredReceiver = true;
             }
-
-            System.out.println("Promos from " + fromCityTextView.getText().toString());
-            ApiService.startActionGetDeals(getActivity().getApplicationContext(),
-                    fromCityTextView.getText().toString(), RECEIVER_TAG);
-        }
-        else { // Los datos ya estaban "cacheados"
-            System.out.println("Using cache!");
-            imageURLs = StorageHelper.getDeals(context);
-            deals = new ArrayList<>(imageURLs.keySet());
-            promoAdapter.notifyDataSetChanged();
+            ApiService.startActionGetDeals(getActivity().getApplicationContext(), "BUE",RECEIVER_TAG);
         }
 
     }
@@ -240,59 +228,54 @@ public class PromocionesFragment extends Fragment {
         fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
 
+    private void getCityImageURL(final DealGson deal) {
+        StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(deal),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            imageURLs.put(deal, getImageURL(new JSONObject(response)));
+                            promoAdapter.notifyDataSetChanged();
 
-    private class getCityImageURLTask extends AsyncTask<DealGson, Void, String> {
-        protected String doInBackground(final DealGson... deal) {
-
-            StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(deal[0]),
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                imageURLs.put(deal[0], getImageURL(new JSONObject(response)));
-                                promoAdapter.notifyDataSetChanged();
-
-                                // Ineficiente pero bue
-                                saveDealsData();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            // Ineficiente pero bue
+                            saveDealsData();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
-
-            requestQueue.add(sr);
-            return null;
-        }
-
-        private String getImageURL(JSONObject obj) {
-            try {
-                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-                String url = "https://farm"
-                        + photo.getString("farm") + ".staticflickr.com/"
-                        + photo.getString("server") + "/"
-                        + photo.getString("id") + "_"
-                        + photo.getString("secret") + ".jpg";
-
-                return url;
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
             }
-            return null;
-        }
+        });
 
-        private String getAPIPetition(DealGson deal) {
-            String urlstr =
-                    "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                    "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                    + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
-                    + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
-            //TODO: Hacer bien
-            return urlstr;
+        requestQueue.add(sr);
+    }
+
+    private String getImageURL(JSONObject obj) {
+        try {
+            JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
+            String url = "https://farm"
+                    + photo.getString("farm") + ".staticflickr.com/"
+                    + photo.getString("server") + "/"
+                    + photo.getString("id") + "_"
+                    + photo.getString("secret") + ".jpg";
+
+            return url;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        return null;
+    }
+
+    private String getAPIPetition(DealGson deal) {
+        String urlstr =
+                "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
+                        "&api_key=3fc73140f600953c1eea5e534bac4670&"
+                        + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
+                        + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+        //TODO: Hacer bien
+        return urlstr;
     }
 
     @Override
@@ -301,27 +284,11 @@ public class PromocionesFragment extends Fragment {
             getActivity().unregisterReceiver(dealsReceiver);
             registeredReceiver = false;
         }
-        destroyAsyncTasks();
         super.onPause();
     }
 
-    @Override
-    public void onDestroy() {
-        destroyAsyncTasks();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        destroyAsyncTasks();
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private void destroyAsyncTasks() {
-        System.out.println("Destroying async tasks");
-        for (AsyncTask t: tasks) {
-            if(t != null && t.getStatus() == AsyncTask.Status.RUNNING)
-                t.cancel(true);
-        }
+    private void destroyPendingRequests() {
+        System.out.println("Destroying pending volley requests");
+        // TODO
     }
 }
