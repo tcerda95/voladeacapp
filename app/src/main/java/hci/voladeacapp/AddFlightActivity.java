@@ -71,21 +71,19 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         resultCardView.setVisibility(View.GONE);
         notExists.setVisibility(View.GONE);
 
-        /*
         for(ValidationError error : errors){
             View v = error.getView();
-            System.out.println(v.getClass());
-            Log.d("test",v.getClass().toString());
-            Log.d("test2",(EditText.class).toString());
-            if(v.getClass().equals(AppCompatEditText.class)){
+            Log.d("test", String.valueOf(v.getId()) + String.valueOf(R.id.fl_num_data));
+            if(v.getId() == R.id.fl_num_data){
                 //Es el numero
                 numberInputLayout.setErrorEnabled(true);
-                numberInputLayout.setError("FALTA");
+                numberInputLayout.setError(getString(R.string.missing_data));
             } else {
-                airlineInputLayout.setError("FALTA");
+                //es la aerolinea
                 airlineInputLayout.setErrorEnabled(true);
+                airlineInputLayout.setError(getString(R.string.missing_data));
             }
-        }*/
+        }
     }
 
     private class AdderReceiver extends BroadcastReceiver{
@@ -106,6 +104,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     }
 
     private void addFlight(final FlightStatusGson flGson) {
+        /* ACA SE LLENAN LOS DATOS DE LA TARJETA */
         TextView text = (TextView) findViewById(R.id.flight_info);
         Button add = (Button) findViewById(R.id.add_btn);
         Button detailsButton = (Button) findViewById(R.id.details_btn);
@@ -129,6 +128,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight",flight);
                     startActivity(intent);
+                    //TODO: Ver lo de FlightDetails por que aparece como si tuvie
 
 
                 }
@@ -182,11 +182,14 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
      * En cambio de foco se validan los campos y se pone el mensaje de error correspondiente
      */
     private void setFocusChangeListeners() {
-        airline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        flightNumberEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.d("test","cambio de foco");
-                if (!hasFocus) {
+                numberInputLayout.setErrorEnabled(false);
+                if(hasFocus){
+                    numberInputLayout.setErrorEnabled(false);
+                }else if (!hasFocus) {
+                    numberInputLayout.setErrorEnabled(false);
                     if (!validateEditText(((EditText) v).getText())){
                         numberInputLayout.setErrorEnabled(true);
                         numberInputLayout.setError(getString(R.string.missing_data));
@@ -194,14 +197,18 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                         numberInputLayout.setErrorEnabled(false);
                     }
                 }
+
             }
         });
 
-        flightNumberEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        airline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.d("test","cambio de foco");
-                if (!hasFocus) {
+                airlineInputLayout.setErrorEnabled(false);
+                if(hasFocus){
+                    airlineInputLayout.setErrorEnabled(false);
+                }else if (!hasFocus) {
+                    airlineInputLayout.setErrorEnabled(false);
                     if(!validateEditText(((EditText) v).getText())){
                         airlineInputLayout.setErrorEnabled(true);
                         airlineInputLayout.setError(getString(R.string.missing_data));
@@ -219,12 +226,11 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
      * @return
      */
     private boolean validateEditText(Editable text) {
-        if (!TextUtils.isEmpty(text)) {
-            return true;
+        if (TextUtils.isEmpty(text)){
+            return false;
         }
-        else{
-           return false;
-        }
+        return true;
+
     }
 
     @Override
