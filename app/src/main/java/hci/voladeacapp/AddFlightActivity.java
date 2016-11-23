@@ -5,11 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +26,10 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
+import java.util.Map;
 
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
-import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_REFRESH;
 
 public class AddFlightActivity extends AppCompatActivity implements Validator.ValidationListener{
 
@@ -31,24 +38,54 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     private EditText flightNumberEdit;
 
     @NotEmpty
-    private EditText airline;
+    private AutoCompleteTextView airline;
 
     private Validator validator; // Valida los campos
 
     private ProgressDialog pDialog;
     private AdderReceiver adder;
 
+    private TextInputLayout numberInputLayout;
+    private TextInputLayout airlineInputLayout;
+
+
     @Override
     public void onValidationSucceeded() {
-        String airline = ((EditText)findViewById(R.id.ch_airline_id)).getText().toString().toUpperCase();
-        String number = ((EditText)findViewById(R.id.fl_num)).getText().toString();
+        String airlineData = airline.getText().toString();
+        String numberData = flightNumberEdit.getText().toString();
+        String airlineId = StorageHelper.getAirlineIdMap(this).get(airlineData);
+        /* Ver si se valida esto */
+        if(airlineId == null)
+            Toast.makeText(this,"No existe esa aerolinea",Toast.LENGTH_SHORT);
+
+        airlineInputLayout.setErrorEnabled(false);
+        numberInputLayout.setErrorEnabled(false);
+
         pDialog.show();
-        ApiService.startActionGetFlightStatus(this, airline, number, ACTION_GET_FLIGHT);
+        ApiService.startActionGetFlightStatus(this, airlineId, numberData, ACTION_GET_FLIGHT);
     }
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         Toast.makeText(this, "Hay errores", Toast.LENGTH_SHORT).show();
+        CardView resultCardView = (CardView) findViewById(R.id.card_view);
+        TextView notExists = (TextView) findViewById(R.id.not_exists_result);
+        resultCardView.setVisibility(View.GONE);
+        notExists.setVisibility(View.GONE);
+
+        for(ValidationError error : errors){
+            View v = error.getView();
+            Log.d("test", String.valueOf(v.getId()) + String.valueOf(R.id.fl_num_data));
+            if(v.getId() == R.id.fl_num_data){
+                //Es el numero
+                numberInputLayout.setErrorEnabled(true);
+                numberInputLayout.setError(getString(R.string.missing_data));
+            } else {
+                //es la aerolinea
+                airlineInputLayout.setErrorEnabled(true);
+                airlineInputLayout.setError(getString(R.string.missing_data));
+            }
+        }
     }
 
     private class AdderReceiver extends BroadcastReceiver{
@@ -69,50 +106,153 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     }
 
     private void addFlight(final FlightStatusGson flGson) {
-        TextView text = (TextView) findViewById(R.id.chelo_flight_info);
+        /* ACA SE LLENAN LOS DATOS DE LA TARJETA */
+        //TextView text = (TextView) findViewById(R.id.flight_info);
         Button add = (Button) findViewById(R.id.add_btn);
+        Button detailsButton = (Button) findViewById(R.id.details_btn);
+        ((LinearLayout)findViewById(R.id.buttons)).setVisibility(View.VISIBLE);
+        LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
+        TextView notExists = (TextView) findViewById(R.id.not_exists_result);
 
         if(flGson != null) {
-
-            text.setText(flGson.toString());
+            notExists.setVisibility(View.GONE);
+            //text.setText(flGson.toString());
+            fillData(flGson);
+            resultCardView.setVisibility(View.VISIBLE);
             add.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra(ApiService.DATA_FLIGHT_GSON, flGson));
                     finish();
                 }
             });
+            detailsButton.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view) {
 
-            add.setVisibility(View.VISIBLE);
+                    ConfiguredFlight flight = new ConfiguredFlight(flGson);
+                    Intent intent = new Intent(getApplication(),FlightDetails.class);
+                    intent.putExtra("Flight",flight);
+                    startActivity(intent);
+                    //TODO: Ver lo de FlightDetails por que aparece como si tuvie
+
+
+                }
+            });
 
         }else{
-            text.setText("No existe ese vuelo");
-            add.setVisibility(View.GONE);
+            resultCardView.setVisibility(View.GONE);
+            notExists.setVisibility(View.VISIBLE);
         }
         // finish();
     }
 
+    private void fillData(FlightStatusGson flGson) {
+        TextView origAirView = (TextView) findViewById(R.id.card_departure_airport_id);
+        TextView origCityView = (TextView) findViewById(R.id.card_depart_city);
+        TextView destAirView = (TextView) findViewById(R.id.card_arrival_airport_id);
+        TextView destCityView = (TextView)findViewById(R.id.card_arrival_city);
+        ImageView stateView = (ImageView) findViewById(R.id.card_status_badge);
+        TextView flnumberView = (TextView) findViewById(R.id.card_flight_number);
+        TextView departDateView = (TextView) findViewById(R.id.card_depart_date);
+
+        flnumberView.setText(flGson.airline.id + " " + flGson.number);
+        origAirView.setText(flGson.departure.airport.id);
+        destAirView.setText(flGson.arrival.airport.id);
+        origCityView.setText(flGson.departure.airport.city.name.split(",")[0]);
+        destCityView.setText(flGson.arrival.airport.city.name.split(",")[0]);
+        //TODO: guardar un Date en el GSON
+        departDateView.setText(flGson.departure.scheduled_time);
+        //TODO: imagen del estado
+        //stateTextView.setText(flight.getState());
+
+
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pDialog = new ProgressDialog(this);
         super.onCreate(savedInstanceState);
+        setTitle(getString(R.string.search_flight_title));
         setContentView(R.layout.activity_add_flight);
+        Map<String,String> airlineMap = StorageHelper.getAirlineIdMap(this);
 
-        flightNumberEdit = (EditText) findViewById(R.id.fl_num);
-        airline = (EditText) findViewById(R.id.ch_airline_id);
+        flightNumberEdit = (EditText) findViewById(R.id.fl_num_data);
+        airline = (AutoCompleteTextView) findViewById(R.id.airline_id_data);
+
+        airlineInputLayout = (TextInputLayout) findViewById(R.id.airline_inputLayout);
+        numberInputLayout = (TextInputLayout) findViewById(R.id.number_inputLayout);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
 
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.select_dialog_item,airlineMap.keySet().toArray());
+        airline.setAdapter(adapter);
+        airline.setThreshold(1);
+
         Button search = (Button)findViewById(R.id.fl_search_btn);
-        Button add = (Button)findViewById(R.id.add_btn);
 
         search.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 validator.validate();
             }
         });
+
+        setFocusChangeListeners();
+
+        
+    }
+
+    /**
+     * En cambio de foco se validan los campos y se pone el mensaje de error correspondiente
+     */
+    private void setFocusChangeListeners() {
+        flightNumberEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                numberInputLayout.setErrorEnabled(false);
+                if(hasFocus){
+                    numberInputLayout.setErrorEnabled(false);
+                }else{
+                    numberInputLayout.setErrorEnabled(false);
+                    if (!validateEditText(((EditText) v).getText())){
+                        numberInputLayout.setErrorEnabled(true);
+                        numberInputLayout.setError(getString(R.string.missing_data));
+                    } else {
+                        numberInputLayout.setErrorEnabled(false);
+                    }
+                }
+
+            }
+        });
+
+        airline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                airlineInputLayout.setErrorEnabled(false);
+                if(hasFocus){
+                    airlineInputLayout.setErrorEnabled(false);
+                } else {
+                    airlineInputLayout.setErrorEnabled(false);
+                    if(!validateEditText(((EditText) v).getText())){
+                        airlineInputLayout.setErrorEnabled(true);
+                        airlineInputLayout.setError(getString(R.string.missing_data));
+                    } else {
+                        airlineInputLayout.setErrorEnabled(false);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Retorna true si el campo está lleno y false si el campo está vacío
+     * @param text
+     * @return
+     */
+    private boolean validateEditText(Editable text) {
+        if (TextUtils.isEmpty(text))
+            return false;
+        return true;
     }
 
     @Override
@@ -129,4 +269,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         super.onPause();
         unregisterReceiver(adder);
     }
+
+
+
 }

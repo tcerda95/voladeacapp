@@ -14,7 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.Locale;
 
-//TODO: TEMAS DE EL STACK PARA REINCIAR LA ACTIVITY VOLADEACAPP Y QUE SE CARGUEN LOS STRINGS DE LAS TABS
+//TODO: STACK no preserva el fragment que tenía
 public class AppSettingsActivity extends AppCompatActivity {
 
     @Override
@@ -84,7 +84,6 @@ public class AppSettingsActivity extends AppCompatActivity {
                             config.setLocale(location);
                             Locale.setDefault(location);
                             getResources().updateConfiguration(config,getResources().getDisplayMetrics());
-                            // TODO: sacar la activity del stack y reload
                             buildStack();
                             }
                     };

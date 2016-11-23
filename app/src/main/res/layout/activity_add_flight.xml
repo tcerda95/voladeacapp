@@ -10,52 +10,65 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="hci.voladeacapp.AddFlightActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/ch_airline_id"
-        android:layout_marginTop="13dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:hint="ID aerolinea" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:id="@+id/chelo_flight_info"
-        android:layout_below="@+id/fl_search_btn"
-        android:layout_alignParentEnd="true" />
+        android:orientation="vertical"
+        android:id="@+id/search_fields">
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/airline_inputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/airline_id_data"
+            android:layout_marginTop="13dp"
+            android:hint="@string/airline_name" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/number_inputLayout">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/fl_num_data"
+            android:hint="@string/flight_number" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:text="Buscar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fl_search_btn"
-        android:layout_alignBottom="@+id/fl_num"
-        android:layout_toEndOf="@+id/ch_airline_id"
-        android:layout_marginStart="21dp"
-        android:layout_marginBottom="13dp" />
+        android:id="@+id/fl_search_btn" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/fl_num"
-        android:hint="Numero de vuelo"
-        android:layout_below="@+id/ch_airline_id"
-        android:layout_toStartOf="@+id/fl_search_btn" />
+    </LinearLayout>
 
-    <Button
-        android:text="Agregar"
-        android:layout_width="wrap_content"
+    <include layout="@layout/my_flight_card"
+        android:layout_below="@id/search_fields"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/add_btn"
-        android:layout_below="@+id/fl_num"
-        android:layout_alignStart="@+id/fl_search_btn"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="20dp"
+        android:id="@+id/result_card"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/search_fields"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_exists"
+            android:id="@+id/not_exists_result"
+            android:visibility="gone"/>
+    </LinearLayout>
 </RelativeLayout>
