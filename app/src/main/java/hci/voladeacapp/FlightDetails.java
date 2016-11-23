@@ -24,6 +24,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+
 public class FlightDetails extends AppCompatActivity {
     private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
@@ -38,7 +40,7 @@ public class FlightDetails extends AppCompatActivity {
         setContentView(R.layout.activity_flight_details);
 
        // this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
-        this.identifier = (FlightIdentifier) getIntent().getSerializableExtra("FLIGHT_IDENTIFIER");
+        this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
         this.flight = StorageHelper.getFlight(this, identifier);
 
         setTitle(flight.getAirline() + " " + flight.getNumber());
@@ -51,7 +53,7 @@ public class FlightDetails extends AppCompatActivity {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             Intent configIntent = new Intent(getApplicationContext(), FlightSettingsActivity.class);
-            configIntent.putExtra("FLIGHT_IDENTIFIER", identifier);
+            configIntent.putExtra(FLIGHT_IDENTIFIER, identifier);
             startActivity(configIntent);
             return true;
         }
@@ -174,14 +176,6 @@ public class FlightDetails extends AppCompatActivity {
         this.flight = StorageHelper.getFlight(this, identifier);
         FlightSettings fn = this.flight.getSettings();
 
-        fn.setNotification(NotificationCategory.LANDING, false);
-        System.out.println("HEEEEEEEEEEY THIS ARE THE SETTINGS: ");
-        System.out.println("NOTIFICATIONS: ");
-        System.out.println("Cancelation: " + fn.isActive(NotificationCategory.CANCELATION));
-        System.out.println("Takeoff: " + fn.isActive(NotificationCategory.TAKEOFF));
-        System.out.println("Deviation: " + fn.isActive(NotificationCategory.DEVIATION));
-        System.out.println("Delay: " + fn.isActive(NotificationCategory.DELAY));
-        System.out.println("Landing: " + fn.isActive(NotificationCategory.LANDING));
 
     }
 

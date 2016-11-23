@@ -6,6 +6,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+
 
 public class FlightSettingsActivity extends AppCompatActivity {
 
@@ -36,7 +38,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.flight_preferences);
 
 
-            identifier =  (FlightIdentifier) getActivity().getIntent().getSerializableExtra("FLIGHT_IDENTIFIER");
+            identifier =  (FlightIdentifier) getActivity().getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
 
             spChanged = new
                     SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -99,14 +101,6 @@ public class FlightSettingsActivity extends AppCompatActivity {
             StorageHelper.saveFlight(getActivity(), flight);
 
             sp.unregisterOnSharedPreferenceChangeListener(spChanged);
-
-            System.out.println("FLIGHT CHANGED! : ");
-            System.out.println("NOTIFICATIONS: ");
-            System.out.println("Cancelation: " + fn.isActive(NotificationCategory.CANCELATION));
-            System.out.println("Takeoff: " + fn.isActive(NotificationCategory.TAKEOFF));
-            System.out.println("Deviation: " + fn.isActive(NotificationCategory.DEVIATION));
-            System.out.println("Delay: " + fn.isActive(NotificationCategory.DELAY));
-            System.out.println("Landing: " + fn.isActive(NotificationCategory.LANDING));
         }
     }
 
