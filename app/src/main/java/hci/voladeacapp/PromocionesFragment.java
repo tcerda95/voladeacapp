@@ -6,9 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +37,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +55,7 @@ import java.util.Map;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
-public class PromocionesFragment extends Fragment {
+public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
@@ -68,7 +76,9 @@ public class PromocionesFragment extends Fragment {
     private PromoCardAdapter promoAdapter;
     private ArrayAdapter<String> cityAutocompleteAdapter;
 
-    private static final String[] CITIES_DUMMY = new String[] {
+    private GoogleApiClient client;
+
+    private static final String[] CITIES_DUMMY = new String[]{
             "Buenos Aires", "Londres", "Neuquen", "Nueva York",
     };
 
@@ -80,6 +90,17 @@ public class PromocionesFragment extends Fragment {
         deals = new ArrayList<>();
         imageURLs = new HashMap<>();
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        client = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        client.connect();
+        super.onStart();
     }
 
     @Override
@@ -116,7 +137,7 @@ public class PromocionesFragment extends Fragment {
         });
 
         cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
-                android.R.layout.select_dialog_item,  CITIES_DUMMY);
+                android.R.layout.select_dialog_item, CITIES_DUMMY);
 
         fromCityTextView.setAdapter(cityAutocompleteAdapter);
 
@@ -159,11 +180,10 @@ public class PromocionesFragment extends Fragment {
         dealsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                List<DealGson> list = (List<DealGson>)intent.getSerializableExtra(DATA_DEAL_LIST);
+                List<DealGson> list = (List<DealGson>) intent.getSerializableExtra(DATA_DEAL_LIST);
                 if (list == null) {
                     System.out.println("NULL LIST");
-                }
-                else {
+                } else {
                     for (DealGson d : list) {
                         deals.add(d);
                         getCityImageURL(d);
@@ -180,6 +200,33 @@ public class PromocionesFragment extends Fragment {
         refreshResults();
 
         return rootView;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            System.out.println("Rejected location permissions");
+           //TODO: No me dieron permisos para usar localizacion. Hacer algo. Hay que preguntarlos en algún momento.
+            return;
+        }
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        if (mLastLocation != null) {
+            System.out.println("Latitude: " + mLastLocation.getLatitude());
+            System.out.println("Longitude: " + mLastLocation.getLongitude());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        System.out.println("Connection suspended");
+        return;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        System.out.println("Connection failed");
     }
 
     private void saveDealsData() {
@@ -242,7 +289,7 @@ public class PromocionesFragment extends Fragment {
     }
 
     private void updateLabel() {
-        String myFormat = getResources().getString(R.string.formato_fecha); //TODO: Localizar formato
+        String myFormat = getResources().getString(R.string.formato_fecha);
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
@@ -306,6 +353,12 @@ public class PromocionesFragment extends Fragment {
         super.onPause();
     }
 
+    @Override
+    public void onStop() {
+        client.disconnect();
+        super.onStop();
+    }
+
     private void destroyPendingRequests() {
         System.out.println("Destroying pending volley requests");
         // TODO
@@ -316,4 +369,6 @@ public class PromocionesFragment extends Fragment {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.findViewById(R.id.dummy_focus_layout).requestFocus();
     }
+
+
 }
