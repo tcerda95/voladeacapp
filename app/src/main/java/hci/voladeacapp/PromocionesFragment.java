@@ -7,12 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -48,10 +43,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
@@ -75,26 +70,25 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private PromoCardAdapter promoAdapter;
     private ArrayAdapter<String> cityAutocompleteAdapter;
+    private Map<String, CityGson> citiesMap;
 
     private GoogleApiClient client;
-
-    private static final String[] CITIES_DUMMY = new String[]{
-            "Buenos Aires", "Londres", "Neuquen", "Nueva York",
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        Context context = getActivity().getApplication();
         deals = new ArrayList<>();
         imageURLs = new HashMap<>();
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        client = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        requestQueue = Volley.newRequestQueue(context);
+        client = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        citiesMap = StorageHelper.getCitiesMap(context);
     }
 
     @Override
@@ -137,15 +131,17 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         });
 
         cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
-                android.R.layout.select_dialog_item, CITIES_DUMMY);
+                android.R.layout.select_dialog_item, new ArrayList<>(citiesMap.keySet()));
 
         fromCityTextView.setAdapter(cityAutocompleteAdapter);
 
         fromCityTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
                 hideKeyboard(rootView);
-                System.out.println("Clicked " + CITIES_DUMMY[position]);
+                refreshResults();
+                System.out.println("Clicked " + position);
             }
         });
 
@@ -215,17 +211,38 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         if (mLastLocation != null) {
             System.out.println("Latitude: " + mLastLocation.getLatitude());
             System.out.println("Longitude: " + mLastLocation.getLongitude());
+            fromCityTextView.setText(getClosestCity(mLastLocation));
+            refreshResults();
         }
+    }
+
+    private String getClosestCity(Location userLocation) {
+        Set<Map.Entry<String, CityGson>> entries = citiesMap.entrySet();
+        Location cityLocation = new Location("CityLocation");
+        double minDistance = Double.MAX_VALUE;
+        String closestCity  = null;
+
+        for (Map.Entry<String, CityGson> e: entries) {
+            cityLocation.setLatitude(e.getValue().latitude);
+            cityLocation.setLongitude(e.getValue().longitude);
+            double auxDistance = userLocation.distanceTo(cityLocation);
+            if (auxDistance < minDistance) {
+                closestCity = e.getKey();
+                minDistance = auxDistance;
+                System.out.println(closestCity);
+            }
+        }
+
+        return closestCity;
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         System.out.println("Connection suspended");
-        return;
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
         System.out.println("Connection failed");
     }
 
@@ -265,7 +282,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
                 registeredReceiver = true;
             }
-            ApiService.startActionGetDeals(getActivity().getApplicationContext(), "BUE",RECEIVER_TAG);
+            CityGson city = citiesMap.get(fromCityTextView.getText().toString());
+            if (city == null) {
+                System.out.println("INVALID CITY");
+            } else {
+                ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
+            }
         }
 
     }
@@ -321,13 +343,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private String getImageURL(JSONObject obj) {
         try {
             JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-            String url = "https://farm"
+            return "https://farm"
                     + photo.getString("farm") + ".staticflickr.com/"
                     + photo.getString("server") + "/"
                     + photo.getString("id") + "_"
                     + photo.getString("secret") + ".jpg";
-
-            return url;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -335,13 +355,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     }
 
     private String getAPIPetition(DealGson deal) {
-        String urlstr =
+        return
                 "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                         "&api_key=3fc73140f600953c1eea5e534bac4670&"
                         + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
                         + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
         //TODO: Hacer bien
-        return urlstr;
     }
 
     @Override
@@ -357,11 +376,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onStop() {
         client.disconnect();
         super.onStop();
-    }
-
-    private void destroyPendingRequests() {
-        System.out.println("Destroying pending volley requests");
-        // TODO
     }
 
     private void hideKeyboard(View view) {
