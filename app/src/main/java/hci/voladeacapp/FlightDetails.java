@@ -79,11 +79,9 @@ public class FlightDetails extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
                     dialog.cancel();
-<<<<<<< HEAD
                     StorageHelper.saveFlights(getApplicationContext(), saved_flights);
                     setRemovedFlightResult(flight, true);
-=======
->>>>>>> promos_cache
+
                     updateOptionsMenuVisibility();
                 }
 
@@ -173,9 +171,6 @@ public class FlightDetails extends AppCompatActivity {
     private TextView getTextView(int id) {
         return (TextView) findViewById(id);
     }
-<<<<<<< HEAD
-
-
 
     protected void onResume(){
         super.onResume();
@@ -196,6 +191,5 @@ public class FlightDetails extends AppCompatActivity {
         super.onDestroy();
         StorageHelper.saveFlights(getApplicationContext(), saved_flights);
     }
-=======
->>>>>>> promos_cache
+
 }

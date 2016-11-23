@@ -1,25 +1,17 @@
 package hci.voladeacapp;
 
-<<<<<<< HEAD
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentProvider;
-=======
->>>>>>> promos_cache
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.Calendar;
->>>>>>> promos_cache
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,22 +24,15 @@ import static hci.voladeacapp.ApiService.DATA_AIRLINE_ID_MAP;
  */
 
 public class StorageHelper {
-<<<<<<< HEAD
     public final static String FLIGHT_LIST = "hci.voladeacapp.StorageHelper.FLIGHT_LIST";
     public final static String FLIGHTS = "hci.voladeacapp.data.StorageHelper.FLIGHTS";
     public final static String DATA = "hci.voladeacapp.StorageHelper.DATA";
     private static final String AIRLINE_LIST = "hci.voladeacapp.StorageHelper.AIRLINE_LIST";
-=======
-    public final static String FLIGHT_LIST = "hci.voladeacapp.MisVuelos.FLIGHT_LIST";
-    public final static String FLIGHTS = "hci.voladeacapp.data.FLIGHTS";
+
     public final static String DEALS_WITH_IMG = "hci.voladeacapp.data.DEALS_WITH_IMG";
     public final static String DEALS_CITY_ID = "hci.voladeacapp.data.DEALS_CITY_ID";
     public final static String DEALS_CALENDAR = "hci.voladeacapp.data.DEALS_CALENDAR";
 
-
-
-    // TODO: modularizarlas. No se como.
->>>>>>> promos_cache
 
     public static ArrayList<ConfiguredFlight> getFlights(Context context) {
         ArrayList<ConfiguredFlight> flight_details;
@@ -160,8 +145,6 @@ public class StorageHelper {
 
     }
 
-
-
     public static void deleteFlight(Context context, FlightIdentifier identifier){
         ConfiguredFlight searcher = new ConfiguredFlight();
 
@@ -175,7 +158,6 @@ public class StorageHelper {
     }
 
 
-
     public static void saveFlight(Context context, ConfiguredFlight flight){
         List<ConfiguredFlight> list = getFlights(context);
         list.remove(flight);
@@ -183,8 +165,6 @@ public class StorageHelper {
 
         saveFlights(context, list);
     }
-
-
 
     public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
         saveData(context, flight_details, FLIGHT_LIST);
@@ -209,7 +189,6 @@ public class StorageHelper {
         editor.putString(key, s);
         editor.commit();
     }
-<<<<<<< HEAD
 
     //Carga recursos estaticos
     public static void initialize(Context context) {
@@ -239,8 +218,4 @@ public class StorageHelper {
             }, new IntentFilter(callback));
         }
     }
-
-
-=======
->>>>>>> promos_cache
 }
