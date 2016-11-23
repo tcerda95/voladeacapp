@@ -1,8 +1,6 @@
 package hci.voladeacapp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,24 +10,10 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Bianchi on 16/11/16.
@@ -37,11 +21,11 @@ import java.util.HashMap;
 
 public class PromoCardAdapter extends BaseAdapter {
     private ArrayList<DealGson> cardsData;
-    private HashMap<DealGson, String> flightImages;
+    private Map<DealGson, String> flightImages;
     private LayoutInflater inflater;
     private ViewHolder holder;
 
-    public PromoCardAdapter(Context aContext, ArrayList<DealGson> flights, HashMap<DealGson, String> flightImages) {
+    public PromoCardAdapter(Context aContext, ArrayList<DealGson> flights, Map<DealGson, String> flightImages) {
         inflater = LayoutInflater.from(aContext);
         this.flightImages = flightImages;
         this.cardsData = flights;

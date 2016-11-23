@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="120dp" android:background="@color/red">
+    android:background="@color/red"
+    android:layout_height="110dp">
 
     <TextView
         android:layout_width="0dp"
@@ -12,8 +13,7 @@
         android:gravity="start|center"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
-        android:textSize="18sp"
-        android:textStyle="normal|bold" />
+        android:textSize="18sp" />
 
     <Button android:id="@+id/undo_button"
         android:layout_width="0dp"
@@ -26,5 +26,5 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:textSize="18sp"
-        android:textStyle="normal|bold" />
+        />
 </LinearLayout>

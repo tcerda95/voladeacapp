@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -37,8 +38,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
@@ -56,7 +59,7 @@ public class PromocionesFragment extends Fragment {
     private RequestQueue requestQueue;
 
     private ArrayList<DealGson> deals;
-    private HashMap<DealGson, String> imageURLs;
+    private Map<DealGson, String> imageURLs;
     private BroadcastReceiver dealsReceiver;
     private boolean registeredReceiver = false;
 
@@ -67,6 +70,8 @@ public class PromocionesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        deals = new ArrayList<>();
+        imageURLs = new HashMap<>();
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
     }
 
@@ -79,6 +84,7 @@ public class PromocionesFragment extends Fragment {
         fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
         updateLabel();
 
+        // Datepicker para fecha de salida
         final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -92,6 +98,7 @@ public class PromocionesFragment extends Fragment {
             }
         };
 
+        // Listener fecha salida
         fromDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,42 +109,35 @@ public class PromocionesFragment extends Fragment {
             }
         });
 
-        deals = new ArrayList<>();
-        imageURLs = new HashMap<>();
-
         cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         promoAdapter = new PromoCardAdapter(getActivity(), deals, imageURLs);
         cardListView.setAdapter(promoAdapter);
 
+        // Listener para actualización de ciudad de salida
         fromCityTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    refreshResults();
                     handled = true;
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+                    refreshResults();
                 }
                 return handled;
             }
         });
 
+        // Listener para ver detalles del vuelo
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 //TODO: Sacar el vuelo en base al deal para hacer la pantalla de detalles
-//                Object o = cardListView.getItemAtPosition(position);
-//                Flight flightData = (Flight) o;
-//
-//                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-//                detailIntent.putExtra("Flight",flightData);
-//
-//                startActivity(detailIntent);
                 System.out.println("CLICKED: " + position);
             }
         });
 
+        // Receiver para el ApiService
         dealsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -148,28 +148,59 @@ public class PromocionesFragment extends Fragment {
                 else {
                     for (DealGson d : list) {
                         deals.add(d);
-                        new getCityImageURLTask().execute(d);
+                        getCityImageURL(d);
                     }
+                    saveDealsData();
                     promoAdapter.notifyDataSetChanged();
                 }
             }
         };
 
+        // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
         refreshResults();
 
         return rootView;
     }
 
+    private void saveDealsData() {
+        if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
+            System.out.println("saving");
+            Context context = getActivity().getApplicationContext();
+            StorageHelper.saveDeals(context, imageURLs);
+            StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
+            StorageHelper.saveDealSearchCalendar(context, fromCalendar);
+        }
+    }
+
     private void refreshResults() {
-        deals.clear();
-        if (!registeredReceiver) {
-            getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
-            registeredReceiver = true;
+        Context context = getActivity().getApplicationContext();
+        Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
+        String prevSearchcity = StorageHelper.getDealSearchCity(context);
+
+        boolean sameDay = prevSearchCal != null && prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR);
+        boolean sameCity = prevSearchcity != null && prevSearchcity.equals(fromCityTextView.getText().toString());
+
+        if (prevSearchCal != null && prevSearchcity != null) {
+            System.out.println("Prev city: " + prevSearchcity);
+            System.out.println("Prev cal" + prevSearchCal.get(Calendar.DAY_OF_MONTH) + "/" + prevSearchCal.get(Calendar.MONTH));
         }
 
-        System.out.println("Promos from " + fromCityTextView.getText().toString());
-        ApiService.startActionGetDeals(getActivity().getApplicationContext(),
-                fromCityTextView.getText().toString(), RECEIVER_TAG);
+        if (false) { //(sameCity && sameDay) TODO: se rompe todo
+            System.out.println("Using cache!");
+            imageURLs = StorageHelper.getDeals(context);
+            deals = new ArrayList<>(imageURLs.keySet());
+            promoAdapter.notifyDataSetChanged();
+        }
+        else {
+            System.out.println("NOT using cache!");
+            deals.clear();
+            if (!registeredReceiver) {
+                getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
+                registeredReceiver = true;
+            }
+            ApiService.startActionGetDeals(getActivity().getApplicationContext(), "BUE",RECEIVER_TAG);
+        }
+
     }
 
     @Override
@@ -197,56 +228,54 @@ public class PromocionesFragment extends Fragment {
         fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
 
+    private void getCityImageURL(final DealGson deal) {
+        StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(deal),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            imageURLs.put(deal, getImageURL(new JSONObject(response)));
+                            promoAdapter.notifyDataSetChanged();
 
-    private class getCityImageURLTask extends AsyncTask<DealGson, Void, String> {
-        protected String doInBackground(final DealGson... deal) {
-
-            StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(deal[0]),
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                imageURLs.put(deal[0], getImageURL(new JSONObject(response)));
-                                promoAdapter.notifyDataSetChanged();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            // Ineficiente pero bue
+                            saveDealsData();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
-
-            requestQueue.add(sr);
-            return null;
-        }
-
-        private String getImageURL(JSONObject obj) {
-            try {
-                JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-                String url = "https://farm"
-                        + photo.getString("farm") + ".staticflickr.com/"
-                        + photo.getString("server") + "/"
-                        + photo.getString("id") + "_"
-                        + photo.getString("secret") + ".jpg";
-
-                return url;
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
             }
-            return null;
-        }
+        });
 
-        private String getAPIPetition(DealGson deal) {
-            String urlstr =
-                    "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                    "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                    + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
-                    + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
-            //TODO: Hacer bien
-            return urlstr;
+        requestQueue.add(sr);
+    }
+
+    private String getImageURL(JSONObject obj) {
+        try {
+            JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
+            String url = "https://farm"
+                    + photo.getString("farm") + ".staticflickr.com/"
+                    + photo.getString("server") + "/"
+                    + photo.getString("id") + "_"
+                    + photo.getString("secret") + ".jpg";
+
+            return url;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        return null;
+    }
+
+    private String getAPIPetition(DealGson deal) {
+        String urlstr =
+                "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
+                        "&api_key=3fc73140f600953c1eea5e534bac4670&"
+                        + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
+                        + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+        //TODO: Hacer bien
+        return urlstr;
     }
 
     @Override
@@ -258,12 +287,8 @@ public class PromocionesFragment extends Fragment {
         super.onPause();
     }
 
-    @Override
-    public void onDestroy() {
-        if (registeredReceiver) {
-            getActivity().unregisterReceiver(dealsReceiver);
-            registeredReceiver = false;
-        }
-        super.onDestroy();
+    private void destroyPendingRequests() {
+        System.out.println("Destroying pending volley requests");
+        // TODO
     }
 }

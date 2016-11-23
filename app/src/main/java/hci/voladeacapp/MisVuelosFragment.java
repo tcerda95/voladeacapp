@@ -77,15 +77,21 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
 
         //Lleno la lista con lo que esta en shared app_preferences
 
+=======
+        setRetainInstance(true);
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+>>>>>>> promos_cache
     }
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+<<<<<<< HEAD
 
         System.out.println("ON CREATE VIEW!!!!!!1111111111111111111");
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
@@ -93,6 +99,10 @@ public class MisVuelosFragment extends Fragment {
 
 
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+=======
+        View rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+>>>>>>> promos_cache
 
         receiver = new RefreshReceiver();
 
@@ -287,7 +297,6 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
         IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
         ifilter.setPriority(10);
         getActivity().registerReceiver(receiver, ifilter);
