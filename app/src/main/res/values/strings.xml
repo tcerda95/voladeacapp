@@ -78,5 +78,7 @@
     <string name="every">Cada</string>
     <string name="not_exists">No existe el vuelo</string>
     <string name="missing_data">Campo Incompleto</string>
+    <string name="airline_name">Nombre de Aerolinea</string>
+    <string name="flight_number">Numero de vuelo</string>
 
 </resources>
