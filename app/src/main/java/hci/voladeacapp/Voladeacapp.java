@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -25,6 +26,10 @@ public class Voladeacapp extends AppCompatActivity {
     private Fragment misVuelosFragment;
     private Fragment promocionesFragment;
     private Fragment resenasFragment;
+
+    public static String PERMSISSION_BROADCAST = "PermissionBroadcast";
+    public static String PERMISSION_CODE_EXTRA = "BroadcastPermissionCode";
+    public static String PERMISSION_GRANT_EXTRA = "BroadcastPermissionGrant";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +119,17 @@ public class Voladeacapp extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        for (int i = 0; i < grantResults.length; i++) {
+            Intent newPermissionIntent = new Intent(PERMSISSION_BROADCAST);
+            newPermissionIntent.putExtra(PERMISSION_CODE_EXTRA, requestCode);
+            newPermissionIntent.putExtra(PERMISSION_GRANT_EXTRA, grantResults[i] == PackageManager.PERMISSION_GRANTED);
+            sendOrderedBroadcast(newPermissionIntent, null);
+        }
     }
 
     @Override

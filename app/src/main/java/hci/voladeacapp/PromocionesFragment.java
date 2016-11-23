@@ -1,5 +1,8 @@
 package hci.voladeacapp;
 
+import android.*;
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
@@ -11,6 +14,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -28,6 +33,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -54,6 +61,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
+
+    private final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private Calendar fromCalendar;
 
@@ -199,20 +208,42 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            System.out.println("Rejected location permissions");
-           //TODO: No me dieron permisos para usar localizacion. Hacer algo. Hay que preguntarlos en algún momento.
-            return;
+        if (!getLocationAndSearch()) {//No permissions
+            requestLocationPermissions();
         }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        if (mLastLocation != null) {
-            System.out.println("Latitude: " + mLastLocation.getLatitude());
-            System.out.println("Longitude: " + mLastLocation.getLongitude());
+    }
+
+    private boolean requestLocationPermissions() {
+        if (!hasLocationPermissions()) {
+            getActivity().registerReceiver(new permissionReceiver(), new IntentFilter(Voladeacapp.PERMSISSION_BROADCAST));
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }
+        return true;
+    }
+
+    private boolean getLocationAndSearch() {
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            System.out.println("Has permission");
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
             fromCityTextView.setText(getClosestCity(mLastLocation));
             refreshResults();
+            return true;
         }
+        System.out.println("NO permission");
+        return false;
+    }
+
+    public boolean hasLocationPermissions() {
+        return ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     private String getClosestCity(Location userLocation) {
@@ -408,4 +439,26 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         }
     }
 
+    private class permissionReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int requestCode = intent.getIntExtra(Voladeacapp.PERMISSION_CODE_EXTRA, -1);
+            boolean granted = intent.getBooleanExtra(Voladeacapp.PERMISSION_GRANT_EXTRA, false);
+
+            if (requestCode == -1)
+                return;
+
+            switch (requestCode) {
+                case LOCATION_PERMISSION_REQUEST_CODE: {
+                    if (granted) {
+                        getLocationAndSearch(); // Debería andar siempre, ya me dio permiso.
+                    } else {
+                        // No dió permiso. Desactivar funcionalidad
+                        //TODO
+                        Toast.makeText(getActivity().getApplicationContext(), "PUTO DE MIERDA DECIME DONDE ESTAS", Toast.LENGTH_LONG);
+                    }
+                }
+            } // Se pueden poner mas permisos.
+        }
+    }
 }
