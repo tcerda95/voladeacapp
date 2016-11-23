@@ -7,7 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="hci.voladeacapp.Voladeacapp"
-    android:layout_margin="0dp">
+    android:layout_margin="0dp"
+    android:background="@color/white"
+    >
 
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
