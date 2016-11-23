@@ -188,7 +188,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 numberInputLayout.setErrorEnabled(false);
                 if(hasFocus){
                     numberInputLayout.setErrorEnabled(false);
-                }else if (!hasFocus) {
+                }else{
                     numberInputLayout.setErrorEnabled(false);
                     if (!validateEditText(((EditText) v).getText())){
                         numberInputLayout.setErrorEnabled(true);
@@ -207,7 +207,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 airlineInputLayout.setErrorEnabled(false);
                 if(hasFocus){
                     airlineInputLayout.setErrorEnabled(false);
-                }else if (!hasFocus) {
+                } else {
                     airlineInputLayout.setErrorEnabled(false);
                     if(!validateEditText(((EditText) v).getText())){
                         airlineInputLayout.setErrorEnabled(true);
@@ -226,11 +226,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
      * @return
      */
     private boolean validateEditText(Editable text) {
-        if (TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text))
             return false;
-        }
         return true;
-
     }
 
     @Override
