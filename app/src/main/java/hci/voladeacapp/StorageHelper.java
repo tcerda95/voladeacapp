@@ -72,6 +72,34 @@ public class StorageHelper {
 
 
 
+    public static ConfiguredFlight getFlight(Context context, FlightIdentifier identifier){
+        ConfiguredFlight searcher = new ConfiguredFlight();
+
+        searcher.setAirline(identifier.getAirline());
+        searcher.setNumber(identifier.getNumber());
+
+        List<ConfiguredFlight> list = getFlights(context);
+
+        int idx = list.indexOf(searcher);
+        if(idx < 0){
+            return null;
+        }
+
+        return list.get(idx);
+
+    }
+
+
+    public static void saveFlight(Context context, ConfiguredFlight flight){
+        List<ConfiguredFlight> list = getFlights(context);
+        list.remove(flight);
+        list.add(flight);
+
+        saveFlights(context, list);
+    }
+
+
+
     public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
         Gson gson = new Gson();
         String s = gson.toJson(flight_details);
@@ -82,11 +110,13 @@ public class StorageHelper {
 
     //Carga recursos estaticos
     public static void initialize(Context context) {
-        System.out.println("???????????????????????");
         final SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
         final String airlines = sp.getString(AIRLINE_LIST, null);
+
         if(airlines == null){
-            ApiService.startActionGetAirlines(context, "AIRLINE_SAVER");
+            //Solo si no lo tengo lo voy a buscar
+            String callback = "hci.voladeacapp.initialize.AIRLINE_SAVER";
+            ApiService.startActionGetAirlines(context, callback);
 
             context.registerReceiver(new BroadcastReceiver() {
                 @Override
@@ -95,19 +125,15 @@ public class StorageHelper {
                     if(idMap != null) {
                         Gson gson = new Gson();
                         String map = gson.toJson(idMap);
-                        System.out.println("MAAAAAAAAAAAAAAAAAAAAAP");
                         System.out.println(map);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(AIRLINE_LIST, map);
                         editor.commit();
                     } else{
-                        System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLL");
                     }
                     context.unregisterReceiver(this);
                 }
-            }, new IntentFilter("AIRLINE_SAVER"));
-        }else{
-            System.out.println(airlines);
+            }, new IntentFilter(callback));
         }
     }
 

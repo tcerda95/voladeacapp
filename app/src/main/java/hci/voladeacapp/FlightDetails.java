@@ -24,17 +24,25 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+
 public class FlightDetails extends AppCompatActivity {
     private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
     private ConfiguredFlight flight;
+
+    private FlightIdentifier identifier;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
-        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
+
+       // this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
+        this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
+        this.flight = StorageHelper.getFlight(this, identifier);
+
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
@@ -45,7 +53,7 @@ public class FlightDetails extends AppCompatActivity {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             Intent configIntent = new Intent(getApplicationContext(), FlightSettingsActivity.class);
-            configIntent.putExtra("Flight", flight);
+            configIntent.putExtra(FLIGHT_IDENTIFIER, identifier);
             startActivity(configIntent);
             return true;
         }
@@ -158,6 +166,22 @@ public class FlightDetails extends AppCompatActivity {
 
     private TextView getTextView(int id) {
         return (TextView) findViewById(id);
+    }
+
+
+
+    protected void onResume(){
+        super.onResume();
+
+        this.flight = StorageHelper.getFlight(this, identifier);
+        FlightSettings fn = this.flight.getSettings();
+
+
+    }
+
+    protected void onPause(){
+        super.onPause();
+        StorageHelper.saveFlight(this, flight);
     }
 
     @Override

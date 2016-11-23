@@ -26,11 +26,13 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 
 public class MisVuelosFragment extends Fragment {
+
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
@@ -53,6 +55,8 @@ public class MisVuelosFragment extends Fragment {
 
     public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
     public final static String ACTION_GET_REFRESH = "hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH";
+    public static final String FLIGHT_IDENTIFIER = "hci.voladeacapp.extra.FLIGHT_IDENTIFIER";
+
 
     public final static String FLIGHT_REMOVED = "hci.voladeacapp.MisVuelos.FLIGHT_REMOVED";
 
@@ -75,16 +79,25 @@ public class MisVuelosFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Lleno la lista con lo que esta en shared app_preferences
-        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+
+        System.out.println("ON CREATE VIEW!!!!!!1111111111111111111");
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+
+
+
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
         receiver = new RefreshReceiver();
 
         FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
+
 
         flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
@@ -111,8 +124,9 @@ public class MisVuelosFragment extends Fragment {
                 Object o = flightsListView.getItemAtPosition(position);
                 ConfiguredFlight flightData = (ConfiguredFlight) o;
 
+
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra("Flight",flightData);
+                detailIntent.putExtra(FLIGHT_IDENTIFIER, new FlightIdentifier(flightData));
 
                 startActivityForResult(detailIntent, DETAILS_REQUEST_CODE);
             }
@@ -239,8 +253,10 @@ public class MisVuelosFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        resetList();
+
         if (requestCode == DETAILS_REQUEST_CODE && resultCode == AddFlightActivity.RESULT_OK) {
-            flight_details = StorageHelper.getFlights(getActivity());
+          //  flight_details = StorageHelper.getFlights(getActivity());
         }
 
         if (resultCode == RESULT_CANCELED) {
@@ -257,6 +273,15 @@ public class MisVuelosFragment extends Fragment {
 
             }
         }
+    }
+
+    private void resetList() {
+        flight_details.clear();
+        List<ConfiguredFlight> list = StorageHelper.getFlights(getActivity());
+        for(ConfiguredFlight f : list){
+            flight_details.add(f);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
