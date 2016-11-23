@@ -72,4 +72,7 @@
     <string name="flight_number">Flight number</string>
     <string name="missing_data"></string>
     <string name="not_exists">This Flight does not exist</string>
+    <string name="error_required_airline">The airline is required</string>
+    <string name="error_required_flight_number">The flight number is required</string>
+    <string name="optional">Optional</string>
 </resources>
