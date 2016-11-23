@@ -34,12 +34,14 @@ public class ApiService extends IntentService {
     public static final String DATA_GLOBAL_REVIEW = "hci.voladeacapp.data.DATA_REVIEW_LIST";
     public static final String DATA_DEAL_LIST = "hci.voladeacapp.data.DATA_DEAL_LIST";
     public static final String DATA_AIRLINE_ID_MAP = "hci.voladeacapp.data.DATA_AIRLINE_ID_MAP";
+    public static final String DATA_CITY_MAP = "hci.voladeacapp.data.DATA_CITY_MAP";
 
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
     private static final String ACTION_SEND_REVIEW = "hci.voladeacapp.action.SEND_REVIEW";
     private static final String ACTION_GET_REVIEWS = "hci.voladeacapp.action.GET_REVIEWS";
     private static final String ACTION_GET_DEALS = "hci.voladeacapp.action.GET_DEALS";
     private static final String ACTION_GET_AIRLINES = "hci.voladeacapp.action.GET_AIRLINES";
+    private static final String ACTION_GET_CITIES = "hci.voladeacapp.action.GET_CITIES";
 
     private static final String PARAM_AIRLINE = "hci.voladeacapp.extra.PARAM_AIRLINE";
     private static final String PARAM_FLNUMBER = "hci.voladeacapp.extra.PARAM_FLNUMBER";
@@ -103,6 +105,14 @@ public class ApiService extends IntentService {
 
     }
 
+    public static void startActionGetCities(Context context, String callback) {
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_GET_CITIES);
+
+        intent.putExtra(CALLBACK_INTENT, callback);
+        context.startService(intent);
+    }
+
 
     public static void startActionGetDeals(Context context, String originID, String callback){
         Intent intent = new Intent(context, ApiService.class);
@@ -146,6 +156,11 @@ public class ApiService extends IntentService {
                 final String callback = intent.getStringExtra(CALLBACK_INTENT);
                 handleActionGetAirlines(callback);
             }
+
+            if(ACTION_GET_CITIES.equals(intent.getAction())){
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
+                handleActionGetCities(callback);
+            }
         }
     }
 
@@ -179,9 +194,7 @@ public class ApiService extends IntentService {
                                 Type type = new TypeToken<ArrayList<AirlineDescriptor>>() {
                                 }.getType();
 
-                                System.out.println(obj.getJSONArray("airlines").toString());
                                 ArrayList<AirlineDescriptor> list = gson.fromJson(obj.getJSONArray("airlines").toString(), type);
-                                System.out.println("List" + list + "  first elem " + list.get(0));
                                 for(AirlineDescriptor air : list){
                                     idMap.put(air.name, air.id);
                                 }
@@ -197,6 +210,65 @@ public class ApiService extends IntentService {
                         }
 
 
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+        });
+
+        requestQueue.add(stringRequest);
+
+
+
+    }
+
+
+
+
+
+
+
+    private void handleActionGetCities(final String callback) {
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+
+        String url = "http://hci.it.itba.edu.ar/v1/api/geo.groovy?method=getcities";
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            HashMap<String, CityGson> cityMap = new HashMap<>();
+
+                            if(obj.has("cities")){
+
+                                Gson gson = new Gson();
+
+                                Type type = new TypeToken<ArrayList<CityGson>>() {
+                                }.getType();
+
+                                ArrayList<CityGson> list = gson.fromJson(obj.getJSONArray("cities").toString(), type);
+                                for(CityGson air : list){
+                                    cityMap.put(air.name, air);
+                                }
+
+                            } else{
+                                cityMap = null;
+                            }
+
+                            sendBroadcast(new Intent(callback).putExtra(DATA_CITY_MAP, cityMap));
+
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
 
                     }
                 }, new Response.ErrorListener() {
