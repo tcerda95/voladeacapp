@@ -2,27 +2,18 @@ package hci.voladeacapp;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
@@ -30,7 +21,7 @@ import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 public class FlightDetails extends AppCompatActivity {
   //  private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
-    private ConfiguredFlight flight;
+    private Flight flight;
 
     private FlightIdentifier identifier;
 
@@ -40,7 +31,8 @@ public class FlightDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_details);
 
-        this.flight = (ConfiguredFlight) this.getIntent().getSerializableExtra("Flight");
+        this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
+
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
 
         setTitle(flight.getAirline() + " " + flight.getNumber());

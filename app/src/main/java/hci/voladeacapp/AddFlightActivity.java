@@ -6,12 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +33,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
 
     @NotEmpty
-    private AutoCompleteTextView flightNumberEdit;
+    private EditText flightNumberEdit;
 
     @NotEmpty
     private AutoCompleteTextView airline;
@@ -37,6 +42,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private ProgressDialog pDialog;
     private AdderReceiver adder;
+
+    private TextInputLayout numberInputLayout;
+    private TextInputLayout airlineInputLayout;
 
 
     @Override
@@ -48,6 +56,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         if(airlineId == null)
             Toast.makeText(this,"No existe esa aerolinea",Toast.LENGTH_SHORT);
 
+        airlineInputLayout.setErrorEnabled(false);
+        numberInputLayout.setErrorEnabled(false);
+
         pDialog.show();
         ApiService.startActionGetFlightStatus(this, airlineId, numberData, ACTION_GET_FLIGHT);
     }
@@ -55,6 +66,26 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         Toast.makeText(this, "Hay errores", Toast.LENGTH_SHORT).show();
+        CardView resultCardView = (CardView) findViewById(R.id.result_card_view);
+        TextView notExists = (TextView) findViewById(R.id.not_exists_result);
+        resultCardView.setVisibility(View.GONE);
+        notExists.setVisibility(View.GONE);
+
+        /*
+        for(ValidationError error : errors){
+            View v = error.getView();
+            System.out.println(v.getClass());
+            Log.d("test",v.getClass().toString());
+            Log.d("test2",(EditText.class).toString());
+            if(v.getClass().equals(AppCompatEditText.class)){
+                //Es el numero
+                numberInputLayout.setErrorEnabled(true);
+                numberInputLayout.setError("FALTA");
+            } else {
+                airlineInputLayout.setError("FALTA");
+                airlineInputLayout.setErrorEnabled(true);
+            }
+        }*/
     }
 
     private class AdderReceiver extends BroadcastReceiver{
@@ -92,17 +123,16 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 }
             });
             detailsButton.setOnClickListener(new View.OnClickListener(){
-                @Override
                 public void onClick(View view) {
-                    /*
-                    Flight flight = new Flight(flGson);
+
+                    ConfiguredFlight flight = new ConfiguredFlight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
-                    intent.putExtra(FLIGHT_IDENTIFIER,flight);
+                    intent.putExtra("Flight",flight);
                     startActivity(intent);
-                    */
+
+
                 }
             });
-
 
         }else{
             resultCardView.setVisibility(View.GONE);
@@ -121,8 +151,11 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         setContentView(R.layout.activity_add_flight);
         Map<String,String> airlineMap = StorageHelper.getAirlineIdMap(this);
 
-        flightNumberEdit = (AutoCompleteTextView) findViewById(R.id.fl_num_data);
+        flightNumberEdit = (EditText) findViewById(R.id.fl_num_data);
         airline = (AutoCompleteTextView) findViewById(R.id.airline_id_data);
+
+        airlineInputLayout = (TextInputLayout) findViewById(R.id.airline_inputLayout);
+        numberInputLayout = (TextInputLayout) findViewById(R.id.number_inputLayout);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -139,6 +172,59 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 validator.validate();
             }
         });
+
+        setFocusChangeListeners();
+
+        
+    }
+
+    /**
+     * En cambio de foco se validan los campos y se pone el mensaje de error correspondiente
+     */
+    private void setFocusChangeListeners() {
+        airline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("test","cambio de foco");
+                if (!hasFocus) {
+                    if (!validateEditText(((EditText) v).getText())){
+                        numberInputLayout.setErrorEnabled(true);
+                        numberInputLayout.setError(getString(R.string.missing_data));
+                    } else {
+                        numberInputLayout.setErrorEnabled(false);
+                    }
+                }
+            }
+        });
+
+        flightNumberEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("test","cambio de foco");
+                if (!hasFocus) {
+                    if(!validateEditText(((EditText) v).getText())){
+                        airlineInputLayout.setErrorEnabled(true);
+                        airlineInputLayout.setError(getString(R.string.missing_data));
+                    } else {
+                        airlineInputLayout.setErrorEnabled(false);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Retorna true si el campo está lleno y false si el campo está vacío
+     * @param text
+     * @return
+     */
+    private boolean validateEditText(Editable text) {
+        if (!TextUtils.isEmpty(text)) {
+            return true;
+        }
+        else{
+           return false;
+        }
     }
 
     @Override
@@ -155,4 +241,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         super.onPause();
         unregisterReceiver(adder);
     }
+
+
+
 }
