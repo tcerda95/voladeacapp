@@ -53,6 +53,7 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_dejar_resena);  // Así se llega a traducir
         setContentView(R.layout.activity_add_review);
 
         scrollView = (ScrollView) findViewById(R.id.activity_add_review);

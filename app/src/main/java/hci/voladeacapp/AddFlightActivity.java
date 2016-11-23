@@ -79,11 +79,11 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             if(v.getId() == R.id.fl_num_data){
                 //Es el numero
                 numberInputLayout.setErrorEnabled(true);
-                numberInputLayout.setError(getString(R.string.missing_data));
+                numberInputLayout.setError(getString(R.string.error_required_flight_number));
             } else {
                 //es la aerolinea
                 airlineInputLayout.setErrorEnabled(true);
-                airlineInputLayout.setError(getString(R.string.missing_data));
+                airlineInputLayout.setError(getString(R.string.error_required_airline));
             }
         }
     }
@@ -216,7 +216,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     numberInputLayout.setErrorEnabled(false);
                     if (!validateEditText(((EditText) v).getText())){
                         numberInputLayout.setErrorEnabled(true);
-                        numberInputLayout.setError(getString(R.string.missing_data));
+                        numberInputLayout.setError(getString(R.string.error_required_flight_number));
                     } else {
                         numberInputLayout.setErrorEnabled(false);
                     }
@@ -235,7 +235,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     airlineInputLayout.setErrorEnabled(false);
                     if(!validateEditText(((EditText) v).getText())){
                         airlineInputLayout.setErrorEnabled(true);
-                        airlineInputLayout.setError(getString(R.string.missing_data));
+                        airlineInputLayout.setError(getString(R.string.error_required_airline));
                     } else {
                         airlineInputLayout.setErrorEnabled(false);
                     }

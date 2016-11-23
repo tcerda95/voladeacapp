@@ -101,7 +101,6 @@
             android:parentActivityName=".FlightDetails" />
         <activity
             android:name=".AddReviewActivity"
-            android:label="@string/title_dejar_resena"
             android:parentActivityName=".Voladeacapp" />
         <activity android:name=".PostResenaDummy" />
 
