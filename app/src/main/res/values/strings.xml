@@ -80,5 +80,6 @@
     <string name="missing_data">Campo Incompleto</string>
     <string name="airline_name">Nombre de Aerolinea</string>
     <string name="flight_number">Numero de vuelo</string>
+    <string name="search_flight_title">Buscá tu vuelo</string>
 
 </resources>

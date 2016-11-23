@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +68,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         Toast.makeText(this, "Hay errores", Toast.LENGTH_SHORT).show();
-        CardView resultCardView = (CardView) findViewById(R.id.result_card_view);
+        CardView resultCardView = (CardView) findViewById(R.id.card_view);
         TextView notExists = (TextView) findViewById(R.id.not_exists_result);
         resultCardView.setVisibility(View.GONE);
         notExists.setVisibility(View.GONE);
@@ -105,15 +107,17 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private void addFlight(final FlightStatusGson flGson) {
         /* ACA SE LLENAN LOS DATOS DE LA TARJETA */
-        TextView text = (TextView) findViewById(R.id.flight_info);
+        //TextView text = (TextView) findViewById(R.id.flight_info);
         Button add = (Button) findViewById(R.id.add_btn);
         Button detailsButton = (Button) findViewById(R.id.details_btn);
-        CardView resultCardView = (CardView) findViewById(R.id.result_card_view);
+        ((LinearLayout)findViewById(R.id.buttons)).setVisibility(View.VISIBLE);
+        LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
         TextView notExists = (TextView) findViewById(R.id.not_exists_result);
 
         if(flGson != null) {
             notExists.setVisibility(View.GONE);
-            text.setText(flGson.toString());
+            //text.setText(flGson.toString());
+            fillData(flGson);
             resultCardView.setVisibility(View.VISIBLE);
             add.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -141,13 +145,34 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         // finish();
     }
 
+    private void fillData(FlightStatusGson flGson) {
+        TextView origAirView = (TextView) findViewById(R.id.card_departure_airport_id);
+        TextView origCityView = (TextView) findViewById(R.id.card_depart_city);
+        TextView destAirView = (TextView) findViewById(R.id.card_arrival_airport_id);
+        TextView destCityView = (TextView)findViewById(R.id.card_arrival_city);
+        ImageView stateView = (ImageView) findViewById(R.id.card_status_badge);
+        TextView flnumberView = (TextView) findViewById(R.id.card_flight_number);
+        TextView departDateView = (TextView) findViewById(R.id.card_depart_date);
+
+        flnumberView.setText(flGson.airline.id + " " + flGson.number);
+        origAirView.setText(flGson.departure.airport.id);
+        destAirView.setText(flGson.arrival.airport.id);
+        origCityView.setText(flGson.departure.airport.city.name.split(",")[0]);
+        destCityView.setText(flGson.arrival.airport.city.name.split(",")[0]);
+        //TODO: guardar un Date en el GSON
+        departDateView.setText(flGson.departure.scheduled_time);
+        //TODO: imagen del estado
+        //stateTextView.setText(flight.getState());
+
+
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pDialog = new ProgressDialog(this);
         super.onCreate(savedInstanceState);
-
+        setTitle(getString(R.string.search_flight_title));
         setContentView(R.layout.activity_add_flight);
         Map<String,String> airlineMap = StorageHelper.getAirlineIdMap(this);
 
@@ -165,7 +190,6 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         airline.setThreshold(1);
 
         Button search = (Button)findViewById(R.id.fl_search_btn);
-        Button add = (Button)findViewById(R.id.add_btn);
 
         search.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
