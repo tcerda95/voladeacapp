@@ -19,7 +19,7 @@
     <string name="llegada_label">Llegada</string>
     <string name="baggage_claim_label">Recolección de equipaje</string>
 
-    <string name="formato_fecha" translatable="false">dd/MM/yyyy</string>
+    <string name="formato_fecha" translatable="false">dd-MM-yyyy</string>
 
     <string name="a_confirmar">A confirmar</string>
 
@@ -82,4 +82,5 @@
     <string name="flight_number">Numero de vuelo</string>
     <string name="search_flight_title">Buscá tu vuelo</string>
 
+    <string name="invalid_city_message">Elija una ciudad válida</string>
 </resources>

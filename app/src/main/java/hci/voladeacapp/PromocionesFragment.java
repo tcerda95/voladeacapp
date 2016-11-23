@@ -7,13 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,10 +26,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,18 +37,16 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
@@ -62,7 +57,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private Calendar fromCalendar;
 
-    private ListView cardListView;
     private TextView fromDateTextView;
     private AutoCompleteTextView fromCityTextView;
 
@@ -74,27 +68,25 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private boolean registeredReceiver = false;
 
     private PromoCardAdapter promoAdapter;
-    private ArrayAdapter<String> cityAutocompleteAdapter;
+    private Map<String, CityGson> citiesMap;
 
     private GoogleApiClient client;
-
-    private static final String[] CITIES_DUMMY = new String[]{
-            "Buenos Aires", "Londres", "Neuquen", "Nueva York",
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        Context context = getActivity().getApplication();
         deals = new ArrayList<>();
         imageURLs = new HashMap<>();
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        client = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        requestQueue = Volley.newRequestQueue(context);
+        client = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        citiesMap = StorageHelper.getCitiesMap(context);
     }
 
     @Override
@@ -126,30 +118,31 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         };
 
         // Listener fecha salida
-        fromDateTextView.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.date_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Clicked edit text" + fromDateTextView.getText());
                 new DatePickerDialog(getActivity(), dateListener, fromCalendar
                         .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
                         fromCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
-        cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
-                android.R.layout.select_dialog_item, CITIES_DUMMY);
+        ArrayAdapter<String> cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
+                android.R.layout.select_dialog_item, new ArrayList<>(citiesMap.keySet()));
 
         fromCityTextView.setAdapter(cityAutocompleteAdapter);
 
         fromCityTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
                 hideKeyboard(rootView);
-                System.out.println("Clicked " + CITIES_DUMMY[position]);
+                refreshResults();
+                System.out.println("Clicked " + position);
             }
         });
 
-        cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
+        ListView cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
         promoAdapter = new PromoCardAdapter(getActivity(), deals, imageURLs);
         cardListView.setAdapter(promoAdapter);
 
@@ -194,6 +187,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             }
         };
 
+        fromCityTextView.addTextChangedListener(new CityTextWatcher());
+
         rootView.findViewById(R.id.dummy_focus_layout).requestFocus(); // Para que el cityView no tenga focus
 
         // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
@@ -215,17 +210,40 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         if (mLastLocation != null) {
             System.out.println("Latitude: " + mLastLocation.getLatitude());
             System.out.println("Longitude: " + mLastLocation.getLongitude());
+            fromCityTextView.setText(getClosestCity(mLastLocation));
+            refreshResults();
         }
     }
 
+    private String getClosestCity(Location userLocation) {
+        Set<Map.Entry<String, CityGson>> entries = citiesMap.entrySet();
+        Location cityLocation = new Location("CityLocation");
+        double minDistance = Double.MAX_VALUE;
+        String closestCity  = null;
+
+        for (Map.Entry<String, CityGson> e: entries) {
+            cityLocation.setLatitude(e.getValue().latitude);
+            cityLocation.setLongitude(e.getValue().longitude);
+            double auxDistance = userLocation.distanceTo(cityLocation);
+            if (auxDistance < minDistance) {
+                closestCity = e.getKey();
+                minDistance = auxDistance;
+                System.out.println(closestCity);
+            }
+        }
+
+        return closestCity;
+    }
+
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(@NonNull int i) {
+        //TODO
         System.out.println("Connection suspended");
-        return;
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //TODO
         System.out.println("Connection failed");
     }
 
@@ -241,6 +259,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private void refreshResults() {
         Context context = getActivity().getApplicationContext();
+        if (!isValidCity(fromCityTextView.getText().toString()))
+            return; // Deja la búsqueda como la última realizada
+
         Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
         String prevSearchcity = StorageHelper.getDealSearchCity(context);
 
@@ -265,7 +286,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
                 registeredReceiver = true;
             }
-            ApiService.startActionGetDeals(getActivity().getApplicationContext(), "BUE",RECEIVER_TAG);
+            CityGson city = citiesMap.get(fromCityTextView.getText().toString());
+            if (city == null) {
+                System.out.println("INVALID CITY");
+            } else {
+                ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
+            }
         }
 
     }
@@ -321,13 +347,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private String getImageURL(JSONObject obj) {
         try {
             JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-            String url = "https://farm"
+            return "https://farm"
                     + photo.getString("farm") + ".staticflickr.com/"
                     + photo.getString("server") + "/"
                     + photo.getString("id") + "_"
                     + photo.getString("secret") + ".jpg";
-
-            return url;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -335,13 +359,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     }
 
     private String getAPIPetition(DealGson deal) {
-        String urlstr =
+        return
                 "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                         "&api_key=3fc73140f600953c1eea5e534bac4670&"
                         + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
                         + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
         //TODO: Hacer bien
-        return urlstr;
     }
 
     @Override
@@ -359,16 +382,30 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         super.onStop();
     }
 
-    private void destroyPendingRequests() {
-        System.out.println("Destroying pending volley requests");
-        // TODO
-    }
-
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.findViewById(R.id.dummy_focus_layout).requestFocus();
     }
 
+
+    private boolean isValidCity(String name) {
+        return citiesMap.containsKey(name);
+    }
+
+    private class CityTextWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(editable.length() > 2 && !fromCityTextView.isPopupShowing() && !isValidCity(editable.toString())) {
+                fromCityTextView.setError(getResources().getString(R.string.invalid_city_message));
+            }
+        }
+    }
 
 }
