@@ -90,6 +90,21 @@ public class StorageHelper {
     }
 
 
+
+    public static void deleteFlight(Context context, FlightIdentifier identifier){
+        ConfiguredFlight searcher = new ConfiguredFlight();
+
+        searcher.setAirline(identifier.getAirline());
+        searcher.setNumber(identifier.getNumber());
+
+        List<ConfiguredFlight> list = getFlights(context);
+
+       list.remove(searcher);
+       saveFlights(context, list);
+    }
+
+
+
     public static void saveFlight(Context context, ConfiguredFlight flight){
         List<ConfiguredFlight> list = getFlights(context);
         list.remove(flight);
