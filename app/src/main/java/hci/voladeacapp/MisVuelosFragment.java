@@ -75,16 +75,25 @@ public class MisVuelosFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Lleno la lista con lo que esta en shared app_preferences
-        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+
+        System.out.println("ON CREATE VIEW!!!!!!1111111111111111111");
+        flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+
+
+
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
         receiver = new RefreshReceiver();
 
         FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
+
 
         flightsListView = (DynamicListView) rootView.findViewById(R.id.text_mis_vuelos);
 
@@ -111,8 +120,10 @@ public class MisVuelosFragment extends Fragment {
                 Object o = flightsListView.getItemAtPosition(position);
                 ConfiguredFlight flightData = (ConfiguredFlight) o;
 
+
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra("Flight",flightData);
+                detailIntent.putExtra("FLIGHT_IDENTIFIER", new FlightIdentifier(flightData));
+                detailIntent.putExtra("Flight", flightData);
 
                 startActivityForResult(detailIntent, DETAILS_REQUEST_CODE);
             }
@@ -240,6 +251,7 @@ public class MisVuelosFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == DETAILS_REQUEST_CODE && resultCode == AddFlightActivity.RESULT_OK) {
+            FlightIdentifier identifier = data.getSerializableExtra("FLIGHT_IDENTIFIER");
             flight_details = StorageHelper.getFlights(getActivity());
         }
 
