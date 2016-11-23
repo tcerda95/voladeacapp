@@ -20,8 +20,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
     public static class FlightPreferenceFragment extends PreferenceFragment
     {
-        private FlightSettings fn;
-        private ConfiguredFlight flight;
+        private FlightSettings settings;
         private FlightIdentifier identifier;
 
         private SharedPreferences sp;
@@ -34,10 +33,6 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
             sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-
-            addPreferencesFromResource(R.xml.flight_preferences);
-
-
             identifier =  (FlightIdentifier) getActivity().getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
 
             spChanged = new
@@ -46,22 +41,22 @@ public class FlightSettingsActivity extends AppCompatActivity {
                         public void onSharedPreferenceChanged(SharedPreferences SP, String key) {
                             switch (key) {
                                 case "flight_notifications_switch":
-                                    fn.setAllNotifications(SP.getBoolean(key, true));
+                                    settings.setAllNotifications(SP.getBoolean(key, true));
                                     break;
                                 case "takeoff_notifications_switch":
-                                    fn.setNotification(NotificationCategory.TAKEOFF, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.TAKEOFF, SP.getBoolean(key, true));
                                     break;
                                 case "landing_notifications_switch":
-                                    fn.setNotification(NotificationCategory.LANDING, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.LANDING, SP.getBoolean(key, true));
                                     break;
                                 case "delay_notifications_switch":
-                                    fn.setNotification(NotificationCategory.DELAY, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.DELAY, SP.getBoolean(key, true));
                                     break;
                                 case "deviation_notifications_switch":
-                                    fn.setNotification(NotificationCategory.DEVIATION, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.DEVIATION, SP.getBoolean(key, true));
                                     break;
                                 case "cancelation_notifications_switch":
-                                    fn.setNotification(NotificationCategory.CANCELATION, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.CANCELATION, SP.getBoolean(key, true));
                                     break;
                             }
 
@@ -76,17 +71,27 @@ public class FlightSettingsActivity extends AppCompatActivity {
         public void onResume(){
             super.onResume();
 
-            flight =  StorageHelper.getFlight(getActivity(), identifier);
-            fn = flight.getSettings();
+            settings = StorageHelper.getFlight(getActivity(), identifier).getSettings();
+
+
+            System.out.println("HEY THESE ARE THE SETTINGS");
+            System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
+            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
+            System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
+            System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
+            System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
+            System.out.println("ALL: " + settings.notificationsActive());
 
             SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean("flight_notifications_switch", fn.notificationsActive());
-            editor.putBoolean("takeoff_notifications_switch", fn.isActive(NotificationCategory.TAKEOFF));
-            editor.putBoolean("landing_notifications_switch", fn.isActive(NotificationCategory.LANDING));
-            editor.putBoolean("delay_notifications_switch", fn.isActive(NotificationCategory.DELAY));
-            editor.putBoolean("deviation_notifications_switch", fn.isActive(NotificationCategory.DEVIATION));
-            editor.putBoolean("cancelation_notifications_switch", fn.isActive(NotificationCategory.CANCELATION));
+            editor.putBoolean("flight_notifications_switch", settings.notificationsActive());
+            editor.putBoolean("takeoff_notifications_switch", settings.isActive(NotificationCategory.TAKEOFF));
+            editor.putBoolean("landing_notifications_switch", settings.isActive(NotificationCategory.LANDING));
+            editor.putBoolean("delay_notifications_switch", settings.isActive(NotificationCategory.DELAY));
+            editor.putBoolean("deviation_notifications_switch", settings.isActive(NotificationCategory.DEVIATION));
+            editor.putBoolean("cancelation_notifications_switch", settings.isActive(NotificationCategory.CANCELATION));
             editor.commit();
+
+            addPreferencesFromResource(R.xml.flight_preferences);
 
 
             sp.registerOnSharedPreferenceChangeListener(spChanged);
@@ -98,7 +103,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
         public void onPause(){
             super.onPause();
 
-            StorageHelper.saveFlight(getActivity(), flight);
+            StorageHelper.saveSettings(getActivity(), identifier, settings);
 
             sp.unregisterOnSharedPreferenceChangeListener(spChanged);
         }

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -112,6 +113,20 @@ public class CheloActivity extends AppCompatActivity {
 
                 Map<String, String> idMap = StorageHelper.getAirlineIdMap(view.getContext());
 
+                List<ConfiguredFlight> list = StorageHelper.getFlights(view.getContext());
+                for(ConfiguredFlight f : list){
+                    System.out.println();
+                    FlightSettings settings = f.getSettings();
+                    System.out.println("SETTINGS FOR " + f.getAirline() + " " + f.getNumber());
+                    System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
+                    System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
+                    System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
+                    System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
+                    System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
+                    System.out.println("ALL: " + settings.notificationsActive());
+                    System.out.println();
+
+                }
                 if(idMap != null) {
                     txt.setText(idMap.toString());
                 } else {

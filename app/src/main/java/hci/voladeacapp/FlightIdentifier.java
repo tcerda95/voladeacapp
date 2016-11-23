@@ -10,10 +10,7 @@ public class FlightIdentifier implements Serializable {
     private String number;
     private String airline;
 
-    public FlightIdentifier(Flight f){
-        number = f.getNumber();
-        airline = f.getAirline();
-    }
+    public FlightIdentifier(){}
 
     public String getNumber(){
         return number;
@@ -36,4 +33,17 @@ public class FlightIdentifier implements Serializable {
     }
 
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setAirline(String airline) {
+        this.airline = airline;
+    }
+
+    public int hashCode(){
+        int result = number.hashCode();
+        result = 31 * result + airline.hashCode();
+        return result;
+    }
 }

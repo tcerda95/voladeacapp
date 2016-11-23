@@ -60,7 +60,6 @@ public class StorageHelper {
         SharedPreferences sp = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE);
         String s = sp.getString(DEALS_WITH_IMG, null); //Si no hay nada devuelve null
 
-        System.out.println("DEALSMAP: " + s);
         if (s == null) {
             dealsMap = new HashMap<>();
         } else {
@@ -128,11 +127,18 @@ public class StorageHelper {
 
 
 
+    public static boolean flightExists(Context context, FlightIdentifier identifier){
+        List<ConfiguredFlight> list = getFlights(context);
+
+        ConfiguredFlight searcher = new ConfiguredFlight();
+        searcher.setIdentifier(identifier);
+        return list.indexOf(searcher) >= 0;
+    }
+
     public static ConfiguredFlight getFlight(Context context, FlightIdentifier identifier){
         ConfiguredFlight searcher = new ConfiguredFlight();
 
-        searcher.setAirline(identifier.getAirline());
-        searcher.setNumber(identifier.getNumber());
+        searcher.setIdentifier(identifier);
 
         List<ConfiguredFlight> list = getFlights(context);
 
@@ -141,27 +147,56 @@ public class StorageHelper {
             return null;
         }
 
+
+        System.out.println("FINDING: FOUND AT IDX " + list.indexOf(searcher));
         return list.get(idx);
 
     }
 
     public static void deleteFlight(Context context, FlightIdentifier identifier){
         ConfiguredFlight searcher = new ConfiguredFlight();
-
-        searcher.setAirline(identifier.getAirline());
-        searcher.setNumber(identifier.getNumber());
+        searcher.setIdentifier(identifier);
 
         List<ConfiguredFlight> list = getFlights(context);
+        System.out.println("DELETING: FOUND AT IDX " + list.indexOf(searcher));
+        list.remove(searcher);
 
-       list.remove(searcher);
-       saveFlights(context, list);
+        saveFlights(context, list);
     }
 
 
     public static void saveFlight(Context context, ConfiguredFlight flight){
         List<ConfiguredFlight> list = getFlights(context);
-        list.remove(flight);
-        list.add(flight);
+        int idx = list.indexOf(flight);
+
+        if(idx < 0) {
+            list.add(flight);
+        } else {
+            list.remove(flight);
+            list.add(idx, flight);
+        }
+        saveFlights(context, list);
+    }
+
+
+    public static void saveSettings(Context context, FlightIdentifier identifier, FlightSettings settings){
+        ConfiguredFlight searcher = new ConfiguredFlight();
+        searcher.setIdentifier(identifier);
+
+        List<ConfiguredFlight> list = getFlights(context);
+        int idx = list.indexOf(searcher);
+        if(idx >= 0) {
+            list.get(idx).setSettings(settings);
+            System.out.println("SAVING SETTINGS");
+            System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
+            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
+            System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
+            System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
+            System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
+            System.out.println("ALL: " + settings.notificationsActive());
+        }else{
+            System.out.println("NOT SAVING SETTINGS B/C NOT FOUND");
+        }
 
         saveFlights(context, list);
     }
@@ -169,6 +204,21 @@ public class StorageHelper {
     public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
         saveData(context, flight_details, FLIGHT_LIST);
     }
+
+
+
+    public static void fillListWithFlights(Context context, List<ConfiguredFlight> list){
+        List<ConfiguredFlight> saved = getFlights(context);
+
+        if(list == null || saved == null)
+            return;
+
+        list.clear();
+        for(ConfiguredFlight f: saved){
+            list.add(f);
+        }
+    }
+
 
     public static void saveDeals(Context context, Map<DealGson, String> deals) {
         saveData(context, deals, DEALS_WITH_IMG);
@@ -213,6 +263,8 @@ public class StorageHelper {
                         editor.commit();
                     } else{
                     }
+
+                    //Automaticamente me desuscribo
                     context.unregisterReceiver(this);
                 }
             }, new IntentFilter(callback));

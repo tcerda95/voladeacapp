@@ -120,7 +120,8 @@ public class MisVuelosFragment extends Fragment {
 
 
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra(FLIGHT_IDENTIFIER, new FlightIdentifier(flightData));
+                detailIntent.putExtra(FLIGHT_IDENTIFIER, flightData.getIdentifier());
+                detailIntent.putExtra("Flight", flightData);
 
                 startActivityForResult(detailIntent, DETAILS_REQUEST_CODE);
             }
@@ -238,19 +239,18 @@ public class MisVuelosFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh
     }
 
-    protected void addToList(ConfiguredFlight f){
-        flight_details.add(f);
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        resetList();
 
         if (requestCode == DETAILS_REQUEST_CODE && resultCode == AddFlightActivity.RESULT_OK) {
-          //  flight_details = StorageHelper.getFlights(getActivity());
+            boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
+            if(deleted) {
+                FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                StorageHelper.deleteFlight(getActivity(), identifier);
+            }
         }
 
         if (resultCode == RESULT_CANCELED) {
@@ -263,10 +263,12 @@ public class MisVuelosFragment extends Fragment {
 
             FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
             if(requestCode == GET_FLIGHT){
-                addToList(new ConfiguredFlight(resultado));
-
+                StorageHelper.saveFlight(getActivity(), new ConfiguredFlight(resultado));
             }
         }
+
+        resetList();
+
     }
 
     private void resetList() {

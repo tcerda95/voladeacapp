@@ -12,8 +12,8 @@ import java.util.Locale;
 public class Flight implements Serializable {
     private static final long serialVersiouUID = 1L;
 
-    private String number;
-    private String airline;
+    private FlightIdentifier identifier;
+
     private String state;
     private double price; // in USD
 
@@ -108,6 +108,8 @@ public class Flight implements Serializable {
     }
 
     public Flight(FlightStatusGson seed) {
+        identifier = new FlightIdentifier();
+
         setNumber("" + seed.number);
         setAirline(seed.airline.id);
         setState(seed.status);
@@ -118,7 +120,9 @@ public class Flight implements Serializable {
     }
 
 
-    public Flight(){} //TODO:Sacar
+    public Flight(){
+        this.identifier = new FlightIdentifier();
+    } //TODO:Sacar
 
 
     public boolean update(FlightStatusGson newStatus){
@@ -137,11 +141,11 @@ public class Flight implements Serializable {
     }
 
     public String getAerolinea() {
-        return airline;
+        return identifier.getAirline();
     }
 
     public void setAerolinea(String aerolinea) {
-        this.airline = aerolinea;
+        identifier.setAirline(aerolinea);
     }
 
     public String getState() {
@@ -152,21 +156,26 @@ public class Flight implements Serializable {
         this.state = state;
     }
 
+
+    public FlightIdentifier getIdentifier(){ return identifier; }
+
+    public void setIdentifier(FlightIdentifier i){ this.identifier = i; }
+
     public String getNumber() {
-        return number;
+        return identifier.getNumber();
     }
 
 
     public void setNumber(String number) {
-        this.number = number;
+        this.identifier.setNumber(number);
     }
 
     public String getAirline() {
-        return airline;
+        return identifier.getAirline();
     }
 
     public void setAirline(String airline) {
-        this.airline = airline;
+        identifier.setAirline(airline);
     }
 
     public double getPrice() {
@@ -288,14 +297,11 @@ public class Flight implements Serializable {
 
         Flight flight = (Flight) o;
 
-        if (!number.equals(flight.number)) return false;
-        return airline.equals(flight.airline);
+        return this.identifier.equals(flight.identifier);
     }
 
     @Override
     public int hashCode() {
-        int result = number.hashCode();
-        result = 31 * result + airline.hashCode();
-        return result;
+        return identifier.hashCode();
     }
 }
