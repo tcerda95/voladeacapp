@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -194,6 +195,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         search.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 validator.validate();
+                hideKeyboard(v);
             }
         });
 
@@ -202,6 +204,10 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         
     }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+    }
     /**
      * En cambio de foco se validan los campos y se pone el mensaje de error correspondiente
      */
