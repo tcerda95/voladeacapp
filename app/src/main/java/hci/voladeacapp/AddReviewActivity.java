@@ -12,13 +12,26 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.HashMap;
+import java.util.List;
 
-public class AddReviewActivity extends AppCompatActivity {
+public class AddReviewActivity extends AppCompatActivity implements Validator.ValidationListener{
 
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
+
+    @NotEmpty
+    private EditText airline;
+
+    @NotEmpty
+    private EditText flightNumber;
+
+    private Validator validator;
 
     private String aerolinea;
     private String comentario;
@@ -29,6 +42,7 @@ public class AddReviewActivity extends AppCompatActivity {
     private DiscreteSeekBar preciocalidad;
     private DiscreteSeekBar puntualidad;
     private DiscreteSeekBar viajerosFrec;
+
     private Boolean recommended;
     private RatingBar stars;
 
@@ -36,6 +50,12 @@ public class AddReviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_review);
+
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+
+        airline = (EditText) findViewById(R.id.airline_input);
+        flightNumber = (EditText) findViewById(R.id.flight_number_input);
 
         /* Lo mas feo que vi en mi vida */
 
@@ -82,19 +102,11 @@ public class AddReviewActivity extends AppCompatActivity {
                 EditText comentarioText = (EditText) findViewById(R.id.comment_data);
                 comentario = comentarioText.getText().toString();
 
-                ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, comentario, amabilidad.getProgress(), confort.getProgress(),comida.getProgress(),
-                        preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
+                validator.validate(); // Se llama a onValidationSucceded o OnValidationFailed.
+                                      // Se valida los EditText que tienen las anotaciones @NotEmpty
 
-                if (checkCompletedFields(res)) {
-                    ApiService.startActionSendReview(view.getContext(), res);
-                    Toast.makeText(getApplication(),"¡Reseña enviada!",Toast.LENGTH_SHORT).show();
-                } else {
-                    //Para debug... Faltan otras validaciones
-                    Toast.makeText(getApplication(),"Falta aerolinea,numero o recomendado",Toast.LENGTH_SHORT).show();
-                }
-
-//                Intent intent = new Intent(getApplication(),PostResenaDummy.class);
- //               intent.putExtra("resena", res);
+//              Intent intent = new Intent(getApplication(),PostResenaDummy.class);
+ //             intent.putExtra("resena", res);
 
 //                startActivity(intent);
                 //TODO: Mandar a la api
@@ -169,5 +181,25 @@ public class AddReviewActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         if (recommended != null)
             outState.putBoolean(RECOMMENDED_BOOLEAN, recommended.booleanValue());
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, comentario, amabilidad.getProgress(), confort.getProgress(),comida.getProgress(),
+                preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
+
+        if (res.yes_recommend != null) {
+            ApiService.startActionSendReview(this, res);
+            Toast.makeText(getApplication(), "¡Reseña enviada!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getApplication(),"Falta recomendado",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        //Para debug... Faltan otras validaciones
+        Toast.makeText(getApplication(),"Falta aerolinea o número",Toast.LENGTH_SHORT).show();
     }
 }
