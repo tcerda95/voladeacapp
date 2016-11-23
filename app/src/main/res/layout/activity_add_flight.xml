@@ -10,52 +10,102 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="hci.voladeacapp.AddFlightActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/search_fields">
+
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/ch_airline_id"
+        android:id="@+id/airline_id_data"
         android:layout_marginTop="13dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         android:hint="ID aerolinea" />
 
-    <TextView
+    <AutoCompleteTextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:id="@+id/chelo_flight_info"
-        android:layout_below="@+id/fl_search_btn"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:text="Buscar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fl_search_btn"
-        android:layout_alignBottom="@+id/fl_num"
-        android:layout_toEndOf="@+id/ch_airline_id"
-        android:layout_marginStart="21dp"
-        android:layout_marginBottom="13dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/fl_num"
-        android:hint="Numero de vuelo"
-        android:layout_below="@+id/ch_airline_id"
-        android:layout_toStartOf="@+id/fl_search_btn" />
+        android:id="@+id/fl_num_data"
+        android:hint="Numero de vuelo" />
 
     <Button
-        android:text="Agregar"
-        android:layout_width="wrap_content"
+        android:text="Buscar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/add_btn"
-        android:layout_below="@+id/fl_num"
-        android:layout_alignStart="@+id/fl_search_btn"
-        android:layout_marginTop="16dp" />
+        android:id="@+id/fl_search_btn" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/search_fields"
+        android:layout_marginTop="20dp">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/result_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            card_view:cardCornerRadius="4dp"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/flight_info"
+                    android:text=""/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/details_btn"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Ver detalles"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_weight="1"
+                    />
+
+                <Button
+                    android:id="@+id/add_btn"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Agregar a mis vuelos"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_weight="1"
+                    />
+
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_exists"
+            android:id="@+id/not_exists_result"
+            android:visibility="gone"/>
+    </LinearLayout>
 </RelativeLayout>

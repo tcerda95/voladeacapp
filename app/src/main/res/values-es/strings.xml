@@ -68,4 +68,5 @@
     <string name="from">Desde</string>
     <string name="departing_on">Saliendo el</string>
     <string name="every">Cada</string>
+    <string name="not_exists">No existe el vuelo</string>
 </resources>
