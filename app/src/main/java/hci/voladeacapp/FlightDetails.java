@@ -93,7 +93,6 @@ public class FlightDetails extends AppCompatActivity {
         Intent intent = getIntent();
         intent.putExtra(MisVuelosFragment.FLIGHT_REMOVED, isRemoved);
         intent.putExtra(MisVuelosFragment.FLIGHT_IDENTIFIER, identifier);
-        setResult(Activity.RESULT_OK, intent);
     }
 
 
@@ -171,6 +170,7 @@ public class FlightDetails extends AppCompatActivity {
 
     protected void onResume(){
         super.onResume();
+        setResult(Activity.RESULT_OK, getIntent());
 
     }
 
