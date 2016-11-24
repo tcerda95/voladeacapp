@@ -547,15 +547,17 @@ public class ApiService extends IntentService {
 
     private void sendMinPriceRequest(final String from, final String to, final double minPrice, final Date date, final int tries){
 
-        if(tries < 0)
+        if(tries < 0) {
             sendErrorFindingBestFlight();
+            return;
+        }
 
 
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         final String dateStr = formatter.format(date);
 
         String url = "http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights"
-                + "&from=" + from + "&to=" + to + "&adults=1&children=0&infants=0&dep_date=" + dateStr + "&sort_key=fare&page_size=1";
+                + "&from=" + from + "&to=" + to + "&adults=1&children=0&infants=0&dep_date=" + dateStr + "&sort_key=total&page_size=1";
 
 
         System.out.println("Sending request with url  [" + url + "]  I still have " + tries + " tries left");
@@ -608,6 +610,8 @@ public class ApiService extends IntentService {
                                     sendBroadcast(intent);
 
                                     return;
+                                } else{
+                                    System.out.println("Min price is :" + minPrice + " actual price is: " + price);
                                 }
 
                             } else {
