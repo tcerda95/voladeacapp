@@ -37,6 +37,13 @@ public class MisVuelosFragment extends Fragment {
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                ErrorHelper.connectionErrorShow(context);
+                return;
+            }
+
+
             FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
             if(updatedGson == null)
                 return;

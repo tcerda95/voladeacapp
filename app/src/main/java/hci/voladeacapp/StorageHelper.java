@@ -146,7 +146,7 @@ public class StorageHelper {
             Type type = new TypeToken<Map<String,String>>(){}.getType();
             map = gson.fromJson(mapString, type);
         } else {
-            map = null;
+            map = new HashMap<>();
             initialize(context);
         }
 
@@ -165,7 +165,7 @@ public class StorageHelper {
             Type type = new TypeToken<Map<String,CityGson>>(){}.getType();
             map = gson.fromJson(mapString, type);
         } else {
-            map = null;
+            map = new HashMap<>();
             initialize(context);
         }
 
@@ -306,9 +306,15 @@ public class StorageHelper {
             //Solo si no lo tengo lo voy a buscar
             String callback = "hci.voladeacapp.initialize.AIRLINE_SAVER";
 
-            context.registerReceiver(new BroadcastReceiver() {
+            context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
+
+                    if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                        return;
+                    }
+
+
                     HashMap<String, String> idMap = (HashMap<String,String>)intent.getSerializableExtra(DATA_AIRLINE_ID_MAP);
                     if(idMap != null) {
                         Gson gson = new Gson();
@@ -335,9 +341,16 @@ public class StorageHelper {
         if(cities == null){
             //Solo si no lo tengo lo voy a buscar
             String callback = "hci.voladeacapp.initialize.CITY_SAVER";
-            context.registerReceiver(new BroadcastReceiver() {
+            context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
+
+                    if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                        ErrorHelper.sendNoConnection(context);
+                        return;
+                    }
+
+
                     HashMap<String, CityGson> cityMap = (HashMap<String,CityGson>)intent.getSerializableExtra(ApiService.DATA_CITY_MAP);
                     if(cityMap != null) {
                         Gson gson = new Gson();
@@ -358,6 +371,26 @@ public class StorageHelper {
 
         }
 
+
+    }
+
+
+    public static boolean isInitialized(Context context) {
+
+        final SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
+        String checker;
+        checker = sp.getString(AIRLINE_LIST, null);
+
+        if (checker == null) {
+            return false;
+        }
+
+        checker = sp.getString(CITY_MAP, null);
+        if(checker == null){
+            return false;
+        }
+
+        return true;
 
     }
 

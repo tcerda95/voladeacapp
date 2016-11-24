@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED;
+import static hci.voladeacapp.ApiService.API_REQUEST_ERROR;
 import static hci.voladeacapp.ApiService.BEST_FLIGHT_RESPONSE;
 import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT_FOUND;
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
@@ -72,6 +73,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
 
     private final static String DEFAULT_CITY = "Nueva York, New York, Estados Unidos"; // Para probar. Tendria que ser BsAs
+    private static final String START_DETAIL_CALLBACK = "hci.voladeacapp.START_DETAIL_CALLBACK";
 
     private View rootView;
 
@@ -116,33 +118,42 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         citiesMap = StorageHelper.getCitiesMap(context);
 
 
-
         dealIdReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+                        if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                            ErrorHelper.connectionErrorShow(context);
+                        }
+                      else{
                         boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
                         if(found){
-                            ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), "START_DETAIL");
+                            ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
                         }else {
-                            System.out.println("CHELO DIDNT FOUND THE BEST FLIGHT");
-
+                            ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde");
                         }
+                    }
+
                     }
                 };
 
         detailStarterReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
-                Flight flight = new Flight(flGson);
-                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                detailIntent.putExtra("Flight", flight);
-                detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
-
                 if(pDialog != null){
                     pDialog.hide();
                 }
-                startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
+
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)) {
+                    ErrorHelper.connectionErrorShow(context);
+                }
+                else {
+                    FlightStatusGson flGson = (FlightStatusGson) intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
+                    Flight flight = new Flight(flGson);
+                    Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
+                    detailIntent.putExtra("Flight", flight);
+                    detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+                    startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
+                }
             }
         };
 
@@ -178,7 +189,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onResume(){
         super.onResume();
         getActivity().registerReceiver(dealIdReceiver,  new IntentFilter(BEST_FLIGHT_RESPONSE));
-        getActivity().registerReceiver(detailStarterReceiver, new IntentFilter("START_DETAIL"));
+        getActivity().registerReceiver(detailStarterReceiver, new IntentFilter(START_DETAIL_CALLBACK));
     }
 
     @Override
@@ -269,6 +280,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         dealsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                    ErrorHelper.connectionErrorShow(context);
+                    return; //Me voy
+                }
+
+
                 List<DealGson> list = (List<DealGson>) intent.getSerializableExtra(DATA_DEAL_LIST);
                 if (list == null) {
                     System.out.println("NULL LIST");

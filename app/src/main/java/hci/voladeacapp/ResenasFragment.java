@@ -38,10 +38,17 @@ public class ResenasFragment extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                GlobalReview review = (GlobalReview) intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
-                reviewList.add(review);
-                adapter.notifyDataSetChanged();
-                System.out.println("RECEIVED: " + review.airline() + "  " + review.flightNumber());
+
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                    ErrorHelper.connectionErrorShow(context);
+                }
+
+                else {
+                    GlobalReview review = (GlobalReview) intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
+                    reviewList.add(review);
+                    adapter.notifyDataSetChanged();
+                    System.out.println("RECEIVED: " + review.airline() + "  " + review.flightNumber());
+                }
             }
         };
 

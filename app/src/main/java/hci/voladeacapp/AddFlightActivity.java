@@ -1,8 +1,10 @@
 package hci.voladeacapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -110,10 +112,16 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                ErrorHelper.connectionErrorShow(context);
+            }
+            else{
+                FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
+                parent.addFlight(flGson);
+            }
+
             pDialog.hide();
-            FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
-            parent.addFlight(flGson);
-        }
+            }
     }
 
     private void addFlight(final FlightStatusGson flGson) {

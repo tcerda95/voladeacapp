@@ -67,6 +67,13 @@ public class CheloActivity extends AppCompatActivity {
         reviewrcv = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                    //Error de conexion, no puedo hacer nada :(
+                    return;
+                }
+
+
                 GlobalReview global = (GlobalReview)intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
                 for(ReviewGson r : global.list){
                     System.out.println(r.comments);

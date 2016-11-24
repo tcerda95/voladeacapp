@@ -29,6 +29,11 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+            //Error de conexion, no puedo hacer nada :(
+            return;
+        }
+
         ArrayList<Flight> flight_details = StorageHelper.getFlights(context.getApplicationContext());
 
         if(intent.getAction().equals(ACTION_GET_REFRESH)){
