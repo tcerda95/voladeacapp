@@ -41,7 +41,9 @@ public class FlightSettingsActivity extends AppCompatActivity {
                         public void onSharedPreferenceChanged(SharedPreferences SP, String key) {
                             switch (key) {
                                 case "flight_notifications_switch":
-                                    settings.setAllNotifications(SP.getBoolean(key, true));
+                                    boolean enabled = SP.getBoolean(key, true);
+                                    settings.setAllNotifications(enabled);
+                                    setSwitchesEnabled(enabled);
                                     break;
                                 case "takeoff_notifications_switch":
                                     settings.setNotification(NotificationCategory.TAKEOFF, SP.getBoolean(key, true));
@@ -66,6 +68,15 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
         }
 
+        private void setSwitchesEnabled(boolean enabled) {
+            getFragmentManager().executePendingTransactions();
+            System.out.println("ENABLED: " + enabled);
+            findPreference("takeoff_notifications_switch").setEnabled(enabled);
+            findPreference("landing_notifications_switch").setEnabled(enabled);
+            findPreference("delay_notifications_switch").setEnabled(enabled);
+            findPreference("deviation_notifications_switch").setEnabled(enabled);
+            findPreference("cancelation_notifications_switch").setEnabled(enabled);
+        }
 
         @Override
         public void onResume(){
@@ -96,7 +107,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
             sp.registerOnSharedPreferenceChangeListener(spChanged);
 
-
+            setSwitchesEnabled(settings.notificationsActive());
         }
 
         @Override

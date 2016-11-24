@@ -73,38 +73,9 @@ public class PromoCardAdapter extends BaseAdapter {
         holder = new ViewHolder();
         holder.cityView = (TextView) convertView.findViewById(R.id.city_info_text);
         holder.priceView = (TextView) convertView.findViewById(R.id.promo_price);
-        holder.overflowbtn = (ImageView) convertView.findViewById(R.id.promo_card_overflow);
         holder.photoView = (ImageView) convertView.findViewById(R.id.city_photo);
 
-        holder.overflowbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(view.findViewById(R.id.promo_card_overflow), deal);
-            }
-        });
-
         convertView.setTag(holder);
-    }
-
-    private void showPopupMenu(final View btn, final DealGson deal) {
-        PopupMenu popup = new PopupMenu(btn.getContext(), btn);
-        popup.getMenuInflater().inflate(R.menu.promo_item_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.overflow_more_details:
-                        System.out.println("More Details");
-                        return true;
-                    case R.id.overflow_add_flight:
-                        System.out.println("Agregar a mis vuelos");
-                        return true;
-                }
-                return false;
-            }
-        });
-
-        popup.show();
     }
 
     private void setImageView(DealGson deal, ImageView imgView) {
@@ -135,7 +106,6 @@ public class PromoCardAdapter extends BaseAdapter {
     private static class ViewHolder {
         TextView cityView;
         TextView priceView;
-        ImageView overflowbtn;
         ImageView photoView;
     }
 }
