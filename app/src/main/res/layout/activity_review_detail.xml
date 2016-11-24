@@ -164,7 +164,8 @@
                     android:clickable="false"
                     android:focusableInTouchMode="false"
                     android:focusable="false"
-                    android:numStars="5"/>
+                    android:numStars="5"
+                    android:isIndicator="true"/>
             </LinearLayout>
 
             <LinearLayout
