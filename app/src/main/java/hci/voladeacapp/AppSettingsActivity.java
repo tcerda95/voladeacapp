@@ -65,27 +65,25 @@ public class AppSettingsActivity extends AppCompatActivity {
 
                                 case "appLanguage":
                                     String language = SP.getString(key,null);
+                                    ListPreference lp = (ListPreference)findPreference("appLanguage");
                                     if( language.equals("en")){
                                         setLocation(Locale.ENGLISH);
-                                        ListPreference lp = (ListPreference)findPreference("appLanguage");
                                         lp.setSummary(getActivity().getString(R.string.english));
                                     } else {
                                         setLocation(new Locale("es"));
-                                        ListPreference lp = (ListPreference)findPreference("appLanguage");
                                         lp.setSummary(getActivity().getString(R.string.spanish));
                                     }
                                     break;
                             }
-
                         }
 
                         private void setLocation(Locale location) {
                             Configuration config = new Configuration(getResources().getConfiguration());
                             config.setLocale(location);
                             Locale.setDefault(location);
-                            getResources().updateConfiguration(config,getResources().getDisplayMetrics());
+                            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
                             buildStack();
-                            }
+                        }
                     };
 
             SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());

@@ -1,10 +1,9 @@
 package hci.voladeacapp;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -37,7 +35,6 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,8 +44,10 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +75,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private static final String START_DETAIL_CALLBACK = "hci.voladeacapp.START_DETAIL_CALLBACK";
 
     private View rootView;
+    private LayoutInflater layoutInflater;
 
     private Calendar fromCalendar;
 
@@ -93,6 +93,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private Map<String, CityGson> citiesMap;
 
     private GoogleApiClient client;
+    MapViewFragment mapfragment;
+
+    private boolean inListView ;
 
     private BroadcastReceiver dealIdReceiver;
     private BroadcastReceiver detailStarterReceiver;
@@ -116,7 +119,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .addApi(LocationServices.API)
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
+<<<<<<< HEAD
 
+=======
+        inListView = true;
+>>>>>>> 8f143d59192a50267f5eefdc2699ad0814bb7ffd
 
         dealIdReceiver = new BroadcastReceiver() {
                     @Override
@@ -175,7 +182,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 StorageHelper.deleteFlight(getActivity(), identifier);
             }
         }
-
     }
 
     @Override
@@ -194,7 +200,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
+        layoutInflater = inflater;
+        rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
         pDialog = new ProgressDialog(getActivity());
         fromCalendar = Calendar.getInstance();
@@ -296,7 +303,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         getCityImageURL(d);
                     }
                     saveDealsData();
-                    promoAdapter.notifyDataSetChanged();
+                    if (inListView)
+                        promoAdapter.notifyDataSetChanged();
+                    else
+                        mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
                 }
             }
         };
@@ -307,6 +317,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
         // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
         refreshResults();
+
+        /* MAP */
+//        android.app.FragmentManager fragmentManager = getFragmentManager();
+//        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+//        fragmentManager.beginTransaction().add(mapFragment, "MAPAAAAAAAAAA");
+//        mapFragment.getMapAsync(new PromoMapCallback());
 
         return rootView;
     }
@@ -407,7 +423,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private void saveDealsData() {
         if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
-            System.out.println("saving");
+//            System.out.println("saving");
             Context context = getActivity().getApplicationContext();
             StorageHelper.saveDeals(context, imageURLs);
             StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
@@ -457,20 +473,54 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     }
 
+    boolean mapAdded = false;
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.promo_map_menu_item, menu);
-        MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
+        final MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
+        final MenuItem listIcon = menu.findItem(R.id.go_to_list_view);
 
+        mapfragment = MapViewFragment.newInstance(deals, fromCityTextView.getText().toString(), fromCalendar);
+
+        final View listView = rootView.findViewById(R.id.promo_card_list);
         mapIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent intent = new Intent(getActivity(), MapActivity.class);
-                startActivity(intent);
+                inListView = false;
+
+                if (!mapAdded) {
+                    final FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAPAAAAAA").commit();
+                    mapAdded = true;
+                }
+
+                View mapView = rootView.findViewById(R.id.mapView);
+                listView.setVisibility(View.GONE);
+                if (mapView != null)
+                    mapView.setVisibility(View.VISIBLE);
+                mapIcon.setVisible(false);
+                listIcon.setVisible(true);
+                mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
                 return true;
             }
         });
+
+        listIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                inListView = true;
+                listView.setVisibility(View.VISIBLE);
+                View mapView = rootView.findViewById(R.id.mapView);
+                if (mapView != null)
+                    mapView.setVisibility(View.GONE);
+                mapIcon.setVisible(true);
+                listIcon.setVisible(false);
+                return true;
+            }
+        });
+
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -552,15 +602,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         view.findViewById(R.id.dummy_focus_layout).requestFocus();
     }
 
-
     private boolean isValidCity(String name) {
         return citiesMap.containsKey(name);
     }
 
+
     private class CityTextWatcher implements TextWatcher {
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
 
@@ -570,8 +620,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 fromCityTextView.setError(getResources().getString(R.string.invalid_city_message));
             }
         }
-    }
 
+    }
     public void notifyLocationPermission(boolean granted) {
         if (granted) {
             getLocationAndSearch();
@@ -587,4 +637,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         fromCityTextView.setText(DEFAULT_CITY);
         refreshResults();
     }
+
+    @Override
+    public void onDestroy() {
+        mapAdded = false;
+        super.onDestroy();
+    }
 }
+

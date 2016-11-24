@@ -59,20 +59,6 @@
                     android:shadowDx="2"
                     android:shadowDy="2"
                     />
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-                    <ImageButton
-                        android:id="@+id/promo_card_overflow"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@drawable/ic_more_vert_white_24px"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@null"
-                        android:elevation="0dp" />
-                </RelativeLayout>
             </LinearLayout>
 
             <TextView
