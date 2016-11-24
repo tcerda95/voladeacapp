@@ -1,8 +1,10 @@
 package hci.voladeacapp;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,7 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,18 +42,29 @@ public class ApiService extends IntentService {
     public static final String DATA_AIRLINE_ID_MAP = "hci.voladeacapp.data.DATA_AIRLINE_ID_MAP";
     public static final String DATA_CITY_MAP = "hci.voladeacapp.data.DATA_CITY_MAP";
 
+    public static final String DATA_BEST_FLIGHT_FOUND = "hci.voladeacapp.broadcast.BEST_FLIGHT_FOUND";
+    public static final String DATA_BEST_FLIGHT = "hci.voladeacapp.broadcast.BEST_FLIGHT";
+    public static final String BEST_FLIGHT_RESPONSE = "hci.voladeacapp.broadcast.BEST_FLIGHT_RESPONSE";
+
+
     private static final String ACTION_GET_STATUS = "hci.voladeacapp.action.GET_STATUS";
     private static final String ACTION_SEND_REVIEW = "hci.voladeacapp.action.SEND_REVIEW";
     private static final String ACTION_GET_REVIEWS = "hci.voladeacapp.action.GET_REVIEWS";
     private static final String ACTION_GET_DEALS = "hci.voladeacapp.action.GET_DEALS";
     private static final String ACTION_GET_AIRLINES = "hci.voladeacapp.action.GET_AIRLINES";
     private static final String ACTION_GET_CITIES = "hci.voladeacapp.action.GET_CITIES";
+    private static final String ACTION_GET_BEST_FLIGHT = "hci.voladeacapp.action.GET_BEST_FLIGHT";
 
     private static final String PARAM_AIRLINE = "hci.voladeacapp.extra.PARAM_AIRLINE";
     private static final String PARAM_FLNUMBER = "hci.voladeacapp.extra.PARAM_FLNUMBER";
     private static final String PARAM_REVIEW = "hci.voladeacapp.extra.PARAM_REVIEW";
     private static final String PARAM_ORIGIN_ID = "hci.voladeacapp.extra.PARAM_ORIGIN_ID";
     private static final String CALLBACK_INTENT = "hci.voladeacapp.extra.CALLBACK";
+    private static final String BEST_FLIGHT_STATUS_GOT = "hci.voladeacapp.broadcast.BEST_FLIGHT_STATUS_GOT";
+    private static final String PARAM_FROM = "hci.voladeacapp.extra.PARAM_FROM";
+    private static final String PARAM_TO = "hci.voladeacapp.extra.PARAM_TO";
+    private static final String PARAM_DATE = "hci.voladeacapp.extra.PARAM_DATE";
+    private static final String PARAM_PRICE = "hci.voladeacapp.extra.PARAM_PRICE";
 
 
     private RequestQueue requestQueue;
@@ -64,12 +81,14 @@ public class ApiService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGetFlightStatus(Context context, String airline, String num, String callback) {
+    public static void startActionGetFlightStatus(Context context, FlightIdentifier identifier) {
+        String airline = identifier.getAirline();
+        String num = identifier.getNumber();
+
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_STATUS);
         intent.putExtra(PARAM_AIRLINE, airline);
         intent.putExtra(PARAM_FLNUMBER, num);
-        intent.putExtra(CALLBACK_INTENT, callback);
         context.startService(intent);
     }
 
@@ -94,6 +113,19 @@ public class ApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionGetBestFlight(Context context, String from, String to, double price, Date date, final String callback){
+        Intent intent = new Intent(context, ApiService.class);
+        intent.setAction(ACTION_GET_BEST_FLIGHT);
+
+        intent.putExtra(PARAM_FROM, from);
+        intent.putExtra(PARAM_TO, to);
+        intent.putExtra(PARAM_DATE, date);
+        intent.putExtra(PARAM_PRICE, price);
+        intent.putExtra(CALLBACK_INTENT, callback);
+
+
+        context.startService(intent);
+    }
 
     public static void startActionGetAirlines(Context context, String callback) {
         Intent intent = new Intent(context, ApiService.class);
@@ -161,6 +193,15 @@ public class ApiService extends IntentService {
                 final String callback = intent.getStringExtra(CALLBACK_INTENT);
                 handleActionGetCities(callback);
             }
+
+            if(ACTION_GET_BEST_FLIGHT.equals(intent.getAction())){
+                final Date date = (Date)intent.getSerializableExtra(PARAM_DATE);
+                final String from = intent.getStringExtra(PARAM_FROM);
+                final String to = intent.getStringExtra(PARAM_TO);
+                final Double price = intent.getDoubleExtra(PARAM_PRICE, 0);
+
+                handleActionGetBestDeal(from, to, price, date);
+            }
         }
     }
 
@@ -225,11 +266,6 @@ public class ApiService extends IntentService {
 
 
     }
-
-
-
-
-
 
 
     private void handleActionGetCities(final String callback) {
@@ -496,5 +532,111 @@ public class ApiService extends IntentService {
 
 
     }
+
+
+
+    public void handleActionGetBestDeal(String from, String to, double price, Date date) {
+        if(requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
+
+        sendMinPriceRequest(from, to, price, date, 10);
+    }
+
+
+    private void sendMinPriceRequest(final String from, final String to, final double minPrice, final Date date, final int tries){
+
+        if(tries < 0)
+            sendErrorFindingBestFlight();
+
+
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        final String dateStr = formatter.format(date);
+
+        String url = "http://hci.it.itba.edu.ar/v1/api/booking.groovy?method=getonewayflights"
+                + "&from=" + from + "&to=" + to + "&adults=1&children=0&infants=0&dep_date=" + dateStr + "&sort_key=fare&page_size=1";
+
+
+        System.out.println("Sending request with url  [" + url + "]  I still have " + tries + " tries left");
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            if(obj.has("flights")) {
+                                JSONObject flight = obj.getJSONArray("flights").getJSONObject(0);
+                                Double price =   flight.getJSONObject("price")
+                                                    .getJSONObject("total").getDouble("total");
+
+                                if(price == minPrice){
+                                    System.out.println("FOUNNNNNNND");
+
+                                    String id = flight.getJSONArray("outbound_routes")
+                                                .getJSONObject(0)
+                                                .getJSONArray("segments")
+                                                .getJSONObject(0)
+                                                .getJSONObject("airline")
+                                                .getString("id");
+
+                                    System.out.println("THE ID IS " + id);
+
+                                    String number = "" + flight.getJSONArray("outbound_routes")
+                                            .getJSONObject(0)
+                                            .getJSONArray("segments")
+                                            .getJSONObject(0)
+                                            .getInt("number");
+
+                                    System.out.println("THE NUMBER IS " + number);
+
+                                    FlightIdentifier identifier = new FlightIdentifier();
+                                    identifier.setAirline(id);
+                                    identifier.setNumber(number);
+
+
+                                    Intent intent = new Intent(BEST_FLIGHT_RESPONSE)
+                                                        .putExtra(DATA_BEST_FLIGHT_FOUND, true)
+                                                        .putExtra("identifier", identifier)
+                                                        .putExtra("date", date);
+                                    sendBroadcast(intent);
+
+                                    return;
+                                }
+
+                            } else {
+                                sendErrorFindingBestFlight();
+                                return;
+                            }
+
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(date);
+                            c.add(Calendar.DATE, 1);
+                            Date newDate = c.getTime();
+                            sendMinPriceRequest(from, to, minPrice, newDate, tries - 1);
+
+
+                        }catch(Exception e){
+                            sendErrorFindingBestFlight();
+                            return;
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                sendErrorFindingBestFlight();
+            }
+        });
+        // Add the request to the RequestQueue;
+        requestQueue.add(stringRequest);
+
+
+    }
+
+    private void sendErrorFindingBestFlight() {
+        Intent intent = new Intent(BEST_FLIGHT_RESPONSE)
+                .putExtra(DATA_BEST_FLIGHT_FOUND, false);
+        sendBroadcast(intent);
+    }
+
 
 }

@@ -25,7 +25,7 @@ public class PullRequestReceiver extends BroadcastReceiver {
         flight_details = StorageHelper.getFlights(context.getApplicationContext());
 
         for (Flight f : flight_details) {
-                ApiService.startActionGetFlightStatus(context.getApplicationContext(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
+                ApiService.startActionGetFlightStatus(context.getApplicationContext(), f.getIdentifier(), ACTION_GET_REFRESH);
             }
         }
 

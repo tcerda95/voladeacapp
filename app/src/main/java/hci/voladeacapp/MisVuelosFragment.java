@@ -231,7 +231,7 @@ public class MisVuelosFragment extends Fragment {
     private void updateFlightsStatus() {
 
         for(Flight f: flight_details){
-            ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
+            ApiService.startActionGetFlightStatus(getActivity(), f.getIdentifier(), ACTION_GET_REFRESH);
         }
 
         Toast.makeText(getActivity(), getResources().getString(R.string.refreshed), Toast.LENGTH_SHORT).show();

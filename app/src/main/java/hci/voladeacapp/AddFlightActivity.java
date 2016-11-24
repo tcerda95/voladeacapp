@@ -70,7 +70,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         numberInputLayout.setErrorEnabled(false);
 
         pDialog.show();
-        ApiService.startActionGetFlightStatus(this, airlineId, numberData, ACTION_GET_FLIGHT);
+        FlightIdentifier identifier = new FlightIdentifier(airlineId, numberData);
+
+        ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
     }
 
     @Override
