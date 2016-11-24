@@ -1,11 +1,12 @@
 package hci.voladeacapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,7 +29,7 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
 
     @NotEmpty
-    private EditText airline;
+    private AutoCompleteTextView airline;
 
     @NotEmpty
     private EditText flightNumber;
@@ -63,8 +64,12 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
 
         validator.setValidationMode(Validator.Mode.BURST);
 
-        airline = (EditText) findViewById(R.id.airline_input);
+        airline = (AutoCompleteTextView) findViewById(R.id.airline_input);
         flightNumber = (EditText) findViewById(R.id.flight_number_input);
+
+        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.review_dropdown,StorageHelper.getAirlineIdMap(this).keySet().toArray());
+        airline.setAdapter(adapter);
+        airline.setThreshold(1);
 
         /* Lo mas feo que vi en mi vida */
 
@@ -134,6 +139,7 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
             }
         });
 
+        happyBtn.performClick();
         sadBtn.setOnClickListener( new View.OnClickListener(){
 
             @Override
