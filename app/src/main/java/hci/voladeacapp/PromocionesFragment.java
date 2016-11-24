@@ -119,11 +119,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .addApi(LocationServices.API)
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
-<<<<<<< HEAD
-
-=======
         inListView = true;
->>>>>>> 8f143d59192a50267f5eefdc2699ad0814bb7ffd
 
         dealIdReceiver = new BroadcastReceiver() {
                     @Override
