@@ -142,7 +142,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 if(pDialog != null){
                     pDialog.hide();
                 }
-                getActivity().startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
+                startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
             }
         };
 
@@ -153,23 +153,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(getActivity(), "Volvi pero raro", Toast.LENGTH_SHORT).show();
 
         if (requestCode == DETAILS_REQUEST_CODE) {
-            Toast.makeText(getActivity(), "Volvi", Toast.LENGTH_SHORT).show();
 
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
             if(deleted) {
-                Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
-
                 //Borró y hay que borrarlo de la lista
                 FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
                 StorageHelper.deleteFlight(getActivity(), identifier);
-            }
-            else{
-                //Aca no hizo nada
-                Toast.makeText(getActivity(), "Agrego o no toco nada", Toast.LENGTH_SHORT).show();
             }
         }
 
