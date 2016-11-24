@@ -78,7 +78,8 @@
             android:name=".AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
             android:launchMode="singleTop"
-            android:parentActivityName=".Voladeacapp" />
+            android:parentActivityName=".Voladeacapp"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         />
         <activity
             android:name=".FlightSettingsActivity"

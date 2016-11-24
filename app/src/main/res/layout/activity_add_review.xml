@@ -28,14 +28,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/airline_text_input_layout"
                 app:errorEnabled="true">
-                <EditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/airline_input"
                     android:ems="10"
                     android:hint="@string/airline_label"
                     android:cursorVisible="false"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_weight="1"
@@ -238,44 +238,6 @@
             app:dsb_indicatorColor="@color/colorAccent"
             android:paddingTop="5dip" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recommend_label"
-                android:textAlignment="center"
-                android:textStyle="normal|bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageButton
-                android:id="@+id/happy_button"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_sentiment_satisfied_black_24px"
-                android:layout_weight="1"/>
-            <ImageButton
-                android:id="@+id/sad_button"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_sentiment_dissatisfied_black_24px"
-                android:layout_weight="1"/>
-        </LinearLayout>
-        
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/comentario_label"
-            android:textStyle="normal|bold" />
-        
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/comment_data"
-            android:layout_gravity="center"
-            android:hint="@string/optional"/>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -295,6 +257,52 @@
             android:focusableInTouchMode="false"
             android:focusable="false"
             android:isIndicator="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recommend_label"
+            android:textAlignment="center"
+            android:textStyle="normal|bold"
+            android:layout_marginBottom="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/happy_button"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sentiment_satisfied_black_24px"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:background="@color/grey"
+                android:layout_marginEnd="5dp" />
+            <ImageButton
+                android:id="@+id/sad_button"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sentiment_dissatisfied_black_24px"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:background="@color/grey"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/comentario_label"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="5dp" />
+        
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_data"
+            android:layout_gravity="center"
+            android:hint="@string/optional"/>
 
     <Button
         android:layout_width="wrap_content"

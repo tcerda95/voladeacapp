@@ -13,9 +13,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static hci.voladeacapp.ApiService.BEST_FLIGHT_RESPONSE;
+import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT;
+import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT_FOUND;
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 import static hci.voladeacapp.ApiService.DATA_GLOBAL_REVIEW;
@@ -113,7 +118,22 @@ public class CheloActivity extends AppCompatActivity {
 
                 Map<String, CityGson> cityMap = StorageHelper.getCitiesMap(view.getContext());
 
+                Calendar today = Calendar.getInstance();
+                today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
+                today.add(Calendar.DATE, 3);
+                registerReceiver(new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
+                        if(found){
+                            System.out.println("CHELO FOUND THE BEST FLIGHT");
+                            System.out.println((FlightIdentifier)intent.getSerializableExtra("identifier"));
+                        }else
+                            System.out.println("CHELO DIDNT FOUND THE BEST FLIGHT");
+                    }
+                }, new IntentFilter(BEST_FLIGHT_RESPONSE));
 
+                ApiService.startActionGetBestFlight(view.getContext(), "BUE", "LLON", 1463.75);
 
                 List<Flight> list = StorageHelper.getFlights(view.getContext());
        /*         for(ConfiguredFlight f : list){

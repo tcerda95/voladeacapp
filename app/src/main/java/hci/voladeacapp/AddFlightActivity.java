@@ -27,6 +27,7 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +71,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         numberInputLayout.setErrorEnabled(false);
 
         pDialog.show();
-        ApiService.startActionGetFlightStatus(this, airlineId, numberData, ACTION_GET_FLIGHT);
+        FlightIdentifier identifier = new FlightIdentifier(airlineId, numberData);
+
+        ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
     }
 
     @Override
@@ -168,9 +171,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         destAirView.setText(flGson.arrival.airport.id);
         origCityView.setText(flGson.departure.airport.city.name.split(",")[0]);
         destCityView.setText(flGson.arrival.airport.city.name.split(",")[0]);
-        //TODO: guardar un Date en el GSON
-        departDateView.setText(flGson.departure.scheduled_time);
         //TODO: imagen del estado
+        Flight.FlightDate date = new Flight.FlightDate(flGson.departure.scheduled_time);
+        departDateView.setText(new SimpleDateFormat("dd-MM-yyyy").format(date.date));
         //stateTextView.setText(flight.getState());
 
 

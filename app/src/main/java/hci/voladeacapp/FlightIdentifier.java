@@ -14,6 +14,11 @@ public class FlightIdentifier implements Serializable {
 
     public FlightIdentifier(){}
 
+    public FlightIdentifier(String airlineId, String numberData) {
+        setAirline(airlineId);
+        setNumber(numberData);
+    }
+
     public String getNumber(){
         return number;
     }

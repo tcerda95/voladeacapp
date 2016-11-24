@@ -1,11 +1,10 @@
 package hci.voladeacapp;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -37,7 +35,6 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,16 +44,10 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,7 +57,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import static hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED;
+import static hci.voladeacapp.ApiService.BEST_FLIGHT_RESPONSE;
+import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT_FOUND;
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
+import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 
 public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -98,6 +95,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private boolean inListView ;
 
+    private BroadcastReceiver dealIdReceiver;
+    private BroadcastReceiver detailStarterReceiver;
+
+    private ProgressDialog pDialog;
+
+    private CityGson currentCity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +118,54 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
         inListView = true;
+
+        dealIdReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
+                        if(found){
+                            ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), "START_DETAIL");
+                        }else {
+                            System.out.println("CHELO DIDNT FOUND THE BEST FLIGHT");
+
+                        }
+                    }
+                };
+
+        detailStarterReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
+                Flight flight = new Flight(flGson);
+                Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
+                detailIntent.putExtra("Flight", flight);
+                detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+
+                if(pDialog != null){
+                    pDialog.hide();
+                }
+                startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
+            }
+        };
+
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == DETAILS_REQUEST_CODE) {
+
+            boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
+            boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
+            if(deleted) {
+                //Borró y hay que borrarlo de la lista
+                FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                StorageHelper.deleteFlight(getActivity(), identifier);
+            }
+        }
     }
 
     @Override
@@ -122,11 +174,20 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         super.onStart();
     }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getActivity().registerReceiver(dealIdReceiver,  new IntentFilter(BEST_FLIGHT_RESPONSE));
+        getActivity().registerReceiver(detailStarterReceiver, new IntentFilter("START_DETAIL"));
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
+        pDialog = new ProgressDialog(getActivity());
         fromCalendar = Calendar.getInstance();
         fromDateTextView = (TextView) rootView.findViewById(R.id.from_date_edit_text);
         fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
@@ -190,7 +251,18 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                //TODO: Sacar el vuelo en base al deal para hacer la pantalla de detalles
+
+
+                String originId = currentCity.id;
+                String destId = deals.get(position).city.id;
+                Double price = deals.get(position).price;
+
+                pDialog.setMessage("Cargando el vuelo para vos mami");
+                pDialog.show();
+
+                ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
+
+
                 System.out.println("CLICKED: " + position);
             }
         });
@@ -367,9 +439,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 registeredReceiver = true;
             }
             CityGson city = citiesMap.get(fromCityTextView.getText().toString());
+
             if (city == null) {
                 System.out.println("INVALID CITY");
             } else {
+                currentCity = city;
                 ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
             }
         }
@@ -480,6 +554,25 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
     }
 
+    @Override
+    public void onPause() {
+        if (registeredReceiver) {
+            getActivity().unregisterReceiver(dealsReceiver);
+            registeredReceiver = false;
+            System.out.println("Unregistered");
+        }
+        getActivity().unregisterReceiver(dealIdReceiver);
+        getActivity().unregisterReceiver(detailStarterReceiver);
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        client.disconnect();
+        super.onStop();
+    }
+
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -520,23 +613,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 getResources().getString(R.string.couldnt_determine_position), Toast.LENGTH_SHORT).show();
         fromCityTextView.setText(DEFAULT_CITY);
         refreshResults();
-    }
-
-
-    @Override
-    public void onPause() {
-        if (registeredReceiver) {
-            getActivity().unregisterReceiver(dealsReceiver);
-            registeredReceiver = false;
-            System.out.println("Unregistered");
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        client.disconnect();
-        super.onStop();
     }
 
     @Override

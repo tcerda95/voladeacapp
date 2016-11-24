@@ -1,11 +1,12 @@
 package hci.voladeacapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,7 +29,7 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
 
     @NotEmpty
-    private EditText airline;
+    private AutoCompleteTextView airline;
 
     @NotEmpty
     private EditText flightNumber;
@@ -63,8 +64,12 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
 
         validator.setValidationMode(Validator.Mode.BURST);
 
-        airline = (EditText) findViewById(R.id.airline_input);
+        airline = (AutoCompleteTextView) findViewById(R.id.airline_input);
         flightNumber = (EditText) findViewById(R.id.flight_number_input);
+
+        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.review_dropdown,StorageHelper.getAirlineIdMap(this).keySet().toArray());
+        airline.setAdapter(adapter);
+        airline.setThreshold(1);
 
         /* Lo mas feo que vi en mi vida */
 
@@ -75,7 +80,6 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
         puntualidad = (DiscreteSeekBar) findViewById(R.id.puntualidad_bar);
         viajerosFrec = (DiscreteSeekBar) findViewById(R.id.viajeros_frecuentes_bar);
         stars = (RatingBar) findViewById(R.id.ratingBar);
-
 
         HashMap<DiscreteSeekBar,TextView> map = new HashMap<>();
         map.put(amabilidad,(TextView)findViewById(R.id.amabilidad_data));
@@ -133,6 +137,9 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
                 recommended = true;
             }
         });
+
+        if (savedInstanceState == null)
+            happyBtn.performClick();
 
         sadBtn.setOnClickListener( new View.OnClickListener(){
 
@@ -201,15 +208,15 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     }
 
     private void addCommonMethods(final HashMap<DiscreteSeekBar,TextView> map, final RatingBar stars) {
+        /*Seteo las estrellas al inicio */
+        setStars();
+
         for(final DiscreteSeekBar ds : map.keySet() ){
-            ds.setProgress(0);
+            ds.setProgress(1);
             ds.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
                 @Override
                 public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                    float sum = amabilidad.getProgress() + confort.getProgress() +
-                            comida.getProgress() + preciocalidad.getProgress() + puntualidad.getProgress() +
-                            viajerosFrec.getProgress() ;
-                    stars.setRating((sum*5)/60);
+                    setStars();
                     map.get(ds).setText(String.valueOf(value));
                 }
 
@@ -224,6 +231,14 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
                 }
             });
         }
+    }
+    public void setStars(){
+        float sum = amabilidad.getProgress() + confort.getProgress() +
+                comida.getProgress() + preciocalidad.getProgress() + puntualidad.getProgress() +
+                viajerosFrec.getProgress() ;
+        //stars.setRating(((sum*5)/60));
+        stars.setRating(((sum-6.0f) / 54.0f) * 5.0f);
+
     }
 
     @Override
