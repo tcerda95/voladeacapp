@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -39,7 +40,7 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                     return;
                  }
                 Flight toUpdate = flight_details.get(idx);
-                toUpdate.update(updatedGson);
+                List<NotificationCategory> changes = toUpdate.update(updatedGson);
                 NotificationCreator.createNotification(context, toUpdate, NotificationType.DELAYED);
         }
 

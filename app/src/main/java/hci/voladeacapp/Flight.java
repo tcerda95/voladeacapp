@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Flight implements Serializable {
@@ -120,14 +122,37 @@ public class Flight implements Serializable {
     }
 
 
+
+    public List<NotificationCategory> update(FlightStatusGson newStatus){
+        List<NotificationCategory> changes = new ArrayList<>();
+        if(!state.equals(newStatus.status)){
+            switch(newStatus.status){
+                case "A":
+                    changes.add(NotificationCategory.TAKEOFF);
+                    break;
+                case "D":
+                    changes.add(NotificationCategory.DEVIATION);
+                    break;
+                case "L":
+                    changes.add(NotificationCategory.LANDING);
+                    break;
+                case "C":
+                    changes.add(NotificationCategory.CANCELATION);
+                    break;
+            }
+        }
+
+        setState(newStatus.status);
+        setBaggageClaim(newStatus.arrival.airport.baggage);
+
+
+        return changes;
+    }
+
+
     public Flight(){
         this.identifier = new FlightIdentifier();
     } //TODO:Sacar
-
-
-    public boolean update(FlightStatusGson newStatus){
-        return true;
-    }
 
     private String imageURL;
 

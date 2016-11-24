@@ -60,7 +60,7 @@ public class MisVuelosFragment extends Fragment {
 
     public final static String FLIGHT_REMOVED = "hci.voladeacapp.MisVuelos.FLIGHT_REMOVED";
 
-    private final static int DETAILS_REQUEST_CODE = 2;
+    protected final static int DETAILS_REQUEST_CODE = 2;
 
     public final static int GET_FLIGHT = 1;
     private final static long UNDO_TIMEOUT = 3000;

@@ -107,11 +107,12 @@ public class FlightDetails extends AppCompatActivity {
             }
 
             if(!StorageHelper.flightExists(getApplicationContext(), flight.getIdentifier())){
+                //Esta agregando desde ver detalle
                 StorageHelper.saveFlight(getApplicationContext(), flight);
                 StorageHelper.saveSettings(getApplicationContext(), flight.getIdentifier(), new FlightSettings());
+                getIntent().putExtra(AddFlightActivity.NEW_FLIGHT_ADDED, true);
             }
 
-          //  StorageHelper.saveFlight(getApplicationContext(), flight);
             Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
             setRemovedFlightResult(flight, false);
             updateOptionsMenuVisibility();

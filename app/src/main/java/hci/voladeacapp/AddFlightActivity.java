@@ -30,12 +30,17 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import java.util.List;
 import java.util.Map;
 
+import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
+import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 
 public class AddFlightActivity extends AppCompatActivity implements Validator.ValidationListener{
 
 
     public final static String PARENT_ADD_FLIGHT_ACTIVITY = "hci.voladeacapp.AddFlightActivity.parent";
+    public static final String NEW_FLIGHT_ADDED = "hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED";
 
     @NotEmpty
     private EditText flightNumberEdit;
@@ -134,10 +139,10 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     Flight flight = new Flight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight",flight);
+                    intent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
                     intent.putExtra(PARENT_ADD_FLIGHT_ACTIVITY, true); // Indica a FlightDetails que esta actividad es la padre
-                    startActivity(intent);
+                    startActivityForResult(intent, DETAILS_REQUEST_CODE);
                     //TODO: Ver lo de FlightDetails por que aparece como si tuvie
-
 
                 }
             });
@@ -263,6 +268,38 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             return false;
         return true;
     }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == DETAILS_REQUEST_CODE) {
+            boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
+            boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
+            if(deleted) {
+                //Borró y hay que borrarlo de la lista
+                FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                StorageHelper.deleteFlight(this, identifier);
+                Toast.makeText(this, "Vuelo borrado", Toast.LENGTH_SHORT).show();
+            }
+            else if(addedNew){
+                //Agrego desde aca y se fue, hay que cambiar la tarjeta aca
+                Toast.makeText(this, "Se agrego", Toast.LENGTH_SHORT).show();
+
+            }
+            else{
+                //Aca no hizo nada
+                Toast.makeText(this, "No toco nada", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+
+
 
     @Override
     protected void onResume(){
