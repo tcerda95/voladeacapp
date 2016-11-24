@@ -120,7 +120,7 @@ public class CheloActivity extends AppCompatActivity {
 
                 Calendar today = Calendar.getInstance();
                 today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
-                today.add(Calendar.DATE, 5);
+                today.add(Calendar.DATE, 3);
                 registerReceiver(new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
@@ -133,7 +133,7 @@ public class CheloActivity extends AppCompatActivity {
                     }
                 }, new IntentFilter(BEST_FLIGHT_RESPONSE));
 
-                ApiService.startActionGetBestFlight(view.getContext(), "BUE", "LLON", 1463.75, today.getTime(), "RESULT_CALLBACK");
+                ApiService.startActionGetBestFlight(view.getContext(), "BUE", "LLON", 1463.75);
 
                 List<Flight> list = StorageHelper.getFlights(view.getContext());
        /*         for(ConfiguredFlight f : list){

@@ -81,14 +81,14 @@ public class ApiService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGetFlightStatus(Context context, FlightIdentifier identifier) {
+    public static void startActionGetFlightStatus(Context context, FlightIdentifier identifier, String callback) {
         String airline = identifier.getAirline();
         String num = identifier.getNumber();
-
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_STATUS);
         intent.putExtra(PARAM_AIRLINE, airline);
         intent.putExtra(PARAM_FLNUMBER, num);
+        intent.putExtra(CALLBACK_INTENT, callback);
         context.startService(intent);
     }
 
@@ -113,16 +113,13 @@ public class ApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionGetBestFlight(Context context, String from, String to, double price, Date date, final String callback){
+    public static void startActionGetBestFlight(Context context, String from, String to, double price){
         Intent intent = new Intent(context, ApiService.class);
         intent.setAction(ACTION_GET_BEST_FLIGHT);
 
         intent.putExtra(PARAM_FROM, from);
         intent.putExtra(PARAM_TO, to);
-        intent.putExtra(PARAM_DATE, date);
         intent.putExtra(PARAM_PRICE, price);
-        intent.putExtra(CALLBACK_INTENT, callback);
-
 
         context.startService(intent);
     }
@@ -195,12 +192,12 @@ public class ApiService extends IntentService {
             }
 
             if(ACTION_GET_BEST_FLIGHT.equals(intent.getAction())){
-                final Date date = (Date)intent.getSerializableExtra(PARAM_DATE);
+                final String callback = intent.getStringExtra(CALLBACK_INTENT);
                 final String from = intent.getStringExtra(PARAM_FROM);
                 final String to = intent.getStringExtra(PARAM_TO);
                 final Double price = intent.getDoubleExtra(PARAM_PRICE, 0);
 
-                handleActionGetBestDeal(from, to, price, date);
+                handleActionGetBestDeal(from, to, price);
             }
         }
     }
@@ -535,12 +532,16 @@ public class ApiService extends IntentService {
 
 
 
-    public void handleActionGetBestDeal(String from, String to, double price, Date date) {
+    public void handleActionGetBestDeal(String from, String to, double price) {
         if(requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);
         }
 
-        sendMinPriceRequest(from, to, price, date, 10);
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
+        today.add(Calendar.DATE, 3);
+
+        sendMinPriceRequest(from, to, price, today.getTime(), 10);
     }
 
 
@@ -565,7 +566,14 @@ public class ApiService extends IntentService {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if(obj.has("flights")) {
-                                JSONObject flight = obj.getJSONArray("flights").getJSONObject(0);
+                                JSONArray flights_arr = obj.getJSONArray("flights");
+
+                                if(flights_arr.length() < 1){
+                                    sendNextRequest(from, to, minPrice, date, tries);
+                                    return;
+                                }
+
+                                JSONObject flight = flights_arr.getJSONObject(0);
                                 Double price =   flight.getJSONObject("price")
                                                     .getJSONObject("total").getDouble("total");
 
@@ -596,8 +604,7 @@ public class ApiService extends IntentService {
 
                                     Intent intent = new Intent(BEST_FLIGHT_RESPONSE)
                                                         .putExtra(DATA_BEST_FLIGHT_FOUND, true)
-                                                        .putExtra("identifier", identifier)
-                                                        .putExtra("date", date);
+                                                        .putExtra("identifier", identifier);
                                     sendBroadcast(intent);
 
                                     return;
@@ -608,11 +615,8 @@ public class ApiService extends IntentService {
                                 return;
                             }
 
-                            Calendar c = Calendar.getInstance();
-                            c.setTime(date);
-                            c.add(Calendar.DATE, 1);
-                            Date newDate = c.getTime();
-                            sendMinPriceRequest(from, to, minPrice, newDate, tries - 1);
+
+                          sendNextRequest(from, to, minPrice, date, tries);
 
 
                         }catch(Exception e){
@@ -631,6 +635,16 @@ public class ApiService extends IntentService {
 
 
     }
+
+    private void sendNextRequest(final String from, final String to, final double minPrice, final Date date, final int tries){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        Date newDate = c.getTime();
+        //Siguiente request
+        sendMinPriceRequest(from, to, minPrice, newDate, tries - 1);
+    }
+
 
     private void sendErrorFindingBestFlight() {
         Intent intent = new Intent(BEST_FLIGHT_RESPONSE)
