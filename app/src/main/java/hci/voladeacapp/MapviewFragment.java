@@ -52,7 +52,6 @@ public class MapViewFragment extends Fragment {
 //              CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
 //              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //
-//                new FillMapTask().execute(deals);
                 updateMap(deals, fromCity, fromDate);
                 System.out.println("CITY: " + fromCity);
                 System.out.println("DATE: " + fromDate);

@@ -538,4 +538,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         client.disconnect();
         super.onStop();
     }
+
+    @Override
+    public void onDestroy() {
+        mapAdded = false;
+        super.onDestroy();
+    }
 }
+
