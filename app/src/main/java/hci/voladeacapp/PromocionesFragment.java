@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -62,9 +64,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
 
-    private final static String DEFAULT_CITY = "Buenos Aires, Ciudad de Buenos Aires";
+    private final static String DEFAULT_CITY = "Nueva York, New York, Estados Unidos"; // Para probar. Tendria que ser BsAs
 
-    private final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private View rootView;
 
     private Calendar fromCalendar;
 
@@ -108,7 +110,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
+        rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
 
         fromCalendar = Calendar.getInstance();
         fromDateTextView = (TextView) rootView.findViewById(R.id.from_date_edit_text);
@@ -216,17 +218,33 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private boolean requestLocationPermissions() {
         if (!hasLocationPermissions()) {
-            getActivity().registerReceiver(new permissionReceiver(), new IntentFilter(Voladeacapp.PERMSISSION_BROADCAST));
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                System.out.println("Request permission");
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_PERMISSION_REQUEST_CODE);
+                        Voladeacapp.LOCATION_PERMISSION_REQUEST_CODE);
+
+                Toast.makeText(getActivity().getApplicationContext(), "Supuesta explicacion", Toast.LENGTH_LONG).show();
             } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_PERMISSION_REQUEST_CODE);
+                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle("Localización");
+                alertDialog.setMessage("Permitinos usar tu localización para mostrarte promociones saliendo desde un lugar cerca tuyo.");
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                Voladeacapp.LOCATION_PERMISSION_REQUEST_CODE);
+                    }
+                });
+
+                alertDialog.show();
+                Toast.makeText(getActivity().getApplicationContext(), "De una corte", Toast.LENGTH_LONG);
             }
         }
         return true;
@@ -235,13 +253,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private boolean getLocationAndSearch() {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("Has permission");
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
             if (mLastLocation == null) {
                 locationError();
             } else {
-                refreshResults();
                 fromCityTextView.setText(getClosestCity(mLastLocation));
+                refreshResults();
             }
             return true;
         }
@@ -275,13 +292,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onConnectionSuspended(@NonNull int i) {
-        //TODO
+        rootView.findViewById(R.id.promos_no_connection_layout).setVisibility(View.VISIBLE);
         System.out.println("Connection suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        //TODO
+        rootView.findViewById(R.id.promos_no_connection_layout).setVisibility(View.VISIBLE);
         System.out.println("Connection failed");
     }
 
@@ -401,9 +418,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         return
                 "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                         "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                        + "&tags=city" + "&text=" + deal.city.name.split(",")[0].split(" ")[0]
+                        + "&tags=city" + "&text=" + deal.city.name.replace(',', ' ').replace(' ', '+')
                         + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
-        //TODO: Hacer bien
     }
 
     @Override
@@ -448,25 +464,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         }
     }
 
-    private class permissionReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int requestCode = intent.getIntExtra(Voladeacapp.PERMISSION_CODE_EXTRA, -1);
-            boolean granted = intent.getBooleanExtra(Voladeacapp.PERMISSION_GRANT_EXTRA, false);
-
-            if (requestCode == -1)
-                return;
-
-            switch (requestCode) {
-                case LOCATION_PERMISSION_REQUEST_CODE: {
-                    if (granted) {
-                        getLocationAndSearch(); // Debería andar siempre, ya me dio permiso.
-                    } else {
-                        locationError();
-                    }
-                }
-            } // Se pueden poner mas permisos.
+    public void notifyLocationPermission(boolean granted) {
+        if (granted) {
+            getLocationAndSearch();
+        } else {
+            locationError();
         }
+
     }
 
     private void locationError() {

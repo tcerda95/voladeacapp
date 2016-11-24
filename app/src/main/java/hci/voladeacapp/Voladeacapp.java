@@ -24,12 +24,14 @@ import java.util.Locale;
 
 public class Voladeacapp extends AppCompatActivity {
     private Fragment misVuelosFragment;
-    private Fragment promocionesFragment;
+    private PromocionesFragment promocionesFragment;
     private Fragment resenasFragment;
 
     public static String PERMSISSION_BROADCAST = "PermissionBroadcast";
     public static String PERMISSION_CODE_EXTRA = "BroadcastPermissionCode";
     public static String PERMISSION_GRANT_EXTRA = "BroadcastPermissionGrant";
+
+    public final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,11 +126,8 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        for (int i = 0; i < grantResults.length; i++) {
-            Intent newPermissionIntent = new Intent(PERMSISSION_BROADCAST);
-            newPermissionIntent.putExtra(PERMISSION_CODE_EXTRA, requestCode);
-            newPermissionIntent.putExtra(PERMISSION_GRANT_EXTRA, grantResults[i] == PackageManager.PERMISSION_GRANTED);
-            sendOrderedBroadcast(newPermissionIntent, null);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0) {
+            promocionesFragment.notifyLocationPermission(grantResults[0] == PackageManager.PERMISSION_GRANTED);
         }
     }
 
