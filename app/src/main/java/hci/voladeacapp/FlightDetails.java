@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,9 +24,7 @@ import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 public class FlightDetails extends AppCompatActivity {
     private Menu menu;
     private Flight flight;
-
     private FlightIdentifier identifier;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class FlightDetails extends AppCompatActivity {
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private class goToConfigurationActivityListener implements MenuItem.OnMenuItemClickListener {
@@ -174,13 +176,44 @@ public class FlightDetails extends AppCompatActivity {
 
     }
 
-    protected void onPause(){
-        super.onPause();
+    // Se sobreescriben estos dos métodos para definir la Activity padre de forma dinámica.
+
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    @Nullable
+    @Override
+    public Intent getParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    private Intent getParentActivityIntentImpl() {
+        Intent parentIntent;
+        boolean isAddFlightParent = getIntent().getBooleanExtra(AddFlightActivity.PARENT_ADD_FLIGHT_ACTIVITY, false);
+
+        if (isAddFlightParent) {
+            parentIntent = new Intent(this, AddFlightActivity.class);
+            parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+        }
+        else {  // El otro único padre es Mis Vuelos. Considerar pasar un String por el Intent en lugar de un boolean si hubiesen más padres.
+            parentIntent = new Intent(this, Voladeacapp.class);
+            parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+        }
+
+        return parentIntent;
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this); // Vuelve al padre que fue definido dinámicamente.
+                return true;
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -55,12 +55,6 @@
             android:name=".FlightDetails"
             android:launchMode="singleTop"
             android:parentActivityName=".Voladeacapp">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".SearchResults" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Voladeacapp" />
         </activity>
         <activity
             android:name=".SearchResults"

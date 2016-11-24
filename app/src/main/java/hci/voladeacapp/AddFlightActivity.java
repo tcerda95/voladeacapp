@@ -35,6 +35,8 @@ import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
 public class AddFlightActivity extends AppCompatActivity implements Validator.ValidationListener{
 
 
+    public final static String PARENT_ADD_FLIGHT_ACTIVITY = "hci.voladeacapp.AddFlightActivity.parent";
+
     @NotEmpty
     private EditText flightNumberEdit;
 
@@ -132,6 +134,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     Flight flight = new Flight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight",flight);
+                    intent.putExtra(PARENT_ADD_FLIGHT_ACTIVITY, true); // Indica a FlightDetails que esta actividad es la padre
                     startActivity(intent);
                     //TODO: Ver lo de FlightDetails por que aparece como si tuvie
 
