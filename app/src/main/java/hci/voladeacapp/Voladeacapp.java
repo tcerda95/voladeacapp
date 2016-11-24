@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +52,8 @@ public class Voladeacapp extends AppCompatActivity {
         };
 
         registerReceiver(errorReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+
+        checkConnection();
         loadLanguage();
 
         StorageHelper.initialize(this);
@@ -95,6 +99,16 @@ public class Voladeacapp extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void checkConnection() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if(activeNetworkInfo == null){
+            ErrorHelper.sendNoConnectionNotice(this);
+        }
     }
 
     private void loadLanguage() {

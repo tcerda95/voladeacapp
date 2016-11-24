@@ -1,9 +1,6 @@
 package hci.voladeacapp;
 
-import android.app.Activity;
-import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,8 +17,6 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 import static hci.voladeacapp.ApiService.DATA_AIRLINE_ID_MAP;
-import static hci.voladeacapp.ApiService.DATA_CITY_MAP;
-import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 
 /**
  * Created by chelo on 11/20/16.
@@ -344,7 +339,7 @@ public class StorageHelper {
                 public void onReceive(Context context, Intent intent) {
 
                     if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                        ErrorHelper.sendNoConnection(context);
+                        ErrorHelper.sendNoConnectionNotice(context);
                         return;
                     }
 

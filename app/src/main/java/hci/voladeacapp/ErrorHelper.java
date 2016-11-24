@@ -33,7 +33,7 @@ public class ErrorHelper {
 
     }
 
-    public static void sendNoConnection(Context context) {
+    public static void sendNoConnectionNotice(Context context) {
         context.sendBroadcast(new Intent(NO_CONNECTION_ERROR));
     }
 }

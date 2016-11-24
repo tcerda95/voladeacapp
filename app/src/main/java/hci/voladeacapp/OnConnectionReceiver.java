@@ -3,7 +3,6 @@ package hci.voladeacapp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -27,7 +26,7 @@ public class OnConnectionReceiver extends BroadcastReceiver {
 
                 }
             } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
-                ErrorHelper.sendNoConnection(context);
+                ErrorHelper.sendNoConnectionNotice(context);
                 System.out.println("There's no network connectivity");
                 System.out.println("Initialized: " + StorageHelper.isInitialized(context));
             }
