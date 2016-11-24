@@ -328,7 +328,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private void saveDealsData() {
         if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
-            System.out.println("saving");
+//            System.out.println("saving");
             Context context = getActivity().getApplicationContext();
             StorageHelper.saveDeals(context, imageURLs);
             StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
@@ -376,6 +376,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     }
 
+    boolean mapAdded = false;
+
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.promo_map_menu_item, menu);
@@ -389,8 +391,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 inListView = false;
-                final FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAPAAAAAA").commit();
+
+                if (!mapAdded) {
+                    final FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAPAAAAAA").commit();
+                    mapAdded = true;
+                }
 
                 View mapView = rootView.findViewById(R.id.mapView);
                 listView.setVisibility(View.GONE);
@@ -398,6 +404,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     mapView.setVisibility(View.VISIBLE);
                 mapIcon.setVisible(false);
                 listIcon.setVisible(true);
+                mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
                 return true;
             }
         });
@@ -413,7 +420,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     mapView.setVisibility(View.GONE);
                 mapIcon.setVisible(true);
                 listIcon.setVisible(false);
-                mapfragment.onDestroy();
                 return true;
             }
         });

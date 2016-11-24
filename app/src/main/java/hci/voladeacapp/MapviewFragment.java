@@ -53,6 +53,7 @@ public class MapViewFragment extends Fragment {
 //              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //
 //                new FillMapTask().execute(deals);
+                updateMap(deals, fromCity, fromDate);
                 System.out.println("CITY: " + fromCity);
                 System.out.println("DATE: " + fromDate);
             }
@@ -71,9 +72,9 @@ public class MapViewFragment extends Fragment {
         return newFragment;
     }
 
-    public class FillMapTask extends AsyncTask<ArrayList<DealGson>, Void, DealGson> {
+    public class FillMapTask extends AsyncTask<ArrayList<DealGson>, Void, Void> {
         @Override
-        protected DealGson doInBackground(ArrayList<DealGson>... dealsArrays) {
+        protected Void doInBackground(ArrayList<DealGson>... dealsArrays) {
             clearMap();
             for (DealGson d: dealsArrays[0]) {
                 addNewMarker(d);
@@ -108,6 +109,9 @@ public class MapViewFragment extends Fragment {
         this.deals = deals;
         this.fromCity = fromCity;
         this.fromDate = fromDate;
+        System.out.println("UPDATING MAP");
+        if (GMap == null)
+            return;
 
         new FillMapTask().execute(deals);
     }
