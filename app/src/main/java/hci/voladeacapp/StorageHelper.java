@@ -147,7 +147,6 @@ public class StorageHelper {
             map = gson.fromJson(mapString, type);
         } else {
             map = new HashMap<>();
-            initialize(context);
         }
 
         return map;
@@ -166,7 +165,6 @@ public class StorageHelper {
             map = gson.fromJson(mapString, type);
         } else {
             map = new HashMap<>();
-            initialize(context);
         }
 
         return map;

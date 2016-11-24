@@ -101,6 +101,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private BroadcastReceiver detailStarterReceiver;
 
     private ProgressDialog pDialog;
+    private boolean notifiedConnectionError;
 
     private CityGson currentCity;
 
@@ -120,12 +121,17 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
         inListView = true;
+        notifiedConnectionError = false;
 
         dealIdReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                            ErrorHelper.connectionErrorShow(context);
+                            if(!notifiedConnectionError) {
+                                System.out.println("1");
+                                ErrorHelper.connectionErrorShow(context);
+                                notifiedConnectionError = true;
+                            }
                         }
                       else{
                         boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
@@ -147,7 +153,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 }
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)) {
-                    ErrorHelper.connectionErrorShow(context);
+                    if(!notifiedConnectionError) {
+                        System.out.println("2");
+                        ErrorHelper.connectionErrorShow(context);
+                        notifiedConnectionError = true;
+                    }
                 }
                 else {
                     FlightStatusGson flGson = (FlightStatusGson) intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
@@ -285,7 +295,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             public void onReceive(Context context, Intent intent) {
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                    ErrorHelper.connectionErrorShow(context);
+                    if(!notifiedConnectionError) {
+                        System.out.println("3");
+                        ErrorHelper.connectionErrorShow(context);
+                        notifiedConnectionError = true;
+                    }
                     return; //Me voy
                 }
 
