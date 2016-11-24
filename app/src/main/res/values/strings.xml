@@ -89,4 +89,5 @@
 
     <string name="couldnt_determine_position">No se pudo determinar su ubicación</string>
     <string name="optional">Opcional</string>
+    <string name="view_in_list">Ver en lista</string>
 </resources>

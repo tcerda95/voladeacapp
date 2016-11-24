@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,10 +13,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -46,6 +47,14 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.SimpleDateFormat;
@@ -67,6 +76,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private final static String DEFAULT_CITY = "Nueva York, New York, Estados Unidos"; // Para probar. Tendria que ser BsAs
 
     private View rootView;
+    private LayoutInflater layoutInflater;
 
     private Calendar fromCalendar;
 
@@ -84,6 +94,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private Map<String, CityGson> citiesMap;
 
     private GoogleApiClient client;
+    MapViewFragment mapfragment;
+
+    private boolean inListView ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +113,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .addApi(LocationServices.API)
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
+        inListView = true;
     }
 
     @Override
@@ -110,7 +124,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_promociones, parent, false);
+        layoutInflater = inflater;
+        rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
         fromCalendar = Calendar.getInstance();
         fromDateTextView = (TextView) rootView.findViewById(R.id.from_date_edit_text);
@@ -193,7 +208,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         getCityImageURL(d);
                     }
                     saveDealsData();
-                    promoAdapter.notifyDataSetChanged();
+                    if (inListView)
+                        promoAdapter.notifyDataSetChanged();
+                    else
+                        mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
                 }
             }
         };
@@ -204,6 +222,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
         // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
         refreshResults();
+
+        /* MAP */
+//        android.app.FragmentManager fragmentManager = getFragmentManager();
+//        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+//        fragmentManager.beginTransaction().add(mapFragment, "MAPAAAAAAAAAA");
+//        mapFragment.getMapAsync(new PromoMapCallback());
 
         return rootView;
     }
@@ -353,19 +377,47 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.promo_map_menu_item, menu);
-        MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
+        final MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
+        final MenuItem listIcon = menu.findItem(R.id.go_to_list_view);
 
+        mapfragment = MapViewFragment.newInstance(deals, fromCityTextView.getText().toString(), fromCalendar);
+
+        final View listView = rootView.findViewById(R.id.promo_card_list);
         mapIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent intent = new Intent(getActivity(), MapActivity.class);
-                startActivity(intent);
+                inListView = false;
+                final FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAPAAAAAA").commit();
+
+                View mapView = rootView.findViewById(R.id.mapView);
+                listView.setVisibility(View.GONE);
+                if (mapView != null)
+                    mapView.setVisibility(View.VISIBLE);
+                mapIcon.setVisible(false);
+                listIcon.setVisible(true);
                 return true;
             }
         });
+
+        listIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                inListView = true;
+                listView.setVisibility(View.VISIBLE);
+                View mapView = rootView.findViewById(R.id.mapView);
+                if (mapView != null)
+                    mapView.setVisibility(View.GONE);
+                mapIcon.setVisible(true);
+                listIcon.setVisible(false);
+                mapfragment.onDestroy();
+                return true;
+            }
+        });
+
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -422,37 +474,21 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
     }
 
-    @Override
-    public void onPause() {
-        if (registeredReceiver) {
-            getActivity().unregisterReceiver(dealsReceiver);
-            registeredReceiver = false;
-            System.out.println("Unregistered");
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        client.disconnect();
-        super.onStop();
-    }
-
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.findViewById(R.id.dummy_focus_layout).requestFocus();
     }
 
-
     private boolean isValidCity(String name) {
         return citiesMap.containsKey(name);
     }
 
+
     private class CityTextWatcher implements TextWatcher {
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
 
@@ -462,8 +498,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 fromCityTextView.setError(getResources().getString(R.string.invalid_city_message));
             }
         }
-    }
 
+    }
     public void notifyLocationPermission(boolean granted) {
         if (granted) {
             getLocationAndSearch();
@@ -478,5 +514,22 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 getResources().getString(R.string.couldnt_determine_position), Toast.LENGTH_SHORT).show();
         fromCityTextView.setText(DEFAULT_CITY);
         refreshResults();
+    }
+
+
+    @Override
+    public void onPause() {
+        if (registeredReceiver) {
+            getActivity().unregisterReceiver(dealsReceiver);
+            registeredReceiver = false;
+            System.out.println("Unregistered");
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        client.disconnect();
+        super.onStop();
     }
 }

@@ -39,17 +39,9 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <!--
-      The API key for Google Maps-based APIs is defined as a string resource.
-      (See the file "res/values/google_maps_api.xml").
-      Note that the API key is linked to the encryption key used to sign the APK.
-      You need a different API key for each encryption key, including the release key that is used to
-      sign the APK for publishing.
-      You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBuEqx-SSs3zmp93IkEJgHL16oeVsyifjw" />
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyD2VfOVz1fJfekmqA_iFbz3kIO0Qeu2MNA"/>
 
         <activity
             android:name=".FlightDetails"
@@ -122,6 +114,8 @@
 
         <activity android:name=".ReviewDetail"
             android:parentActivityName=".Voladeacapp"/>
+
+
     </application>
 
 </manifest>
