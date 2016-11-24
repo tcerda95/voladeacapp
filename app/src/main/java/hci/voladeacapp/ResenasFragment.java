@@ -66,9 +66,9 @@ public class ResenasFragment extends Fragment {
 
     private void fillList() {
         refreshCount = 0;
-        ArrayList<ConfiguredFlight> flights = StorageHelper.getFlights(getActivity().getApplicationContext());
+        ArrayList<Flight> flights = StorageHelper.getFlights(getActivity().getApplicationContext());
         System.out.println("SIIIIIIIIIIIIIZE: "+ flights.size());
-        for(ConfiguredFlight f: flights){
+        for(Flight f: flights){
             ApiService.startActionGetReviews(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_FILL_REVIEWS);
             refreshCount++;
         }

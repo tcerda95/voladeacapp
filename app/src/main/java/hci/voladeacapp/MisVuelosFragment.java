@@ -40,11 +40,11 @@ public class MisVuelosFragment extends Fragment {
             FlightStatusGson updatedGson = (FlightStatusGson)intent.getSerializableExtra(DATA_FLIGHT_GSON);
             if(updatedGson == null)
                 return;
-            int idx = flight_details.indexOf(new ConfiguredFlight(updatedGson));
+            int idx = flight_details.indexOf(new Flight(updatedGson));
             if(idx == -1){
                 return;
             }
-            ConfiguredFlight toUpdate = flight_details.get(idx);
+            Flight toUpdate = flight_details.get(idx);
             toUpdate.update(updatedGson);
             System.out.println("Updated!");
             abortBroadcast();
@@ -68,7 +68,7 @@ public class MisVuelosFragment extends Fragment {
     private DynamicListView flightsListView;
 
     RefreshReceiver receiver;
-    private ArrayList<ConfiguredFlight> flight_details;
+    private ArrayList<Flight> flight_details;
 
     private TimedUndoAdapter adapter;
 
@@ -116,7 +116,7 @@ public class MisVuelosFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = flightsListView.getItemAtPosition(position);
-                ConfiguredFlight flightData = (ConfiguredFlight) o;
+                Flight flightData = (Flight) o;
 
 
                 Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
@@ -230,7 +230,7 @@ public class MisVuelosFragment extends Fragment {
      */
     private void updateFlightsStatus() {
 
-        for(ConfiguredFlight f: flight_details){
+        for(Flight f: flight_details){
             ApiService.startActionGetFlightStatus(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
         }
 
@@ -263,7 +263,10 @@ public class MisVuelosFragment extends Fragment {
 
             FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
             if(requestCode == GET_FLIGHT){
-                StorageHelper.saveFlight(getActivity(), new ConfiguredFlight(resultado));
+                Flight f = new Flight(resultado);
+
+                StorageHelper.saveFlight(getActivity(), new Flight(resultado));
+                StorageHelper.saveSettings(getActivity(), f.getIdentifier(), new FlightSettings());
             }
         }
 
@@ -273,8 +276,8 @@ public class MisVuelosFragment extends Fragment {
 
     private void resetList() {
         flight_details.clear();
-        List<ConfiguredFlight> list = StorageHelper.getFlights(getActivity());
-        for(ConfiguredFlight f : list){
+        List<Flight> list = StorageHelper.getFlights(getActivity());
+        for(Flight f : list){
             flight_details.add(f);
         }
         adapter.notifyDataSetChanged();

@@ -115,7 +115,7 @@ public class CheloActivity extends AppCompatActivity {
 
 
 
-                List<ConfiguredFlight> list = StorageHelper.getFlights(view.getContext());
+                List<Flight> list = StorageHelper.getFlights(view.getContext());
        /*         for(ConfiguredFlight f : list){
                     System.out.println();
                     FlightSettings settings = f.getSettings();

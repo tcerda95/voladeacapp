@@ -1,5 +1,6 @@
 package hci.voladeacapp;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentProvider;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -31,14 +33,15 @@ public class StorageHelper {
     public final static String DATA = "hci.voladeacapp.StorageHelper.DATA";
     private static final String AIRLINE_LIST = "hci.voladeacapp.StorageHelper.AIRLINE_LIST";
     private static final String CITY_MAP = "hci.voladeacapp.StorageHelper.CITY_MAP";
+    private static final String FLIGHT_SETTINGS_MAP = "hci.voladeacapp.StorageHelper.FLIGHT_SETTINGS_MAP";
 
     public final static String DEALS_WITH_IMG = "hci.voladeacapp.data.DEALS_WITH_IMG";
     public final static String DEALS_CITY_ID = "hci.voladeacapp.data.DEALS_CITY_ID";
     public final static String DEALS_CALENDAR = "hci.voladeacapp.data.DEALS_CALENDAR";
 
 
-    public static ArrayList<ConfiguredFlight> getFlights(Context context) {
-        ArrayList<ConfiguredFlight> flight_details;
+    public static ArrayList<Flight> getFlights(Context context) {
+        ArrayList<Flight> flight_details;
 
         SharedPreferences sp = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE);
         String list = sp.getString(FLIGHT_LIST, null); //Si no hay nada devuelve null
@@ -48,13 +51,35 @@ public class StorageHelper {
 
         } else {
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<ConfiguredFlight>>() {
+            Type type = new TypeToken<ArrayList<Flight>>() {
             }.getType();
 
             flight_details = gson.fromJson(list, type);
         }
 
         return flight_details;
+    }
+
+
+    private static HashMap<String, FlightSettings> getFlightSettingsMap(Context context){
+        HashMap<String, FlightSettings> settingsMap;
+
+        SharedPreferences sp = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE);
+        String stringMap = sp.getString(FLIGHT_SETTINGS_MAP, null); //Si no hay nada devuelve null
+
+        if (stringMap == null) {
+            settingsMap = new HashMap<>();
+
+        } else {
+            Gson gson = new GsonBuilder().create();
+            Type type = new TypeToken<HashMap<String, FlightSettings>>() {
+            }.getType();
+            System.out.println(stringMap);
+            settingsMap = gson.fromJson(stringMap, type);
+        }
+
+        return settingsMap;
+
     }
 
     public static Map<DealGson, String> getDeals(Context context) {
@@ -150,19 +175,19 @@ public class StorageHelper {
 
 
     public static boolean flightExists(Context context, FlightIdentifier identifier){
-        List<ConfiguredFlight> list = getFlights(context);
+        List<Flight> list = getFlights(context);
 
-        ConfiguredFlight searcher = new ConfiguredFlight();
+        Flight searcher = new Flight();
         searcher.setIdentifier(identifier);
         return list.indexOf(searcher) >= 0;
     }
 
-    public static ConfiguredFlight getFlight(Context context, FlightIdentifier identifier){
-        ConfiguredFlight searcher = new ConfiguredFlight();
+    public static Flight getFlight(Context context, FlightIdentifier identifier){
+        Flight searcher = new Flight();
 
         searcher.setIdentifier(identifier);
 
-        List<ConfiguredFlight> list = getFlights(context);
+        List<Flight> list = getFlights(context);
 
         int idx = list.indexOf(searcher);
         if(idx < 0){
@@ -176,10 +201,10 @@ public class StorageHelper {
     }
 
     public static void deleteFlight(Context context, FlightIdentifier identifier){
-        ConfiguredFlight searcher = new ConfiguredFlight();
+        Flight searcher = new Flight();
         searcher.setIdentifier(identifier);
 
-        List<ConfiguredFlight> list = getFlights(context);
+        List<Flight> list = getFlights(context);
         System.out.println("DELETING: FOUND AT IDX " + list.indexOf(searcher));
         list.remove(searcher);
 
@@ -187,8 +212,8 @@ public class StorageHelper {
     }
 
 
-    public static void saveFlight(Context context, ConfiguredFlight flight){
-        List<ConfiguredFlight> list = getFlights(context);
+    public static void saveFlight(Context context, Flight flight){
+        List<Flight> list = getFlights(context);
         int idx = list.indexOf(flight);
 
         if(idx < 0) {
@@ -201,7 +226,7 @@ public class StorageHelper {
     }
 
 
-    public static void saveSettings(Context context, FlightIdentifier identifier, FlightSettings settings){
+ /*   public static void saveSettings(Context context, FlightIdentifier identifier, FlightSettings settings){
         ConfiguredFlight searcher = new ConfiguredFlight();
         searcher.setIdentifier(identifier);
 
@@ -222,21 +247,31 @@ public class StorageHelper {
 
         saveFlights(context, list);
     }
-
-    public static void saveFlights(Context context, List<ConfiguredFlight> flight_details){
+*/
+    public static void saveFlights(Context context, List<Flight> flight_details){
         saveData(context, flight_details, FLIGHT_LIST);
     }
 
+    private static void saveSettingsMap(Context context, HashMap<String, FlightSettings> map){
+        Type type = new TypeToken<HashMap<FlightIdentifier, FlightSettings>>(){}.getType();
+        Gson gson = new Gson();
+        String s = gson.toJson(map, type);
+
+        SharedPreferences.Editor editor = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE).edit();
+        editor.putString(FLIGHT_SETTINGS_MAP, s);
+        editor.commit();
+
+    }
 
 
-    public static void fillListWithFlights(Context context, List<ConfiguredFlight> list){
-        List<ConfiguredFlight> saved = getFlights(context);
+    public static void fillListWithFlights(Context context, List<Flight> list){
+        List<Flight> saved = getFlights(context);
 
         if(list == null || saved == null)
             return;
 
         list.clear();
-        for(ConfiguredFlight f: saved){
+        for(Flight f: saved){
             list.add(f);
         }
     }
@@ -325,4 +360,17 @@ public class StorageHelper {
 
 
     }
+
+    public static void saveSettings(Context context, FlightIdentifier identifier, FlightSettings flightSettings) {
+        HashMap<String, FlightSettings> map = getFlightSettingsMap(context);
+        map.put(identifier.toString(), flightSettings);
+        saveSettingsMap(context, map);
+    }
+
+
+    public static FlightSettings getSettings(Context context, FlightIdentifier identifier){
+        Map<String, FlightSettings> map = getFlightSettingsMap(context);
+        return map.get(identifier.toString());
+    }
 }
+

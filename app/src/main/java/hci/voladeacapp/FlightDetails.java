@@ -19,7 +19,6 @@ import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 
 public class FlightDetails extends AppCompatActivity {
-  //  private ArrayList<ConfiguredFlight> saved_flights;
     private Menu menu;
     private Flight flight;
 
@@ -38,7 +37,6 @@ public class FlightDetails extends AppCompatActivity {
         setTitle(flight.getAirline() + " " + flight.getNumber());
         fillDetails(flight);
 
-       // saved_flights = StorageHelper.getFlights(getApplicationContext());
     }
 
     private class goToConfigurationActivityListener implements MenuItem.OnMenuItemClickListener {
@@ -67,7 +65,6 @@ public class FlightDetails extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                 //   StorageHelper.deleteFlight(getApplicationContext(), flight.getIdentifier());
                     Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
                     setRemovedFlightResult(flight, true);
 
@@ -108,6 +105,11 @@ public class FlightDetails extends AppCompatActivity {
                 throw new IllegalStateException("Already followed flight!");
             }
 
+            if(!StorageHelper.flightExists(getApplicationContext(), flight.getIdentifier())){
+                StorageHelper.saveFlight(getApplicationContext(), flight);
+                StorageHelper.saveSettings(getApplicationContext(), flight.getIdentifier(), new FlightSettings());
+            }
+
           //  StorageHelper.saveFlight(getApplicationContext(), flight);
             Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
             setRemovedFlightResult(flight, false);
@@ -139,8 +141,9 @@ public class FlightDetails extends AppCompatActivity {
         MenuItem removeButton = menu.findItem(R.id.action_remove_flight);
         MenuItem addButton = menu.findItem(R.id.action_add_flight);
 
-        //boolean added = StorageHelper.flightExists(getApplicationContext(), flight.getIdentifier());
-        boolean added = ! getIntent().getBooleanExtra(FLIGHT_REMOVED , false);
+        boolean added = StorageHelper.flightExists(getApplicationContext(), flight.getIdentifier())
+                            &&  !getIntent().getBooleanExtra(FLIGHT_REMOVED , false);
+
         System.out.println("FLIGHT IS ADDED: "+ added);
 
         notificationsButton.setVisible(added);
@@ -168,10 +171,6 @@ public class FlightDetails extends AppCompatActivity {
 
     protected void onResume(){
         super.onResume();
-
-   //     this.flight = StorageHelper.getFlight(this, identifier);
-   //     FlightSettings fn = this.flight.getSettings();
-
 
     }
 

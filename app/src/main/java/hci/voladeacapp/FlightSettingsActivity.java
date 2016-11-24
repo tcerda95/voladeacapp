@@ -71,7 +71,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
         public void onResume(){
             super.onResume();
 
-            settings = StorageHelper.getFlight(getActivity(), identifier).getSettings();
+            settings = StorageHelper.getSettings(getActivity(), identifier);
 
 
             System.out.println("HEY THESE ARE THE SETTINGS");

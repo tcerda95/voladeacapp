@@ -2,6 +2,7 @@ package hci.voladeacapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,8 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
 
     private Validator validator;
 
+    private ScrollView scrollView;
+
     private String aerolinea;
     private String comentario;
     private Integer numeroVuelo;
@@ -49,10 +53,15 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_dejar_resena);  // Así se llega a traducir
         setContentView(R.layout.activity_add_review);
+
+        scrollView = (ScrollView) findViewById(R.id.activity_add_review);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
+
+        validator.setValidationMode(Validator.Mode.BURST);
 
         airline = (EditText) findViewById(R.id.airline_input);
         flightNumber = (EditText) findViewById(R.id.flight_number_input);
@@ -142,7 +151,48 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
             else
                 sadBtn.setBackgroundColor(ContextCompat.getColor(AddReviewActivity.this, R.color.red));
         }
+
+        setOnFocusChangeListeners();
     }
+
+    private void setOnFocusChangeListeners() {
+        TextInputLayout airlineTextInputLayout = findTextInputLayout(airline);
+        TextInputLayout flightNumberTextInputLayout = findTextInputLayout(flightNumber);
+
+        airline.setOnFocusChangeListener(new NotEmptyOnFocusChangeListener(airlineTextInputLayout, getString(R.string.error_required_airline)));
+        flightNumber.setOnFocusChangeListener(new NotEmptyOnFocusChangeListener(flightNumberTextInputLayout, getString(R.string.error_required_flight_number)));
+    }
+
+    private static class NotEmptyOnFocusChangeListener implements View.OnFocusChangeListener {
+
+        private TextInputLayout textInputLayout;
+        private String errorMsg;
+
+        public NotEmptyOnFocusChangeListener(TextInputLayout textInputLayout, String errorMsg) {
+            this.textInputLayout = textInputLayout;
+            this.errorMsg = errorMsg;
+        }
+
+        @Override
+        public void onFocusChange(View view, boolean focused) {
+            EditText editText = (EditText) view;
+            if (focused) {
+                hideErrorMessage();
+                editText.setCursorVisible(true);
+            }
+            else {
+                if (editText.getText().length() < 1) // Input vacío
+                    textInputLayout.setError(errorMsg);
+                else
+                    hideErrorMessage();
+            }
+        }
+
+        private void hideErrorMessage() {
+            textInputLayout.setError(null);
+        }
+    }
+
 
     private boolean checkCompletedFields(ReviewGson res) {
         if(res.flight.airline.id == null || res.flight.number == null || res.yes_recommend == null)
@@ -193,13 +243,32 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
             Toast.makeText(getApplication(), "¡Reseña enviada!", Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(getApplication(),"Falta recomendado",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication(),"Falta recomendado",Toast.LENGTH_SHORT).show(); // TODO: front-end
         }
     }
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
-        //Para debug... Faltan otras validaciones
-        Toast.makeText(getApplication(),"Falta aerolinea o número",Toast.LENGTH_SHORT).show();
+        for (ValidationError error : errors) {
+            View v = error.getView();
+            TextInputLayout til = findTextInputLayout(v);
+            if (v.getId() == R.id.airline_input)
+                til.setError(getString(R.string.error_required_airline));
+            else if (v.getId() == R.id.flight_number_input)
+                til.setError(getString(R.string.error_required_flight_number));
+        }
+
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
+    }
+
+    /**
+     * Devuelve el TextInputLayout padre de un view. Si no existe dicho padre explota todo.
+     * @param v Vista hija del TextInputLayout
+     * @return TextInputLayout padre del View v.
+     */
+    private TextInputLayout findTextInputLayout(View v) {
+        while (!((v = (View) v.getParent()) instanceof TextInputLayout))
+            ;
+        return (TextInputLayout) v;
     }
 }

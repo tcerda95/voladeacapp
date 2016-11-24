@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -79,11 +80,11 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             if(v.getId() == R.id.fl_num_data){
                 //Es el numero
                 numberInputLayout.setErrorEnabled(true);
-                numberInputLayout.setError(getString(R.string.missing_data));
+                numberInputLayout.setError(getString(R.string.error_required_flight_number));
             } else {
                 //es la aerolinea
                 airlineInputLayout.setErrorEnabled(true);
-                airlineInputLayout.setError(getString(R.string.missing_data));
+                airlineInputLayout.setError(getString(R.string.error_required_airline));
             }
         }
     }
@@ -128,7 +129,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             detailsButton.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view) {
 
-                    ConfiguredFlight flight = new ConfiguredFlight(flGson);
+                    Flight flight = new Flight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight",flight);
                     startActivity(intent);
@@ -194,6 +195,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         search.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 validator.validate();
+                hideKeyboard(v);
             }
         });
 
@@ -202,6 +204,10 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         
     }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+    }
     /**
      * En cambio de foco se validan los campos y se pone el mensaje de error correspondiente
      */
@@ -216,7 +222,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     numberInputLayout.setErrorEnabled(false);
                     if (!validateEditText(((EditText) v).getText())){
                         numberInputLayout.setErrorEnabled(true);
-                        numberInputLayout.setError(getString(R.string.missing_data));
+                        numberInputLayout.setError(getString(R.string.error_required_flight_number));
                     } else {
                         numberInputLayout.setErrorEnabled(false);
                     }
@@ -235,7 +241,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     airlineInputLayout.setErrorEnabled(false);
                     if(!validateEditText(((EditText) v).getText())){
                         airlineInputLayout.setErrorEnabled(true);
-                        airlineInputLayout.setError(getString(R.string.missing_data));
+                        airlineInputLayout.setError(getString(R.string.error_required_airline));
                     } else {
                         airlineInputLayout.setErrorEnabled(false);
                     }

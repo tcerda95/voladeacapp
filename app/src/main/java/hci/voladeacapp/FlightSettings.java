@@ -1,5 +1,7 @@
 package hci.voladeacapp;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,4 +56,6 @@ public class FlightSettings implements Serializable{
             throw new IllegalArgumentException("Non-existing notification category");
         notificationSettings.put(category, isActive);
     }
+
+
 }
