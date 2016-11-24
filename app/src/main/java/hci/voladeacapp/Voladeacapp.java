@@ -93,7 +93,7 @@ public class Voladeacapp extends AppCompatActivity {
         Locale.setDefault(locale);
         Configuration config = new Configuration();
         config.setLocale(locale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics()); //TODO: deprecated
     }
 
     public void hideActions() {
