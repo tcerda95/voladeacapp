@@ -62,6 +62,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
 
+    private final static String DEFAULT_CITY = "Buenos Aires, Ciudad de Buenos Aires";
+
     private final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private Calendar fromCalendar;
@@ -144,10 +146,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         fromCityTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
                 hideKeyboard(rootView);
                 refreshResults();
-                System.out.println("Clicked " + position);
             }
         });
 
@@ -208,7 +208,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (!getLocationAndSearch()) {//No permissions
+        if (!getLocationAndSearch()) {
+            //No permissions
             requestLocationPermissions();
         }
     }
@@ -219,6 +220,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                System.out.println("Request permission");
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -233,11 +237,14 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             System.out.println("Has permission");
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-            fromCityTextView.setText(getClosestCity(mLastLocation));
-            refreshResults();
+            if (mLastLocation == null) {
+                locationError();
+            } else {
+                refreshResults();
+                fromCityTextView.setText(getClosestCity(mLastLocation));
+            }
             return true;
         }
-        System.out.println("NO permission");
         return false;
     }
 
@@ -315,6 +322,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             deals.clear();
             if (!registeredReceiver) {
                 getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
+                System.out.println("Registered");
                 registeredReceiver = true;
             }
             CityGson city = citiesMap.get(fromCityTextView.getText().toString());
@@ -403,6 +411,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         if (registeredReceiver) {
             getActivity().unregisterReceiver(dealsReceiver);
             registeredReceiver = false;
+            System.out.println("Unregistered");
         }
         super.onPause();
     }
@@ -453,12 +462,17 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     if (granted) {
                         getLocationAndSearch(); // Debería andar siempre, ya me dio permiso.
                     } else {
-                        // No dió permiso. Desactivar funcionalidad
-                        //TODO
-                        Toast.makeText(getActivity().getApplicationContext(), "PUTO DE MIERDA DECIME DONDE ESTAS", Toast.LENGTH_LONG);
+                        locationError();
                     }
                 }
             } // Se pueden poner mas permisos.
         }
+    }
+
+    private void locationError() {
+        Toast.makeText(getActivity().getApplicationContext(),
+                getResources().getString(R.string.couldnt_determine_position), Toast.LENGTH_SHORT).show();
+        fromCityTextView.setText(DEFAULT_CITY);
+        refreshResults();
     }
 }
