@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
-    private ArrayList<ConfiguredFlight> listData;
+    private ArrayList<Flight> listData;
     private LayoutInflater layoutInflater;
 
-    public FlightListAdapter(Context aContext, ArrayList<ConfiguredFlight> listData) {
+    public FlightListAdapter(Context aContext, ArrayList<Flight> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }

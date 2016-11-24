@@ -129,7 +129,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             detailsButton.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view) {
 
-                    ConfiguredFlight flight = new ConfiguredFlight(flGson);
+                    Flight flight = new Flight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight",flight);
                     startActivity(intent);

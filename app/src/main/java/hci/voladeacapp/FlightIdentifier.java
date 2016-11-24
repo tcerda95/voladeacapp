@@ -1,5 +1,7 @@
 package hci.voladeacapp;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 /**
@@ -46,4 +48,10 @@ public class FlightIdentifier implements Serializable {
         result = 31 * result + airline.hashCode();
         return result;
     }
+
+   public String toString(){
+       return airline + number;
+   }
+
+
 }

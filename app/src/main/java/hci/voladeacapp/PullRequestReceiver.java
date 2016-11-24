@@ -20,11 +20,11 @@ public class PullRequestReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ArrayList<ConfiguredFlight> flight_details = new ArrayList<>();
+        ArrayList<Flight> flight_details = new ArrayList<>();
 
         flight_details = StorageHelper.getFlights(context.getApplicationContext());
 
-        for (ConfiguredFlight f : flight_details) {
+        for (Flight f : flight_details) {
                 ApiService.startActionGetFlightStatus(context.getApplicationContext(), f.getAerolinea(), f.getNumber(), ACTION_GET_REFRESH);
             }
         }
