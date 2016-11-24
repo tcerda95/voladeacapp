@@ -238,13 +238,33 @@
             app:dsb_indicatorColor="@color/colorAccent"
             android:paddingTop="5dip" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recommend_label"
-                android:textAlignment="center"
-                android:textStyle="normal|bold"
-                android:layout_marginBottom="5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/puntuacion_total_label"
+            android:textAlignment="center"
+            android:textStyle="normal|bold" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:rating="0"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:isIndicator="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recommend_label"
+            android:textAlignment="center"
+            android:textStyle="normal|bold"
+            android:layout_marginBottom="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -283,26 +303,6 @@
             android:id="@+id/comment_data"
             android:layout_gravity="center"
             android:hint="@string/optional"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/puntuacion_total_label"
-            android:textAlignment="center"
-            android:textStyle="normal|bold" />
-
-        <RatingBar
-            android:id="@+id/ratingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="0.1"
-            android:rating="0"
-            android:layout_gravity="center"
-            android:clickable="false"
-            android:focusableInTouchMode="false"
-            android:focusable="false"
-            android:isIndicator="true"/>
 
     <Button
         android:layout_width="wrap_content"
