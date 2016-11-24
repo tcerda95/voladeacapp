@@ -5,7 +5,7 @@
     <string name="add_to_my_flights">Add to My Flights</string>
     <string name="airline_label">Airline</string>
     <string name="airport_label">Airport</string>
-    <string name="amabilidad_label">Kindness</string>
+    <string name="amabilidad_label">Friendliness</string>
     <string name="baggageClaimGateNotif">Bagagge Claim</string>
     <string name="baggage_claim_label">Bagagge Claim</string>
     <string name="boardingGateNotif">Boarding Gate</string>
@@ -76,4 +76,6 @@
     <string name="error_required_flight_number">The flight number is required</string>
     <string name="optional">Optional</string>
     <string name="search_flight_title">Search flight</string>
+    <string name="invalid_city_message">Choose a valid city</string>
+    <string name="couldnt_determine_position">Failed to find your location</string>
 </resources>

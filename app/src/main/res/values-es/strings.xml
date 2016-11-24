@@ -73,4 +73,9 @@
     <string name="airline_name">Nombre de Aerolinea</string>
     <string name="flight_number">Numero de vuelo</string>
     <string name="search_flight_title">Buscá tu vuelo</string>
+    <string name="error_required_airline">La aerolinea es requerida</string>
+    <string name="error_required_flight_number">El número de vuelo es requerido</string>
+    <string name="invalid_city_message">Elija una ciudad válida</string>
+    <string name="optional">Opcional</string>
+    <string name="couldnt_determine_position">No se pudo determinar su ubicación</string>
 </resources>
