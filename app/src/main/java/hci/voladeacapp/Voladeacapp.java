@@ -44,7 +44,8 @@ public class Voladeacapp extends AppCompatActivity {
         errorReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                ErrorHelper.connectionErrorShow(context);
+                Resources res = getResources();
+                ErrorHelper.alert(context, res.getString(R.string.global_conn_err_title), res.getString(R.string.global_conn_err_msg));
             }
         };
 

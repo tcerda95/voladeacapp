@@ -3,6 +3,7 @@ package hci.voladeacapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 
 /**
  * Created by chelo on 11/24/16.
@@ -13,9 +14,10 @@ public class ErrorHelper {
     public static final String NO_CONNECTION_ERROR = "hci.voladeacapp.error.NO_CONNECTION_ERROR";
 
     public static void connectionErrorShow(Context context){
+        Resources res = context.getResources();
         new AlertDialog.Builder(context)
-                .setTitle("Error de conexion")
-                .setMessage("Qué triste")
+                .setTitle(res.getString(R.string.conn_err_title))
+                .setMessage(res.getString(R.string.conn_err_msg))
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
 
