@@ -59,7 +59,7 @@
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="270dp"
-                android:text="Tocá acá para empezar a seguir un vuelo"
+                android:text="@string/plus_arrow_text"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textColor="@color/colorAccent"

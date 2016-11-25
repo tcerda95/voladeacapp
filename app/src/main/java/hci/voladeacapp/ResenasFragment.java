@@ -118,13 +118,6 @@ public class ResenasFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.search_item_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_resenas, container, false);
