@@ -37,7 +37,6 @@ public class StatusInterpreter {
         switch(state){
             case "L":
                 return c.getString(R.string.landed);
-
             case "S":
                 return c.getString(R.string.programmed);
 

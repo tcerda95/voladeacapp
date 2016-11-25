@@ -98,7 +98,7 @@
     <string name="otro_string">Otro</string>
     <string name="landed">Aterrizado</string>
     <string name="programmed">Programado</string>
-    <string name="active">Activo</string>
+    <string name="active">En Vuelo</string>
     <string name="diverted">Desviado</string>
     <string name="cancelled">Cancelado</string>
 
