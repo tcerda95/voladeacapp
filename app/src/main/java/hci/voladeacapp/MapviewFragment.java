@@ -13,12 +13,16 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapViewFragment extends Fragment {
     MapView mMapView;
@@ -27,6 +31,7 @@ public class MapViewFragment extends Fragment {
     private Calendar fromDate;
     private String fromCity;
     private ArrayList<DealGson> deals;
+    private Map<Marker, DealGson> markerDeals;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class MapViewFragment extends Fragment {
                 updateMap(deals, fromCity, fromDate);
                 System.out.println("CITY: " + fromCity);
                 System.out.println("DATE: " + fromDate);
+
+                GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
             }
         });
 
@@ -67,6 +74,7 @@ public class MapViewFragment extends Fragment {
         newFragment.deals = deals;
         newFragment.fromCity = fromCity;
         newFragment.fromDate = fromDate;
+        newFragment.markerDeals = new HashMap<>();
 
         return newFragment;
     }
@@ -86,9 +94,13 @@ public class MapViewFragment extends Fragment {
                 @Override
                 public void run() {
                     String cityName = deal.city.name;
-                    String markerText = cityName + " Precio: " + deal.price;
                     LatLng pos = new LatLng(deal.city.latitude, deal.city.longitude);
-                    GMap.addMarker(new MarkerOptions().position(pos).title(markerText));
+                    MarkerOptions marker = new MarkerOptions().position(pos)
+                                                            .title(cityName.split(",")[0])
+                                                            .snippet("U$D " + deal.price)
+                            ;
+                    Marker m = GMap.addMarker(marker);
+                    markerDeals.put(m, deal);
                 }
             });
         }
@@ -113,6 +125,15 @@ public class MapViewFragment extends Fragment {
             return;
 
         new FillMapTask().execute(deals);
+    }
+
+    private class mapPromoDetailsListener implements GoogleMap.OnInfoWindowClickListener {
+
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            //TODO
+            System.out.println("CLICKED INFO WINDOW! " + markerDeals.get(marker).city + " " + markerDeals.get(marker).price);
+        }
     }
 
     @Override

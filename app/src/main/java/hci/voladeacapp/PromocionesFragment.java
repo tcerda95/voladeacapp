@@ -251,8 +251,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-
-
                 String originId = currentCity.id;
                 String destId = deals.get(position).city.id;
                 Double price = deals.get(position).price;
@@ -262,8 +260,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
 
-
-                System.out.println("CLICKED: " + position);
             }
         });
 

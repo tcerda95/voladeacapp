@@ -16,6 +16,8 @@ public class FlightSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new FlightPreferenceFragment()).commit();
+        FlightIdentifier identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
+        this.setTitle(getTitle().toString() + identifier.getAirline() + " " + identifier.getNumber());
     }
 
     public static class FlightPreferenceFragment extends PreferenceFragment
