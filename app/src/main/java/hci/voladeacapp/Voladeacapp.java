@@ -3,12 +3,16 @@ package hci.voladeacapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -31,12 +35,25 @@ public class Voladeacapp extends AppCompatActivity {
     public static String PERMISSION_CODE_EXTRA = "BroadcastPermissionCode";
     public static String PERMISSION_GRANT_EXTRA = "BroadcastPermissionGrant";
 
+    private BroadcastReceiver errorReceiver;
+
     public final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        errorReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Resources res = getResources();
+                ErrorHelper.alert(context, res.getString(R.string.global_conn_err_title), res.getString(R.string.global_conn_err_msg));
+            }
+        };
+
+        registerReceiver(errorReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+
+        checkConnection();
         loadLanguage();
 
         StorageHelper.initialize(this);
@@ -82,6 +99,16 @@ public class Voladeacapp extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void checkConnection() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if(activeNetworkInfo == null){
+            ErrorHelper.sendNoConnectionNotice(this);
+        }
     }
 
     private void loadLanguage() {
@@ -134,5 +161,6 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(errorReceiver);
     }
 }

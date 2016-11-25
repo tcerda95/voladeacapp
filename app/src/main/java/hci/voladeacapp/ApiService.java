@@ -42,6 +42,9 @@ public class ApiService extends IntentService {
     public static final String DATA_AIRLINE_ID_MAP = "hci.voladeacapp.data.DATA_AIRLINE_ID_MAP";
     public static final String DATA_CITY_MAP = "hci.voladeacapp.data.DATA_CITY_MAP";
 
+    public static final String API_REQUEST_ERROR = "hci.voladeacapp.error.API_REQUEST_ERROR";
+
+
     public static final String DATA_BEST_FLIGHT_FOUND = "hci.voladeacapp.broadcast.BEST_FLIGHT_FOUND";
     public static final String DATA_BEST_FLIGHT = "hci.voladeacapp.broadcast.BEST_FLIGHT";
     public static final String BEST_FLIGHT_RESPONSE = "hci.voladeacapp.broadcast.BEST_FLIGHT_RESPONSE";
@@ -54,6 +57,7 @@ public class ApiService extends IntentService {
     private static final String ACTION_GET_AIRLINES = "hci.voladeacapp.action.GET_AIRLINES";
     private static final String ACTION_GET_CITIES = "hci.voladeacapp.action.GET_CITIES";
     private static final String ACTION_GET_BEST_FLIGHT = "hci.voladeacapp.action.GET_BEST_FLIGHT";
+
 
     private static final String PARAM_AIRLINE = "hci.voladeacapp.extra.PARAM_AIRLINE";
     private static final String PARAM_FLNUMBER = "hci.voladeacapp.extra.PARAM_FLNUMBER";
@@ -245,6 +249,8 @@ public class ApiService extends IntentService {
 
                         }catch(Exception e){
                             e.printStackTrace();
+
+                            sendRequestErrorBroadcast(callback);
                         }
 
 
@@ -253,7 +259,7 @@ public class ApiService extends IntentService {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                sendRequestErrorBroadcast(callback);
             }
 
         });
@@ -301,12 +307,14 @@ public class ApiService extends IntentService {
 
                         }catch(Exception e){
                             e.printStackTrace();
+                            sendRequestErrorBroadcast(callback);
                         }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                sendRequestErrorBroadcast(callback);
 
             }
 
@@ -418,13 +426,13 @@ public class ApiService extends IntentService {
                             sendBroadcast(new Intent(callback).putExtra(DATA_GLOBAL_REVIEW, global));
                         }catch(Exception e){
                             e.printStackTrace();
+                            sendRequestErrorBroadcast(callback);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
-
+                sendRequestErrorBroadcast(callback);
             }
         });
         // Add the request to the RequestQueue;
@@ -468,12 +476,13 @@ public class ApiService extends IntentService {
                             sendOrderedBroadcast(new Intent(callback).putExtra(DATA_DEAL_LIST, dealList), null);
                         }catch(Exception e){
                             e.printStackTrace();
+                            sendRequestErrorOrderedBroadcast(callback);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
+                sendRequestErrorOrderedBroadcast(callback);
 
             }
         });
@@ -521,6 +530,7 @@ public class ApiService extends IntentService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println(error);
+                sendRequestErrorOrderedBroadcast(callback);
 
             }
         });
@@ -530,8 +540,15 @@ public class ApiService extends IntentService {
 
     }
 
+    private void sendRequestErrorBroadcast(String callback){
+        System.out.println("SENDING ERROR BROADCAST TO CALLBACK [" + callback + "]");
+        sendBroadcast(new Intent(callback).putExtra(API_REQUEST_ERROR, true));
+    }
 
+    private void sendRequestErrorOrderedBroadcast(String callback){
+        sendOrderedBroadcast(new Intent(callback).putExtra(API_REQUEST_ERROR, true), null);
 
+    }
     public void handleActionGetBestDeal(String from, String to, double price) {
         if(requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);
@@ -560,7 +577,7 @@ public class ApiService extends IntentService {
                 + "&from=" + from + "&to=" + to + "&adults=1&children=0&infants=0&dep_date=" + dateStr + "&sort_key=total&page_size=1";
 
 
-        System.out.println("Sending request with url  [" + url + "]  I still have " + tries + " tries left");
+       // System.out.println("Sending request with url  [" + url + "]  I still have " + tries + " tries left");
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -580,7 +597,6 @@ public class ApiService extends IntentService {
                                                     .getJSONObject("total").getDouble("total");
 
                                 if(price == minPrice){
-                                    System.out.println("FOUNNNNNNND");
 
                                     String id = flight.getJSONArray("outbound_routes")
                                                 .getJSONObject(0)
@@ -597,7 +613,6 @@ public class ApiService extends IntentService {
                                             .getJSONObject(0)
                                             .getInt("number");
 
-                                    System.out.println("THE NUMBER IS " + number);
 
                                     FlightIdentifier identifier = new FlightIdentifier();
                                     identifier.setAirline(id);
@@ -610,10 +625,7 @@ public class ApiService extends IntentService {
                                     sendBroadcast(intent);
 
                                     return;
-                                } else{
-                                    System.out.println("Min price is :" + minPrice + " actual price is: " + price);
                                 }
-
                             } else {
                                 sendErrorFindingBestFlight();
                                 return;
@@ -624,14 +636,14 @@ public class ApiService extends IntentService {
 
 
                         }catch(Exception e){
-                            sendErrorFindingBestFlight();
+                            sendRequestErrorBroadcast(BEST_FLIGHT_RESPONSE);
                             return;
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                sendErrorFindingBestFlight();
+                sendRequestErrorBroadcast(BEST_FLIGHT_RESPONSE);
             }
         });
         // Add the request to the RequestQueue;

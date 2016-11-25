@@ -98,9 +98,11 @@ public class MapViewFragment extends Fragment {
                     MarkerOptions marker = new MarkerOptions().position(pos)
                                                             .title(cityName.split(",")[0])
                                                             .snippet("U$D " + deal.price)
+                            .icon(BitmapDescriptorFactory.defaultMarker(getColor(deal.price)))
                             ;
                     Marker m = GMap.addMarker(marker);
                     markerDeals.put(m, deal);
+                    GMap.addMarker(marker);
                 }
             });
         }
@@ -114,7 +116,20 @@ public class MapViewFragment extends Fragment {
             });
         }
 
+        private float getColor(Double price) {
+            if(price < 100){
+                return BitmapDescriptorFactory.HUE_GREEN;
+            }
+            else if(price < 500){
+                return BitmapDescriptorFactory.HUE_YELLOW;
+            }
+
+            return BitmapDescriptorFactory.HUE_RED;
+        }
+
+
     }
+
 
     public void updateMap(ArrayList<DealGson> deals, String fromCity, Calendar fromDate) {
         this.deals = deals;
