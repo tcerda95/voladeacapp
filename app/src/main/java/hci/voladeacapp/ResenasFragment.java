@@ -13,7 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class ResenasFragment extends Fragment {
     public final static String INSTANCE_TAG = "hci.voladeacapp.Resenas.INSTANCE_TAG";
     private static final String ACTION_FILL_REVIEWS = "hci.voladeacapp.Resenas.FILL_REVIEWS";
 
-    private ListView cardListView;
+    private GridView cardListView;
     private ResenaCardAdapter adapter;
 
     private int refreshCount;
@@ -122,7 +122,7 @@ public class ResenasFragment extends Fragment {
 
         reviewList = new ArrayList<>();
 
-        cardListView = (ListView) rootView.findViewById(R.id.resenas_list);
+        cardListView = (GridView) rootView.findViewById(R.id.resenas_list);
         adapter = new ResenaCardAdapter(getActivity(), reviewList);
         cardListView.setAdapter(adapter);
         fillList();

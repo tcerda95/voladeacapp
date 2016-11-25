@@ -3,17 +3,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <GridView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/resenas_list"
-            android:dividerHeight="0dp"
-            android:divider="@null"
-            android:clickable="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:numColumns="1"/>
-    
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/resenas_list"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:numColumns="2"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="56dp"
