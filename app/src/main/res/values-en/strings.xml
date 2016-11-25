@@ -9,7 +9,7 @@
     <string name="baggageClaimGateNotif">Bagagge Claim</string>
     <string name="baggage_claim_label">Bagagge Claim</string>
     <string name="boardingGateNotif">Boarding Gate</string>
-    <string name="boardingTimeNotif">Boarding Time</string>
+    <string name="boardingTimeNotif">Departure time: </string>
     <string name="boarding_time_label">Boarding</string>
     <string name="btn">HELLO</string>
     <string name="comentario_label">Comment</string>
@@ -91,6 +91,28 @@
     <string name="otro_string">Other</string>
     <string name="programmed">Programmed</string>
     <string name="view_in_list">View int list</string>
+
+
+    <string name="scheduled_notif_title">Flight %1$s %2$s has been scheduled</string>
+    <string name="scheduled_notif_body">Departure time is %1$s</string>
+
+    <string name="delay_notif_title">Flight %1$s %2$s is delayed</string>
+    <string name="takeoff_delay_notif_body">Departure time has changed to %1$s</string>
+    <string name="landing_delay_notif_body">Arrival time has changed to %1$s\nUnboarding will proceed through gate %2$s</string>
+
+    <string name="takeoff_notif_title">Flight %1$s %2$s took off</string>
+    <string name="takeoff_notif_body">Takeoff time: %1$s. Landing is scheduled for %2$s</string>
+
+
+    <string name="deviation_notif_title">Flight %1$s %2$s has ben re-routed</string>
+    <string name="deviation_notif_body">Landing is now scheduled for %1$s at %2$s</string>
+
+
+    <string name="landed_notif_title">Flight %1$s %2$s has landed</string>
+    <string name="landed_notif_body">Unboarding through gate %1$s, baggage claim on area %2$s</string>
+
+    <string name="cancelation_notif_title">Flight %1$s %2$s has been cancelled</string>
+    <string name="cancelation_notif_body">Refer to %1$s for more details</string>
 
 
 </resources>
