@@ -63,6 +63,8 @@ import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
+import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
+import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -154,6 +156,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
                     detailIntent.putExtra("Flight", flight);
                     detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+                    detailIntent.putExtra(IS_PROMO_DETAIL, true);
+                    DealGson asDeal = getDealFromCity(flight.getArrivalCity());
+                    if (asDeal != null)
+                        detailIntent.putExtra(PROMO_DETAIL_PRICE, asDeal.price);
                     startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
                 }
             }
@@ -161,7 +167,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     }
 
-
+    private DealGson getDealFromCity(String arrivalCity) {
+        for (DealGson d: deals) {
+            System.out.println("ArrivalCity: " + arrivalCity);
+            System.out.println("DealCity: " + d.city.name);
+            if (d.city.name.equals(arrivalCity))
+                return d;
+        }
+        return null;
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -287,12 +301,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
         // Realiza la búsqueda puesta por defecto después de settear las cosas del view.
         refreshResults();
-
-        /* MAP */
-//        android.app.FragmentManager fragmentManager = getFragmentManager();
-//        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
-//        fragmentManager.beginTransaction().add(mapFragment, "MAPAAAAAAAAAA");
-//        mapFragment.getMapAsync(new PromoMapCallback());
 
         return rootView;
     }

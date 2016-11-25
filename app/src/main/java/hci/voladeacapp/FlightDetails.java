@@ -14,34 +14,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
+import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
+import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 public class FlightDetails extends AppCompatActivity {
     private Menu menu;
     private Flight flight;
     private FlightIdentifier identifier;
+    private boolean isPromoDetail;
+    private double promoPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        //CHELO
-
-
-
-        ///CHELO
-
         setContentView(R.layout.activity_flight_details);
 
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
+        this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
+        this.promoPrice = getIntent().getDoubleExtra(PROMO_DETAIL_PRICE, -1);
 
         setTitle(flight.getAirlineID() + " " + flight.getNumber());
         fillDetails(flight);
@@ -178,6 +177,11 @@ public class FlightDetails extends AppCompatActivity {
         ((ImageView)findViewById(R.id.state_badge)).setImageResource(StatusInterpreter.getStateImage(flight.getState()));
         getTextView(R.id.state_name).setText(StatusInterpreter.getStatusName(getApplicationContext(),flight.getState()));
         getTextView(R.id.state_name).setTextColor(StatusInterpreter.getStatusColor(flight.getState()));
+
+        if (isPromoDetail) {
+            findViewById(R.id.promo_details_layout).setVisibility(View.VISIBLE);
+            getTextView(R.id.promo_details_price).setText("U$D " + new Double(promoPrice).intValue());
+        }
     }
 
     private TextView getTextView(int id) {
