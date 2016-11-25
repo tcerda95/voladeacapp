@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <ListView
+    <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/resenas_list"
@@ -12,7 +12,7 @@
             android:clickable="true"
             android:focusable="false"
             android:focusableInTouchMode="false"/>
-    
+
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="56dp"
