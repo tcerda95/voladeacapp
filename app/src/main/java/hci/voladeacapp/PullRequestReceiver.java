@@ -21,7 +21,7 @@ public class PullRequestReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         ArrayList<Flight> flight_details = new ArrayList<>();
-
+        System.out.println("TIME TO PULL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         flight_details = StorageHelper.getFlights(context.getApplicationContext());
 
         for (Flight f : flight_details) {

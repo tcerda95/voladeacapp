@@ -99,7 +99,7 @@ public class Flight implements Serializable {
         }
 
         public String getDateInFormat(String format) {
-            return new SimpleDateFormat(format, Locale.ENGLISH).format(flightDate.date);
+            return new SimpleDateFormat(format, Locale.ENGLISH).format( flightDate != null ? flightDate.date : scheduledDate.date );
         }
 
         public String getBoardingTime() {

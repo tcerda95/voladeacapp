@@ -54,7 +54,8 @@ public class FlightSettingsActivity extends AppCompatActivity {
                                     settings.setNotification(NotificationCategory.LANDING, SP.getBoolean(key, true));
                                     break;
                                 case "delay_notifications_switch":
-                                    settings.setNotification(NotificationCategory.DELAY, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.DELAY_LANDING, SP.getBoolean(key, true));
+                                    settings.setNotification(NotificationCategory.DELAY_TAKEOFF, SP.getBoolean(key, true));
                                     break;
                                 case "deviation_notifications_switch":
                                     settings.setNotification(NotificationCategory.DEVIATION, SP.getBoolean(key, true));
@@ -89,7 +90,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
             System.out.println("HEY THESE ARE THE SETTINGS");
             System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
-            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
+            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY_LANDING));
             System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
             System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
             System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
@@ -99,7 +100,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
             editor.putBoolean("flight_notifications_switch", settings.notificationsActive());
             editor.putBoolean("takeoff_notifications_switch", settings.isActive(NotificationCategory.TAKEOFF));
             editor.putBoolean("landing_notifications_switch", settings.isActive(NotificationCategory.LANDING));
-            editor.putBoolean("delay_notifications_switch", settings.isActive(NotificationCategory.DELAY));
+            editor.putBoolean("delay_notifications_switch", settings.isActive(NotificationCategory.DELAY_LANDING));
             editor.putBoolean("deviation_notifications_switch", settings.isActive(NotificationCategory.DEVIATION));
             editor.putBoolean("cancelation_notifications_switch", settings.isActive(NotificationCategory.CANCELATION));
             editor.commit();

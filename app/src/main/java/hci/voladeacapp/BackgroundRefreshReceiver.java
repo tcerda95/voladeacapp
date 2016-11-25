@@ -48,8 +48,13 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                 List<NotificationCategory> changes = toUpdate.update(updatedGson);
 
                 for(NotificationCategory change: changes){
+                    System.out.println("CHANGING" + toUpdate + " " + change);
                     createNotification(context, toUpdate, change);
                 }
+
+
+                StorageHelper.saveFlight(context, toUpdate);
+
         }
 
     }
