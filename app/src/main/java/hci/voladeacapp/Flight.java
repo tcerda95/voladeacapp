@@ -186,6 +186,7 @@ public class Flight implements Serializable {
 
         setBaggageClaim(newStatus.arrival.airport.baggage);
 
+
         return changes;
     }
 

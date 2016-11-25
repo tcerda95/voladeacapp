@@ -34,6 +34,8 @@ import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 public class MisVuelosFragment extends Fragment {
 
 
+    public static final String FLIGHTS_REFRESHED = "hci.voladeacapp.broadcast.FLIGHTS_REFRESHED";
+
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -53,8 +55,8 @@ public class MisVuelosFragment extends Fragment {
             }
             Flight toUpdate = flight_details.get(idx);
             toUpdate.update(updatedGson);
-            System.out.println("Updated!");
-            abortBroadcast();
+            adapter.notifyDataSetChanged();
+        //    abortBroadcast();
         }
     }
 
@@ -90,12 +92,12 @@ public class MisVuelosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        System.out.println("ON CREATE VIEW!!!!!!1111111111111111111");
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
 
         receiver = new RefreshReceiver();
+
 
         FlightListAdapter flightListAdapter = new FlightListAdapter(getActivity(), flight_details);
 
@@ -110,6 +112,16 @@ public class MisVuelosFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("REFRESHING LIST");
+                refreshList();
+            }
+        }, new IntentFilter(FLIGHTS_REFRESHED));
+
+
 
         adapter.setTimeoutMs(UNDO_TIMEOUT);
 
@@ -196,6 +208,17 @@ public class MisVuelosFragment extends Fragment {
         return rootView;
     }
 
+
+    private void refreshList() {
+        List<Flight> flights = StorageHelper.getFlights(getActivity());
+        flight_details.clear();
+        for(Flight f: flights){
+            flight_details.add(f);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+
     private void hideActions() {
         Voladeacapp activity = (Voladeacapp) getActivity();
         if (activity != null)
@@ -245,6 +268,8 @@ public class MisVuelosFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh_mis_vuelos);
         swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh
     }
+
+
 
 
     @Override
