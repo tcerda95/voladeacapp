@@ -1,6 +1,9 @@
 package hci.voladeacapp;
 
 import android.content.Context;
+import android.graphics.Color;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 public class StatusInterpreter {
 
@@ -17,7 +20,7 @@ public class StatusInterpreter {
                 return R.drawable.ic_takeoffbadge;
 
             case "D":
-                return R.drawable.ic_delayedbadge;
+                return R.drawable.ic_deviationbadge;
 
             case "C":
                 return R.drawable.ic_cancelbadge;
@@ -46,6 +49,27 @@ public class StatusInterpreter {
 
         }
         return "";
+    }
+
+    public static int getStatusColor(String state) {
+        switch(state){
+            case "L":
+                return Color.rgb(63, 81, 181);
+
+            case "S":
+                return Color.rgb(76, 175, 80);
+
+            case "A":
+                return Color.rgb(63, 81, 181);
+
+            case "D":
+                return Color.rgb(255, 87, 34);
+
+            case "C":
+                return Color.rgb(229, 57, 53);
+
+        }
+        return 0;
     }
 
 }

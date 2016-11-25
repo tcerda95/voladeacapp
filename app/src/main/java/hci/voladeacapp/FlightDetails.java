@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ public class FlightDetails extends AppCompatActivity {
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
 
-        setTitle(flight.getAirline() + " " + flight.getNumber());
+        setTitle(flight.getAirlineID() + " " + flight.getNumber());
         fillDetails(flight);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -171,7 +172,12 @@ public class FlightDetails extends AppCompatActivity {
         departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
         arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
 
-        getTextView(R.id.state_data).setText(StatusInterpreter.getStatusName(getApplicationContext(),flight.getState()));
+        getTextView(R.id.airline_name).setText(flight.getFullAirlineName());
+
+        // Estado
+        ((ImageView)findViewById(R.id.state_badge)).setImageResource(StatusInterpreter.getStateImage(flight.getState()));
+        getTextView(R.id.state_name).setText(StatusInterpreter.getStatusName(getApplicationContext(),flight.getState()));
+        getTextView(R.id.state_name).setTextColor(StatusInterpreter.getStatusColor(flight.getState()));
     }
 
     private TextView getTextView(int id) {

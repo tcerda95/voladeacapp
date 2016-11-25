@@ -16,6 +16,7 @@ public class Flight implements Serializable {
 
     private FlightIdentifier identifier;
 
+    private String fullAirlineName;
     private String state;
     private double price; // in USD
 
@@ -127,9 +128,10 @@ public class Flight implements Serializable {
         identifier = new FlightIdentifier();
 
         setNumber("" + seed.number);
-        setAirline(seed.airline.id);
+        setAirlineID(seed.airline.id);
         setState(seed.status);
         setBaggageClaim(seed.arrival.airport.baggage);
+        setAirlineName(seed.airline.name);
 
         departureSchedule = new FlightSchedule(seed.departure);
         arrivalSchedule = new FlightSchedule(seed.arrival);
@@ -194,6 +196,11 @@ public class Flight implements Serializable {
 
     private String imageURL;
 
+    public void setAirlineName(String name) { fullAirlineName = name; }
+
+    public String getFullAirlineName() {
+        return fullAirlineName;
+    }
 
     public FlightSchedule getDepartureSchedule() {
         return departureSchedule;
@@ -233,11 +240,11 @@ public class Flight implements Serializable {
         this.identifier.setNumber(number);
     }
 
-    public String getAirline() {
+    public String getAirlineID() {
         return identifier.getAirline();
     }
 
-    public void setAirline(String airline) {
+    public void setAirlineID(String airline) {
         identifier.setAirline(airline);
     }
 

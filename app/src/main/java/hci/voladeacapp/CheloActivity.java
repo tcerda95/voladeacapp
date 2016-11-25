@@ -146,7 +146,7 @@ public class CheloActivity extends AppCompatActivity {
        /*         for(ConfiguredFlight f : list){
                     System.out.println();
                     FlightSettings settings = f.getSettings();
-                    System.out.println("SETTINGS FOR " + f.getAirline() + " " + f.getNumber());
+                    System.out.println("SETTINGS FOR " + f.getAirlineID() + " " + f.getNumber());
                     System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
                     System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
                     System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
