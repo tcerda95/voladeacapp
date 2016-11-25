@@ -7,20 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,13 +48,8 @@ public class MapViewFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 GMap = mMap;
-                //TODO: se podría mover la camara a la ciudad de salida
-//              CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//
-                System.out.println("CITY: " + fromCity);
-
                 GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
+                updateMap(deals, fromCity);
             }
         });
 
@@ -75,7 +66,7 @@ public class MapViewFragment extends Fragment {
         return newFragment;
     }
 
-    public class FillMapTask extends AsyncTask<ArrayList<DealGson>, Void, Void> {
+    public class FillMapTask extends AsyncTask<ArrayList<DealGson>, Object, Void> {
         private final Double LOW_OFFER = 200.0;
         private final Double MID_OFFER = 500.0;
 
