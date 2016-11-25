@@ -70,7 +70,7 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         holder.origCityView.setText(flight.getDepartureCity().split(",")[0]);
         holder.destCityView.setText(flight.getArrivalCity().split(",")[0]);
         holder.departDateView.setText(new SimpleDateFormat("dd-MM-yyyy").format(flight.getDepartureDate())); // TODO: locale
-        holder.stateView.setImageResource(StatusInterpreter.getStateImage(flight.getState()));
+    //    holder.stateView.setImageResource(StatusInterpreter.getStateImage(flight.getState()));
 
         return convertView;
     }

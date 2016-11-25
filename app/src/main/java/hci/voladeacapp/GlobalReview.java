@@ -13,7 +13,10 @@ public class GlobalReview implements Serializable{
 
     List<ReviewGson> list;
 
-
+    private int index;
+    public void setIndex(int idx){
+        index = idx;
+    }
     private final static int CATEGORIES = 7;
 
     private String airline;
@@ -99,5 +102,7 @@ public class GlobalReview implements Serializable{
     public Boolean hasReviews(){ return has_reviews; }
 
 
-
+    public int getIndex() {
+        return index;
+    }
 }

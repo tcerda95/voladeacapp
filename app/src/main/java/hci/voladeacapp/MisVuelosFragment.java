@@ -30,11 +30,14 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
+import static hci.voladeacapp.ApiService.startActionGetReviews;
 
 public class MisVuelosFragment extends Fragment {
 
 
     public static final String FLIGHTS_REFRESHED = "hci.voladeacapp.broadcast.FLIGHTS_REFRESHED";
+
+    private BroadcastReceiver bgRefreshStatusRcv;
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
@@ -113,13 +116,15 @@ public class MisVuelosFragment extends Fragment {
             }
         });
 
-        getActivity().registerReceiver(new BroadcastReceiver() {
+        bgRefreshStatusRcv =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 System.out.println("REFRESHING LIST");
                 refreshList();
             }
-        }, new IntentFilter(FLIGHTS_REFRESHED));
+        };
+
+        getActivity().registerReceiver(bgRefreshStatusRcv, new IntentFilter(FLIGHTS_REFRESHED));
 
 
 
@@ -328,5 +333,10 @@ public class MisVuelosFragment extends Fragment {
         super.onPause();
         getActivity().unregisterReceiver(receiver);
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        getActivity().unregisterReceiver(bgRefreshStatusRcv);
     }
 }

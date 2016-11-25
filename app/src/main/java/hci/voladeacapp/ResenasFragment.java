@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static hci.voladeacapp.ApiService.DATA_GLOBAL_REVIEW;
 
@@ -30,10 +32,13 @@ public class ResenasFragment extends Fragment {
 
     private ArrayList<GlobalReview> reviewList;
     private BroadcastReceiver receiver;
+    private ArrayList<Flight> flight_list;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
+
         reviewList = new ArrayList<>();
         receiver = new BroadcastReceiver() {
             @Override
@@ -45,8 +50,20 @@ public class ResenasFragment extends Fragment {
 
                 else {
                     GlobalReview review = (GlobalReview) intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
+                    Flight corresponding = new Flight();
+                    corresponding.setIdentifier(new FlightIdentifier(review.airline(), review.flightNumber()));
+                    review.setIndex(flight_list.indexOf(corresponding));
                     reviewList.add(review);
-                    adapter.notifyDataSetChanged();
+                    refreshCount--;
+                    if(refreshCount == 0) {
+                        Collections.sort(reviewList, new Comparator<GlobalReview>() {
+                            @Override
+                            public int compare(GlobalReview r1, GlobalReview r2) {
+                                return r1.getIndex() - r2.getIndex();
+                            }
+                        });
+                        adapter.notifyDataSetChanged();
+                    }
                     System.out.println("RECEIVED: " + review.airline() + "  " + review.flightNumber());
                 }
             }
@@ -58,6 +75,11 @@ public class ResenasFragment extends Fragment {
     }
 
 
+
+    public void onResume(){
+        super.onResume();
+        flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
+    }
 
     @Override
     public void onStart(){
@@ -73,9 +95,7 @@ public class ResenasFragment extends Fragment {
 
     private void fillList() {
         refreshCount = 0;
-        ArrayList<Flight> flights = StorageHelper.getFlights(getActivity().getApplicationContext());
-        System.out.println("SIIIIIIIIIIIIIZE: "+ flights.size());
-        for(Flight f: flights){
+        for(Flight f: flight_list){
             ApiService.startActionGetReviews(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_FILL_REVIEWS);
             refreshCount++;
         }
