@@ -79,8 +79,7 @@
     <string name="invalid_city_message">Choose a valid city</string>
     <string name="couldnt_determine_position">Failed to find your location</string>
 
-    <string name="global_conn_err_title">Device offline</string>
-    <string name="global_conn_err_msg">You may find some features diminished</string>
+    <string name="global_conn_err_msg"><strong>Device offline</strong> \n You may find some features diminished</string>
 
     <string name="conn_err_title">Connection error</string>
     <string name="conn_err_msg">Your action couldn\'t be completed. Check your connection or try again later.</string>

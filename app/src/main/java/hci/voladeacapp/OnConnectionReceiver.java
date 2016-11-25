@@ -22,9 +22,8 @@ public class OnConnectionReceiver extends BroadcastReceiver {
 
                 if(! StorageHelper.isInitialized(context)){
                     StorageHelper.initialize(context);
-                    System.out.println("INITIALIZING!");
-
                 }
+                ErrorHelper.sendConnectionNotice(context);
             } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                 ErrorHelper.sendNoConnectionNotice(context);
                 System.out.println("There's no network connectivity");

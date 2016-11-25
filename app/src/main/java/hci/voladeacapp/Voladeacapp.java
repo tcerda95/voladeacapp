@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.IdRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,8 +39,6 @@ public class Voladeacapp extends AppCompatActivity {
     public static String PERMISSION_CODE_EXTRA = "BroadcastPermissionCode";
     public static String PERMISSION_GRANT_EXTRA = "BroadcastPermissionGrant";
 
-    private BroadcastReceiver errorReceiver;
-
     public final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
@@ -55,16 +54,6 @@ public class Voladeacapp extends AppCompatActivity {
         alarmIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 180 * 1000, alarmIntent);
 
-
-        errorReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Resources res = getResources();
-                ErrorHelper.alert(context, res.getString(R.string.global_conn_err_title), res.getString(R.string.global_conn_err_msg));
-            }
-        };
-
-        registerReceiver(errorReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
 
         checkConnection();
         loadLanguage();
@@ -174,6 +163,5 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(errorReceiver);
     }
 }

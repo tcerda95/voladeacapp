@@ -38,6 +38,7 @@ public class MisVuelosFragment extends Fragment {
     public static final String FLIGHTS_REFRESHED = "hci.voladeacapp.broadcast.FLIGHTS_REFRESHED";
 
     private BroadcastReceiver bgRefreshStatusRcv;
+    private BroadcastReceiver errConnReceiver;
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
@@ -323,20 +324,34 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        ErrorHelper.checkConnection(getActivity());
         IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
         ifilter.setPriority(10);
         getActivity().registerReceiver(receiver, ifilter);
     }
 
+
+    public void onStart(){
+        super.onStart();
+
+        errConnReceiver = new ErrConnReceiver(getView());
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
+
+    }
+
+
     @Override
     public void onPause(){
         super.onPause();
         getActivity().unregisterReceiver(receiver);
+        getActivity().unregisterReceiver(errConnReceiver);
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
 
     public void onDestroy(){
         super.onDestroy();
         getActivity().unregisterReceiver(bgRefreshStatusRcv);
+
     }
 }

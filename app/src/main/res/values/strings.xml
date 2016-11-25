@@ -91,8 +91,7 @@
     <string name="optional">Opcional</string>
     <string name="view_in_list">Ver en lista</string>
 
-    <string name="global_conn_err_title">Dispositivo desconectado</string>
-    <string name="global_conn_err_msg">Es posible que las funcionalidades de la aplicación se vean reducidas</string>
+    <string name="global_conn_err_msg"><strong>Dispositivo desconectado</strong> \n Es posible que las funcionalidades de la aplicación se vean reducidas</string>
 
     <string name="conn_err_title">Error de conexión</string>
     <string name="conn_err_msg">No pudo completarse la operación. Revisa tu conexión o intenta de nuevo más tarde.</string>

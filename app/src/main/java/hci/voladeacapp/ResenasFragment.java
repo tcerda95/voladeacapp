@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -32,6 +34,8 @@ public class ResenasFragment extends Fragment {
 
     private ArrayList<GlobalReview> reviewList;
     private BroadcastReceiver receiver;
+
+    private ErrConnReceiver errConnReceiver;
     private ArrayList<Flight> flight_list;
 
 
@@ -39,13 +43,15 @@ public class ResenasFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
 
+
+
         reviewList = new ArrayList<>();
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                    ErrorHelper.connectionErrorShow(context);
+                        return;
                 }
 
                 else {
@@ -78,18 +84,28 @@ public class ResenasFragment extends Fragment {
 
     public void onResume(){
         super.onResume();
+        ErrorHelper.checkConnection(getActivity());
         flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
     }
+
+
 
     @Override
     public void onStart(){
         super.onStart();
+        errConnReceiver = new ErrConnReceiver(getView());
+
         getActivity().registerReceiver(receiver, new IntentFilter(ACTION_FILL_REVIEWS));
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
+
     }
 
     public void onStop(){
         super.onStop();
         getActivity().unregisterReceiver(receiver);
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
     }
 
 

@@ -101,6 +101,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private boolean notifiedConnectionError;
 
     private CityGson currentCity;
+    private ErrConnReceiver errConnReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,18 +119,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 .build();
         citiesMap = StorageHelper.getCitiesMap(context);
         inListView = true;
-        notifiedConnectionError = false;
+        notifiedConnectionError = true;
 
         dealIdReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                            if(!notifiedConnectionError) {
-                                System.out.println("1");
-                                ErrorHelper.connectionErrorShow(context);
-                                notifiedConnectionError = true;
-                            }
-                        }
+                            ErrorHelper.connectionErrorShow(context);
+                            pDialog.hide();
+                      }
                       else{
                         boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
                         if(found){
@@ -150,11 +148,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 }
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)) {
-                    if(!notifiedConnectionError) {
-                        System.out.println("2");
-                        ErrorHelper.connectionErrorShow(context);
-                        notifiedConnectionError = true;
-                    }
+                    return;
                 }
                 else {
                     FlightStatusGson flGson = (FlightStatusGson) intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
@@ -190,6 +184,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onStart() {
         client.connect();
+
+        errConnReceiver = new ErrConnReceiver(getView().getRootView());
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
+        getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
+
         super.onStart();
     }
 
@@ -197,6 +196,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onResume(){
         super.onResume();
+        ErrorHelper.checkConnection(getActivity());
         getActivity().registerReceiver(dealIdReceiver,  new IntentFilter(BEST_FLIGHT_RESPONSE));
         getActivity().registerReceiver(detailStarterReceiver, new IntentFilter(START_DETAIL_CALLBACK));
     }
@@ -263,11 +263,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             public void onReceive(Context context, Intent intent) {
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                    if(!notifiedConnectionError) {
-                        System.out.println("3");
-                        ErrorHelper.connectionErrorShow(context);
-                        notifiedConnectionError = true;
-                    }
                     return; //Me voy
                 }
 
@@ -574,6 +569,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onStop() {
         client.disconnect();
+        getActivity().unregisterReceiver(errConnReceiver);
         super.onStop();
     }
 

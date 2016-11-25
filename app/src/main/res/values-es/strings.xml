@@ -78,8 +78,8 @@
     <string name="invalid_city_message">Elija una ciudad válida</string>
     <string name="optional">Opcional</string>
     <string name="couldnt_determine_position">No se pudo determinar su ubicación</string>
-    <string name="global_conn_err_title">Dispositivo desconectado</string>
-    <string name="global_conn_err_msg">Es posible que las funcionalidades de la aplicación se vean reducidas</string>
+
+    <string name="global_conn_err_msg"><b>Dispositivo desconectado</b>\nEs posible que las funcionalidades de la aplicación se vean reducidas</string>
 
     <string name="conn_err_title">Error de conexión</string>
     <string name="conn_err_msg">No pudo completarse la operación. Revisá tu conexión o intentá de nuevo más tarde.</string>
