@@ -1,10 +1,8 @@
 package hci.voladeacapp;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -33,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
 import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
@@ -179,11 +176,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         destAirView.setText(flGson.arrival.airport.id);
         origCityView.setText(flGson.departure.airport.city.name.split(",")[0]);
         destCityView.setText(flGson.arrival.airport.city.name.split(",")[0]);
-        //TODO: imagen del estado
         Flight.FlightDate date = new Flight.FlightDate(flGson.departure.scheduled_time);
         departDateView.setText(new SimpleDateFormat("dd-MM-yyyy").format(date.date));
-        //stateTextView.setText(flight.getState());
-
+        stateView.setImageResource(StatusInterpreter.getStateImage(flGson.status));
 
     }
 

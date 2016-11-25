@@ -96,6 +96,12 @@
 
     <string name="conn_err_title">Error de conexión</string>
     <string name="conn_err_msg">No pudo completarse la operación. Revisa tu conexión o intenta de nuevo más tarde.</string>
+    <string name="otro_string">Otro</string>
+    <string name="landed">Aterrizado</string>
+    <string name="programmed">Programado</string>
+    <string name="active">Activo</string>
+    <string name="diverted">Desviado</string>
+    <string name="cancelled">Cancelado</string>
 
 
 </resources>
