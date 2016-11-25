@@ -1,5 +1,5 @@
 package hci.voladeacapp;
 
 public enum NotificationCategory {
-    TAKEOFF, LANDING, DELAY, DEVIATION, CANCELATION
+    TAKEOFF, LANDING, DEVIATION, DELAY_TAKEOFF, DELAY_LANDING, CANCELATION
 }

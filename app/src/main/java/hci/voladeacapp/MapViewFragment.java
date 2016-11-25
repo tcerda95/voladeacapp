@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -54,6 +55,14 @@ public class MapViewFragment extends Fragment {
 //              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //
                 updateMap(deals, fromCity, fromDate);
+
+                GMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+
+                    }
+                });
+
                 System.out.println("CITY: " + fromCity);
                 System.out.println("DATE: " + fromDate);
             }
@@ -90,7 +99,7 @@ public class MapViewFragment extends Fragment {
                 @Override
                 public void run() {
                     String cityName = deal.city.name;
-                    String markerText = cityName + " Precio: " + deal.price;
+                    String markerText = cityName + " Precio: U$D" + deal.price;
                     LatLng pos = new LatLng(deal.city.latitude, deal.city.longitude);
                     GMap.addMarker(new MarkerOptions().position(pos).title(markerText).icon(BitmapDescriptorFactory.defaultMarker(getColor(deal.price))));
                 }

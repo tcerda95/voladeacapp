@@ -24,6 +24,10 @@ public class Flight implements Serializable {
 
     private String baggageClaim;
 
+
+    private boolean confirmedDeparture = false;
+    private boolean confirmedArrival = false;
+
     private int duration;
 
     public static class FlightDate implements Serializable {
@@ -52,6 +56,14 @@ public class Flight implements Serializable {
         public String toString() {
             return date.toString() + " " + timestamp;
         }
+
+        public boolean equals(Object o){
+            if(o == null || !(o instanceof FlightDate))
+                return false;
+
+            FlightDate other = (FlightDate)o;
+            return other.toString().equals(toString());
+        }
     }
 
     /**
@@ -64,6 +76,7 @@ public class Flight implements Serializable {
         public String gate;
         public String terminal;
         public FlightDate flightDate;
+        public FlightDate scheduledDate;
 
         public FlightSchedule(){
             flightDate = new FlightDate();
@@ -76,7 +89,8 @@ public class Flight implements Serializable {
             city = schedule.airport.city.name;
             gate = schedule.airport.gate;
             terminal = schedule.airport.terminal;
-            flightDate = new FlightDate(schedule.actual_time == null ? schedule.scheduled_time : schedule.actual_time);
+            flightDate = schedule.actual_time == null ? null : new FlightDate(schedule.actual_time);
+            scheduledDate = new FlightDate(schedule.scheduled_time);
         }
 
         @Override
@@ -89,7 +103,7 @@ public class Flight implements Serializable {
         }
 
         public String getBoardingTime() {
-            return flightDate.timestamp;
+            return flightDate == null ? scheduledDate.timestamp : flightDate.timestamp;
         }
 
         public String getAirport() {
@@ -126,7 +140,7 @@ public class Flight implements Serializable {
     public List<NotificationCategory> update(FlightStatusGson newStatus){
         List<NotificationCategory> changes = new ArrayList<>();
         if(!state.equals(newStatus.status)){
-            switch(newStatus.status){
+            switch(newStatus.status) {
                 case "A":
                     changes.add(NotificationCategory.TAKEOFF);
                     break;
@@ -143,8 +157,32 @@ public class Flight implements Serializable {
         }
 
         setState(newStatus.status);
-        setBaggageClaim(newStatus.arrival.airport.baggage);
 
+        if(newStatus.departure.actual_time != null) {
+            FlightDate newDepartureFlightDate = new FlightDate(newStatus.departure.actual_time);
+
+            if(!confirmedDeparture){
+                confirmedDeparture = true;
+                departureSchedule.flightDate = newDepartureFlightDate;
+                if(!departureSchedule.flightDate.equals(departureSchedule.scheduledDate)){
+                    changes.add(NotificationCategory.DELAY_TAKEOFF);
+                }
+            }
+        }
+
+        if(newStatus.arrival.actual_time != null){
+            FlightDate newDepartureFlightDate = new FlightDate(newStatus.arrival.actual_time);
+
+            if(!confirmedArrival){
+                confirmedArrival = true;
+                arrivalSchedule.flightDate = newDepartureFlightDate;
+                if(!arrivalSchedule.flightDate.equals(arrivalSchedule.scheduledDate)){
+                    changes.add(NotificationCategory.DELAY_LANDING);
+                }
+            }
+        }
+
+        setBaggageClaim(newStatus.arrival.airport.baggage);
 
         return changes;
     }

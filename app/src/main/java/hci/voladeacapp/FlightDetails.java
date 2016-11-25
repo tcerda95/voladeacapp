@@ -29,6 +29,14 @@ public class FlightDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //CHELO
+
+
+
+        ///CHELO
+
         setContentView(R.layout.activity_flight_details);
 
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
