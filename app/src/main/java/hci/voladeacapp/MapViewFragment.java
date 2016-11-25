@@ -80,6 +80,9 @@ public class MapViewFragment extends Fragment {
     }
 
     public class FillMapTask extends AsyncTask<ArrayList<DealGson>, Void, Void> {
+        private final Double LOW_OFFER = 200.0;
+        private final Double MID_OFFER = 500.0;
+
         @Override
         protected Void doInBackground(ArrayList<DealGson>... dealsArrays) {
             clearMap();
@@ -117,10 +120,10 @@ public class MapViewFragment extends Fragment {
         }
 
         private float getColor(Double price) {
-            if(price < 100){
+            if(price < LOW_OFFER){
                 return BitmapDescriptorFactory.HUE_GREEN;
             }
-            else if(price < 500){
+            else if(price < MID_OFFER){
                 return BitmapDescriptorFactory.HUE_YELLOW;
             }
 
