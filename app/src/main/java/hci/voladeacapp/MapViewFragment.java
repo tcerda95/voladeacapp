@@ -28,7 +28,6 @@ public class MapViewFragment extends Fragment {
     MapView mMapView;
     private GoogleMap GMap;
 
-    private Calendar fromDate;
     private String fromCity;
     private ArrayList<DealGson> deals;
     private Map<Marker, DealGson> markerDeals;
@@ -57,9 +56,7 @@ public class MapViewFragment extends Fragment {
 //              CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
 //              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //
-                updateMap(deals, fromCity, fromDate);
                 System.out.println("CITY: " + fromCity);
-                System.out.println("DATE: " + fromDate);
 
                 GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
             }
@@ -68,12 +65,11 @@ public class MapViewFragment extends Fragment {
         return rootView;
     }
 
-    public static MapViewFragment newInstance(ArrayList<DealGson> deals, String fromCity, Calendar fromDate)
+    public static MapViewFragment newInstance(ArrayList<DealGson> deals, String fromCity)
     {
         MapViewFragment newFragment = new MapViewFragment();
         newFragment.deals = deals;
         newFragment.fromCity = fromCity;
-        newFragment.fromDate = fromDate;
         newFragment.markerDeals = new HashMap<>();
 
         return newFragment;
@@ -134,10 +130,9 @@ public class MapViewFragment extends Fragment {
     }
 
 
-    public void updateMap(ArrayList<DealGson> deals, String fromCity, Calendar fromDate) {
+    public void updateMap(ArrayList<DealGson> deals, String fromCity) {
         this.deals = deals;
         this.fromCity = fromCity;
-        this.fromDate = fromDate;
         System.out.println("UPDATING MAP");
         if (GMap == null)
             return;
