@@ -1,11 +1,11 @@
 package hci.voladeacapp;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -27,9 +27,11 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
 import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
@@ -50,7 +52,6 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private Validator validator; // Valida los campos
 
-    private ProgressDialog pDialog;
     private AdderReceiver adder;
 
     private TextInputLayout numberInputLayout;
@@ -69,9 +70,10 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         airlineInputLayout.setErrorEnabled(false);
         numberInputLayout.setErrorEnabled(false);
 
-        pDialog.show();
         FlightIdentifier identifier = new FlightIdentifier(airlineId, numberData);
 
+        findViewById(R.id.in_search_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.not_exists_result).setVisibility(View.GONE);
         ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
     }
 
@@ -79,7 +81,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     public void onValidationFailed(List<ValidationError> errors) {
         Toast.makeText(this, "Hay errores", Toast.LENGTH_SHORT).show();
         CardView resultCardView = (CardView) findViewById(R.id.card_view);
-        TextView notExists = (TextView) findViewById(R.id.not_exists_result);
+        View notExists = findViewById(R.id.not_exists_result);
         resultCardView.setVisibility(View.GONE);
         notExists.setVisibility(View.GONE);
 
@@ -116,9 +118,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 FlightStatusGson flGson = (FlightStatusGson)intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
                 parent.addFlight(flGson);
             }
-
-            pDialog.hide();
-            }
+            findViewById(R.id.in_search_layout).setVisibility(View.GONE);
+         }
     }
 
     private void addFlight(final FlightStatusGson flGson) {
@@ -128,7 +129,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         Button detailsButton = (Button) findViewById(R.id.details_btn);
         ((LinearLayout)findViewById(R.id.buttons)).setVisibility(View.VISIBLE);
         LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
-        TextView notExists = (TextView) findViewById(R.id.not_exists_result);
+        View notExists = findViewById(R.id.not_exists_result);
 
         if(flGson != null) {
             notExists.setVisibility(View.GONE);
@@ -185,7 +186,6 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        pDialog = new ProgressDialog(this);
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.search_flight_title));
         setContentView(R.layout.activity_add_flight);
