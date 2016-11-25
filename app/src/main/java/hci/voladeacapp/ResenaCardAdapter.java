@@ -42,6 +42,11 @@ public class ResenaCardAdapter extends BaseAdapter{
     }
 
     @Override
+    public boolean isEmpty() {
+        return cardsData.isEmpty();
+    }
+
+    @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder;

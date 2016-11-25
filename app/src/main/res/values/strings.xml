@@ -79,7 +79,7 @@
     <string name="from">Desde</string>
     <string name="departing_on">Saliendo el</string>
     <string name="every">Cada</string>
-    <string name="not_exists">No existe el vuelo</string>
+    <string name="not_exists">No se encontró el vuelo</string>
     <string name="missing_data">Campo Incompleto</string>
     <string name="airline_name">Nombre de Aerolinea</string>
     <string name="flight_number">Número de vuelo</string>
@@ -121,6 +121,11 @@
 
     <string name="landed_notif_title">El vuelo %1$s %2$s ha aterrizado</string>
     <string name="landed_notif_body">La puerta de embarque es la %1$s, y el equipaje se retira por la cinta %2$s</string>
+    <string name="no_flights">No estás siguiendo ningún vuelo</string>
+
+    <string name="searching_flight">Buscando el vuelo</string>
+    <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
+
 
 
 </resources>

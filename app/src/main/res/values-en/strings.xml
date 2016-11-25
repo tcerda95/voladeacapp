@@ -71,7 +71,7 @@
     <string name="airline_name">Airline name</string>
     <string name="flight_number">Flight number</string>
     <string name="missing_data"></string>
-    <string name="not_exists">This flight does not exist</string>
+    <string name="not_exists">Flight not found</string>
     <string name="error_required_airline">The airline is required</string>
     <string name="error_required_flight_number">The flight number is required</string>
     <string name="optional">Optional</string>
@@ -113,6 +113,7 @@
 
     <string name="cancelation_notif_title">Flight %1$s %2$s has been cancelled</string>
     <string name="cancelation_notif_body">Refer to %1$s for more details</string>
+    <string name="no_flights">You are not following any flights</string>
 
 
 </resources>

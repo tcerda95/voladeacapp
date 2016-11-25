@@ -32,12 +32,25 @@
         android:id="@+id/add_button"/>
 
     <!-- Solo se muestra cuando no hay vuelos -->
-    <ImageView
+    <LinearLayout
+        android:id="@+id/emptyElement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_attach_money_black_24px"
-        android:id="@+id/empty_my_flights_placeholder"
-        android:visibility="invisible"
-        />
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_flights"
+            android:textStyle="normal|bold"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:padding="50dp">
+
+        </TextView>
+
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
