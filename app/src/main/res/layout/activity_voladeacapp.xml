@@ -11,19 +11,18 @@
     android:background="@color/white"
     >
 
-    <com.roughike.bottombar.BottomBar
-        android:id="@+id/bottomBar"
+    <FrameLayout
+        android:id="@+id/bottom_bar_container"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottombar_tabs" />
+        android:layout_alignParentBottom="true"/>
 
     <FrameLayout
         android:id="@+id/fragment_main_container"
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
-        android:layout_above="@id/bottomBar"/>
+        android:layout_above="@id/bottom_bar_container"/>
 
 
 </RelativeLayout>

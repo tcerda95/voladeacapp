@@ -249,7 +249,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 String destId = deals.get(position).city.id;
                 Double price = deals.get(position).price;
 
-                pDialog.setMessage("Cargando el vuelo para vos mami");
                 pDialog.show();
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
