@@ -164,7 +164,9 @@ public class FlightDetails extends AppCompatActivity {
         departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
         arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
 
-        getTextView(R.id.state_data).setText(flight.getState());
+        // TODO: Nombre completo de aerolínea y estado
+        getTextView(R.id.airline_name).setText(flight.getAirline());
+//        getTextView(R.id.state_data).setText(flight.getState());
     }
 
     private TextView getTextView(int id) {

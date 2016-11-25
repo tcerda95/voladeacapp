@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         card_view:cardCornerRadius="2dp"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="3dp"
         android:id="@+id/card_view"
         card_view:cardUseCompatPadding="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -38,7 +38,7 @@
                 android:src="@drawable/ic_okbadge"
                 android:layout_width="0dp"
                 android:layout_weight="0.2"
-                android:layout_height="35dp" />
+                android:layout_height="30dp" />
 
             <LinearLayout
                 android:orientation="vertical"
