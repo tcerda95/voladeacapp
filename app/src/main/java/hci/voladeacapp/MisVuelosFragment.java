@@ -339,7 +339,6 @@ public class MisVuelosFragment extends Fragment {
         errConnReceiver = new ErrConnReceiver(getView());
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
-
     }
 
 

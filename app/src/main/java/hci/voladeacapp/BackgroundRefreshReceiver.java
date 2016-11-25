@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,10 +47,14 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                  }
                 Flight toUpdate = flight_details.get(idx);
                 List<NotificationCategory> changes = toUpdate.update(updatedGson);
-
+                FlightSettings flightSettings = StorageHelper.getSettings(context, toUpdate.getIdentifier());
                 for(NotificationCategory change: changes){
-                    System.out.println("CHANGING" + toUpdate + " " + change);
-                    NotificationCreator.createNotification(context, toUpdate, change);
+                    if(flightSettings.notificationsActive() && flightSettings.isActive(change)) {
+                        System.out.println("UPDATING FLIGHT " + toUpdate.getIdentifier() + " " + change);
+                        NotificationCreator.createNotification(context, toUpdate, change);
+                    } else{
+                        System.out.println("FLIGHT " + toUpdate.getIdentifier() + " has " + change + "turned off");
+                    }
                 }
 
                 StorageHelper.saveFlight(context, toUpdate);

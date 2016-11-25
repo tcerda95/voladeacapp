@@ -22,6 +22,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
     public static class FlightPreferenceFragment extends PreferenceFragment
     {
+        private boolean addedPref = false;
         private FlightSettings settings;
         private FlightIdentifier identifier;
 
@@ -32,7 +33,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
         public void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-
+            System.out.println("CREATING");
             sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
             identifier =  (FlightIdentifier) getActivity().getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
@@ -105,8 +106,10 @@ public class FlightSettingsActivity extends AppCompatActivity {
             editor.putBoolean("cancelation_notifications_switch", settings.isActive(NotificationCategory.CANCELATION));
             editor.commit();
 
-            addPreferencesFromResource(R.xml.flight_preferences);
-
+            if(!addedPref) {
+                addedPref = true;
+                addPreferencesFromResource(R.xml.flight_preferences);
+            }
 
             sp.registerOnSharedPreferenceChangeListener(spChanged);
 
