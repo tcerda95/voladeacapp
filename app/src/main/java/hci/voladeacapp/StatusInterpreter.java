@@ -26,7 +26,7 @@ public class StatusInterpreter {
                 return R.drawable.ic_deviationbadge;
 
             case "C":
-                return R.drawable.ic_cancelbadge;
+                return R.drawable.ic_cancelbadge2;
 
         }
         return -1;
