@@ -113,6 +113,7 @@
     <string name="no_flights">No estás siguiendo ningún vuelo</string>
     <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
     <string name="searching_flight">Buscando el vuelo</string>
+    <string name="plus_arrow_text">Tocá acá para empezar a seguir un vuelo</string>
 
 
 </resources>

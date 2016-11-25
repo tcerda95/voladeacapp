@@ -124,7 +124,7 @@
 
     <string name="searching_flight">Buscando vuelo</string>
     <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
-
+    <string name="plus_arrow_text">Tocá acá para empezar a seguir un vuelo</string>
 
 
 </resources>
