@@ -85,7 +85,6 @@ public class Voladeacapp extends AppCompatActivity {
         promocionesFragment = new PromocionesFragment();
         resenasFragment = new ResenasFragment();
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
         /* Comienza en el fragmento Mis Vuelos */
 
@@ -94,7 +93,12 @@ public class Voladeacapp extends AppCompatActivity {
         else
             currentTabId = savedInstanceState.getInt(TAB_ID);
 
-        drawBottomBar(currentTabId);
+        if (isSmartphone())
+            drawBottomBar(currentTabId);
+        else {
+            initializeBottomBar(currentTabId);
+        }
+
         setFragment(currentTabId);
     }
 
@@ -165,7 +169,8 @@ public class Voladeacapp extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        drawBottomBar(currentTabId);
+        if (isSmartphone())
+            drawBottomBar(currentTabId);
     }
 
     /**
@@ -178,6 +183,10 @@ public class Voladeacapp extends AppCompatActivity {
 
         getLayoutInflater().inflate(R.layout.bottom_bar, frameLayout, true);
 
+        initializeBottomBar(tabId);
+    }
+
+    private void initializeBottomBar(int tabId) {
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
         bottomBar.selectTabWithId(tabId);
@@ -217,5 +226,9 @@ public class Voladeacapp extends AppCompatActivity {
                 transaction.replace(R.id.fragment_main_container, resenasFragment, ResenasFragment.INSTANCE_TAG).commitAllowingStateLoss();
                 break;
         }
+    }
+
+    private boolean isSmartphone() {
+        return findViewById(R.id.bottom_bar_container) != null;
     }
 }
