@@ -103,25 +103,27 @@
     <string name="cancelled">Cancelado</string>
 
 
-    <string name="scheduled_notif_title">El vuelo %1$s %2$s ha sido programado</string>
-    <string name="scheduled_notif_body">El horario de salida es %1$s</string>
+    <string name="scheduled_notif_title">Vuelo %1$s %2$s programado</string>
+    <string name="scheduled_notif_body">Horario de salida: %1$s</string>
 
-    <string name="delay_notif_title">El vuelo %1$s %2$s sufrió un retraso</string>
-    <string name="takeoff_delay_notif_body">El nuevo horario de salida es %1$s</string>
+    <string name="delay_notif_title">Vuelo %1$s %2$s retrasado</string>
+    <string name="takeoff_delay_notif_body">Nuevo horario de salida: %1$s</string>
+    <string name="landing_delay_notif_body">Nuevo horario de arribo: %1$s \n El desembarco se realizará por la puerta %2$s</string>
 
-    <string name="takeoff_notif_title">El vuelo %1$s %2$s ha despegado</string>
-    <string name="takeoff_notif_body">Horario de despegue: %1$s. El aterrizaje está programado para las %2$s</string>
+    <string name="takeoff_notif_title">Vuelo %1$s %2$s ha despegado</string>
+    <string name="takeoff_notif_body">Horario de despegue: %1$s \n Aterrizaje programado para las %2$s</string>
 
-    <string name="deviation_notif_title">El vuelo %1$s %2$s ha sufrido un desvío</string>
-    <string name="deviation_notif_body">El aterrizaje está programado para las %1$s en %2$s</string>
+    <string name="deviation_notif_title">Vuelo %1$s %2$s desviado</string>
+    <string name="deviation_notif_body">Aterrizaje reprogramado para las %1$s en %2$s</string>
 
-    <string name="cancelation_notif_title">El vuelo %1$s %2$s ha sido cancelado</string>
+    <string name="cancelation_notif_title">Vuelo %1$s %2$s cancelado</string>
     <string name="cancelation_notif_body">Consulte %1$s para más detalles</string>
 
-    <string name="landed_notif_title">El vuelo %1$s %2$s ha aterrizado</string>
-    <string name="landed_notif_body">La puerta de embarque es la %1$s, y el equipaje se retira por la cinta %2$s</string>
-    <string name="no_flights">No estás siguiendo ningún vuelo</string>
+    <string name="landed_notif_title">Vuelo %1$s %2$s ha aterrizado</string>
+    <string name="landed_notif_body">Puerta de embarque: %1$s \n El equipaje se retira por la cinta %2$s</string>
 
+
+    <string name="no_flights">No estás siguiendo ningún vuelo</string>
     <string name="searching_flight">Buscando vuelo</string>
     <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
     <string name="plus_arrow_text">Tocá acá para empezar a seguir un vuelo</string>
