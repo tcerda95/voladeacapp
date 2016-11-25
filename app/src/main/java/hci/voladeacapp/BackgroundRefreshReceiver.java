@@ -52,8 +52,15 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                     NotificationCreator.createNotification(context, toUpdate, change);
                 }
 
-
                 StorageHelper.saveFlight(context, toUpdate);
+
+                if(changes.isEmpty()){
+                    System.out.println("Nothing changed for" + toUpdate.toString());
+                }else{
+                    System.out.println("Sending refresh for " + toUpdate.toString());
+                    context.sendBroadcast(new Intent(MisVuelosFragment.FLIGHTS_REFRESHED));
+                }
+
 
         }
 
