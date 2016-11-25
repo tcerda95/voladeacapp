@@ -32,25 +32,48 @@
         android:id="@+id/add_button"/>
 
     <!-- Solo se muestra cuando no hay vuelos -->
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/emptyElement"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        >
 
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/no_flights"
-            android:textStyle="normal|bold"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:textSize="36sp"
-            android:padding="50dp">
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/no_flights"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textColor="@color/darkgrey"
+                android:layout_marginTop="20dp"
+                android:padding="30dp"/>
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="270dp"
+                android:text="Tocá acá para empezar a seguir un vuelo"
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textColor="@color/colorAccent"
+                android:paddingStart="20dp" />
+    </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/empty_back"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"/>
+        </FrameLayout>
 
-        </TextView>
 
-
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

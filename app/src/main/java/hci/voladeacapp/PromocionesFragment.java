@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -43,6 +44,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
 
-    private final static String DEFAULT_CITY = "Nueva York, New York, Estados Unidos"; // Para probar. Tendria que ser BsAs
+    private final static String DEFAULT_CITY = "Buenos Aires, Ciudad de Buenos Aires";
     private static final String START_DETAIL_CALLBACK = "hci.voladeacapp.START_DETAIL_CALLBACK";
 
     private View rootView;
@@ -264,7 +266,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 pDialog.show();
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
-
             }
         });
 
@@ -473,7 +474,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
                 if (!mapAdded) {
                     final FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAPAAAAAA").commit();
+                    fragmentManager.beginTransaction().add(R.id.promos_map_parent, mapfragment, "MAP_WTF_IS_THIS_STRING_FOR").commit();
                     mapAdded = true;
                 }
 
@@ -617,6 +618,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         Toast.makeText(getActivity().getApplicationContext(),
                 getResources().getString(R.string.couldnt_determine_position), Toast.LENGTH_SHORT).show();
         fromCityTextView.setText(DEFAULT_CITY);
+        System.out.println("Usando default: " + DEFAULT_CITY);
         refreshResults();
     }
 
