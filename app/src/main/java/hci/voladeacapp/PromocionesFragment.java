@@ -411,8 +411,12 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     private void refreshResults() {
         Context context = getActivity().getApplicationContext();
-        if (!isValidCity(fromCityTextView.getText().toString()))
-            return; // Deja la búsqueda como la última realizada
+        if (!isValidCity(fromCityTextView.getText().toString())) {
+            // Deja la búsqueda como la última realizada
+            if (currentCity != null)
+                fromCityTextView.setText(currentCity.name);
+            return;
+        }
 
         Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
         String prevSearchcity = StorageHelper.getDealSearchCity(context);
