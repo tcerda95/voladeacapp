@@ -1,7 +1,6 @@
 package hci.voladeacapp;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -31,10 +30,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -58,7 +57,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED;
-import static hci.voladeacapp.ApiService.API_REQUEST_ERROR;
 import static hci.voladeacapp.ApiService.BEST_FLIGHT_RESPONSE;
 import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT_FOUND;
 import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
@@ -223,7 +221,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             }
         });
 
-        ListView cardListView = (ListView) rootView.findViewById(R.id.promo_card_list);
+        GridView cardListView = (GridView) rootView.findViewById(R.id.promo_card_list);
         promoAdapter = new PromoCardAdapter(getActivity(), deals, imageURLs);
         cardListView.setAdapter(promoAdapter);
 

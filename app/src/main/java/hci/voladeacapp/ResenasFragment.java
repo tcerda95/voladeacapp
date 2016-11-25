@@ -30,6 +30,7 @@ public class ResenasFragment extends Fragment {
 
     private ArrayList<GlobalReview> reviewList;
     private BroadcastReceiver receiver;
+    private View rootView;
 
 
     @Override
@@ -90,7 +91,7 @@ public class ResenasFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_resenas, container, false);
+        rootView = inflater.inflate(R.layout.fragment_resenas, container, false);
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_review_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -101,11 +102,12 @@ public class ResenasFragment extends Fragment {
         });
 
         reviewList = new ArrayList<>();
-
-        cardListView = (GridView) rootView.findViewById(R.id.resenas_list);
         adapter = new ResenaCardAdapter(getActivity(), reviewList);
+        cardListView = (GridView) rootView.findViewById(R.id.resenas_list);
         cardListView.setAdapter(adapter);
         fillList();
+        cardListView.setEmptyView(rootView.findViewById(R.id.emptyElement));
+
 
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

@@ -121,6 +121,7 @@
 
     <string name="landed_notif_title">El vuelo %1$s %2$s ha aterrizado</string>
     <string name="landed_notif_body">La puerta de embarque es la %1$s, y el equipaje se retira por la cinta %2$s</string>
+    <string name="no_flights">No estás siguiendo ningún vuelo</string>
 
 
 </resources>

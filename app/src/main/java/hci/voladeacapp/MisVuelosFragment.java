@@ -95,7 +95,6 @@ public class MisVuelosFragment extends Fragment {
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
-
         receiver = new RefreshReceiver();
 
 
@@ -128,6 +127,7 @@ public class MisVuelosFragment extends Fragment {
         adapter.setAbsListView(flightsListView);
         flightsListView.setAdapter(adapter);
         flightsListView.enableSimpleSwipeUndo();
+        flightsListView.setEmptyView(rootView.findViewById(R.id.emptyElement));
 
         flightsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

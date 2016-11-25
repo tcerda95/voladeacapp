@@ -110,8 +110,7 @@
 
     <string name="cancelation_notif_title">El vuelo %1$s %2$s ha sido cancelado</string>
     <string name="cancelation_notif_body">Consulte %1$s para más detalles</string>
-
-
+    <string name="no_flights">No estás siguiendo ningún vuelo</string>
 
 
 </resources>
