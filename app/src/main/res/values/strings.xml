@@ -122,6 +122,7 @@
     <string name="landed_notif_title">El vuelo %1$s %2$s ha aterrizado</string>
     <string name="landed_notif_body">La puerta de embarque es la %1$s, y el equipaje se retira por la cinta %2$s</string>
     <string name="searching_flight">Buscando el vuelo</string>
+    <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
 
 
 </resources>

@@ -3,6 +3,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:text="@string/my_flights_reviews"
+            android:paddingStart="10dp"
+            android:padding="5dp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="normal|bold" />
+
+
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -13,7 +29,8 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:numColumns="1"/>
-    
+    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="56dp"
