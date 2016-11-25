@@ -69,6 +69,8 @@ public class MisVuelosFragment extends Fragment {
     public final static String ACTION_GET_FLIGHT = "hci.voladeacapp.MisVuelos.ACTION_GET_FLIGHT";
     public final static String ACTION_GET_REFRESH = "hci.voladeacapp.MisVuelos.ACTION_GET_REFRESH";
     public static final String FLIGHT_IDENTIFIER = "hci.voladeacapp.extra.FLIGHT_IDENTIFIER";
+    public static final String IS_PROMO_DETAIL = "hci.voladeacapp.extra.IS_PROMO_DETAIL";
+    public static final String PROMO_DETAIL_PRICE = "hci.voladeacapp.extra.PROMO_DETAIL_PRICE";
 
 
     public final static String FLIGHT_REMOVED = "hci.voladeacapp.MisVuelos.FLIGHT_REMOVED";
