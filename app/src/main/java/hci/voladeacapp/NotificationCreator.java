@@ -10,7 +10,6 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.Random;
 
-import static hci.voladeacapp.NotificationType.ON_TIME;
 
 //TODO: Completar con los datos del Flight real
 

@@ -45,7 +45,7 @@ public class Voladeacapp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-/*
+
         AlarmManager alarmMgr;
         PendingIntent alarmIntent;
 
@@ -53,7 +53,6 @@ public class Voladeacapp extends AppCompatActivity {
         Intent myIntent = new Intent(this, PullRequestReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 180 * 1000, alarmIntent);
-*/
 
 
         errorReceiver = new BroadcastReceiver() {

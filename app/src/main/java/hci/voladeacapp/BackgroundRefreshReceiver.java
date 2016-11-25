@@ -49,7 +49,7 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
 
                 for(NotificationCategory change: changes){
                     System.out.println("CHANGING" + toUpdate + " " + change);
-                    createNotification(context, toUpdate, change);
+                    NotificationCreator.createNotification(context, toUpdate, change);
                 }
 
 
@@ -59,33 +59,10 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
 
     }
 
-    private void createNotification(Context context, Flight f, NotificationCategory change) {
-        switch(change){
-            case TAKEOFF:
-                NotificationCreator.createNotification(context, f, NotificationType.ON_TIME);
-            break;
-            case LANDING:
-                NotificationCreator.createNotification(context, f, NotificationType.LANDED);
-                break;
-            case DEVIATION:
-                NotificationCreator.createNotification(context, f, NotificationType.DELAYED);
-                break;
-            case DELAY_TAKEOFF:
-                NotificationCreator.createNotification(context, f, NotificationType.DELAYED);
-                break;
-            case DELAY_LANDING:
-                NotificationCreator.createNotification(context, f, NotificationType.DELAYED);
-                break;
-            case CANCELATION:
-                NotificationCreator.createNotification(context, f, NotificationType.DELAYED);
-                break;
-        }
-
-
-
-    }
 
 }
+
+
 
 
 
