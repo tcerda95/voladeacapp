@@ -6,17 +6,20 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
@@ -164,9 +167,12 @@ public class FlightDetails extends AppCompatActivity {
         departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
         arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
 
-        // TODO: Nombre completo de aerolínea y estado
         getTextView(R.id.airline_name).setText(flight.getAirline());
-//        getTextView(R.id.state_data).setText(flight.getState());
+
+        // Estado
+        ((ImageView)findViewById(R.id.state_badge)).setImageResource(StatusInterpreter.getStateImage(flight.getState()));
+        getTextView(R.id.state_name).setText(StatusInterpreter.getStatusName(getApplicationContext(),flight.getState()));
+        getTextView(R.id.state_name).setTextColor(StatusInterpreter.getStatusColor(flight.getState()));
     }
 
     private TextView getTextView(int id) {

@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
 import java.text.SimpleDateFormat;
@@ -21,10 +19,12 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
     private ArrayList<Flight> listData;
     private LayoutInflater layoutInflater;
+    private Context aContext;
 
     public FlightListAdapter(Context aContext, ArrayList<Flight> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
+        this.aContext = aContext;
     }
 
     @Override
@@ -70,10 +70,11 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
         holder.origCityView.setText(flight.getDepartureCity().split(",")[0]);
         holder.destCityView.setText(flight.getArrivalCity().split(",")[0]);
         holder.departDateView.setText(new SimpleDateFormat("dd-MM-yyyy").format(flight.getDepartureDate())); // TODO: locale
-        //stateTextView.setText(flight.getState());
+        holder.stateView.setImageResource(StatusInterpreter.getStateImage(flight.getState()));
 
         return convertView;
     }
+
 
     @NonNull
     @Override

@@ -84,7 +84,13 @@
 
     <string name="conn_err_title">Connection error</string>
     <string name="conn_err_msg">Your action couldn\'t be completed. Check your connection or try again later.</string>
-
+    <string name="active">Active</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="diverted">Diverted</string>
+    <string name="landed">Landed</string>
+    <string name="otro_string">Other</string>
+    <string name="programmed">Programmed</string>
+    <string name="view_in_list">View int list</string>
 
 
 </resources>
