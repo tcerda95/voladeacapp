@@ -21,14 +21,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapViewFragment extends Fragment {
     MapView mMapView;
     private GoogleMap GMap;
 
-    private Calendar fromDate;
     private String fromCity;
     private ArrayList<DealGson> deals;
+    private Map<Marker, DealGson> markerDeals;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MapViewFragment extends Fragment {
 //              CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
 //              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //
-                updateMap(deals, fromCity, fromDate);
+                updateMap(deals, fromCity);
 
                 GMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
@@ -64,19 +66,20 @@ public class MapViewFragment extends Fragment {
                 });
 
                 System.out.println("CITY: " + fromCity);
-                System.out.println("DATE: " + fromDate);
+
+                GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
             }
         });
 
         return rootView;
     }
 
-    public static MapViewFragment newInstance(ArrayList<DealGson> deals, String fromCity, Calendar fromDate)
+    public static MapViewFragment newInstance(ArrayList<DealGson> deals, String fromCity)
     {
         MapViewFragment newFragment = new MapViewFragment();
         newFragment.deals = deals;
         newFragment.fromCity = fromCity;
-        newFragment.fromDate = fromDate;
+        newFragment.markerDeals = new HashMap<>();
 
         return newFragment;
     }
@@ -101,7 +104,14 @@ public class MapViewFragment extends Fragment {
                     String cityName = deal.city.name;
                     String markerText = cityName + " Precio: U$D" + deal.price;
                     LatLng pos = new LatLng(deal.city.latitude, deal.city.longitude);
-                    GMap.addMarker(new MarkerOptions().position(pos).title(markerText).icon(BitmapDescriptorFactory.defaultMarker(getColor(deal.price))));
+                    MarkerOptions marker = new MarkerOptions().position(pos)
+                                                            .title(cityName.split(",")[0])
+                                                            .snippet("U$D " + deal.price)
+                            .icon(BitmapDescriptorFactory.defaultMarker(getColor(deal.price)))
+                            ;
+                    Marker m = GMap.addMarker(marker);
+                    markerDeals.put(m, deal);
+                    GMap.addMarker(marker);
                 }
             });
         }
@@ -120,7 +130,7 @@ public class MapViewFragment extends Fragment {
                 return BitmapDescriptorFactory.HUE_GREEN;
             }
             else if(price < MID_OFFER){
-                return BitmapDescriptorFactory.HUE_ORANGE;
+                return BitmapDescriptorFactory.HUE_YELLOW;
             }
 
             return BitmapDescriptorFactory.HUE_RED;
@@ -130,15 +140,23 @@ public class MapViewFragment extends Fragment {
     }
 
 
-    public void updateMap(ArrayList<DealGson> deals, String fromCity, Calendar fromDate) {
+    public void updateMap(ArrayList<DealGson> deals, String fromCity) {
         this.deals = deals;
         this.fromCity = fromCity;
-        this.fromDate = fromDate;
         System.out.println("UPDATING MAP");
         if (GMap == null)
             return;
 
         new FillMapTask().execute(deals);
+    }
+
+    private class mapPromoDetailsListener implements GoogleMap.OnInfoWindowClickListener {
+
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            //TODO
+            System.out.println("CLICKED INFO WINDOW! " + markerDeals.get(marker).city + " " + markerDeals.get(marker).price);
+        }
     }
 
     @Override

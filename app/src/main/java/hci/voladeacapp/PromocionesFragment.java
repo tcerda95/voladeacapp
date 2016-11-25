@@ -77,9 +77,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private View rootView;
     private LayoutInflater layoutInflater;
 
-    private Calendar fromCalendar;
-
-    private TextView fromDateTextView;
     private AutoCompleteTextView fromCityTextView;
 
     private RequestQueue requestQueue;
@@ -210,33 +207,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
         pDialog = new ProgressDialog(getActivity());
-        fromCalendar = Calendar.getInstance();
-        fromDateTextView = (TextView) rootView.findViewById(R.id.from_date_edit_text);
         fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
         updateLabel();
-
-        // Datepicker para fecha de salida
-        final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                fromCalendar.set(Calendar.YEAR, year);
-                fromCalendar.set(Calendar.MONTH, monthOfYear);
-                fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-                refreshResults();
-            }
-        };
-
-        // Listener fecha salida
-        rootView.findViewById(R.id.date_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getActivity(), dateListener, fromCalendar
-                        .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
-                        fromCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
 
         ArrayAdapter<String> cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 android.R.layout.select_dialog_item, new ArrayList<>(citiesMap.keySet()));
@@ -273,8 +245,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-
-
                 String originId = currentCity.id;
                 String destId = deals.get(position).city.id;
                 Double price = deals.get(position).price;
@@ -284,8 +254,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
 
-
-                System.out.println("CLICKED: " + position);
             }
         });
 
@@ -312,11 +280,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         deals.add(d);
                         getCityImageURL(d);
                     }
-                    saveDealsData();
+//                    saveDealsData();
                     if (inListView)
                         promoAdapter.notifyDataSetChanged();
                     else
-                        mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
+                        mapfragment.updateMap(deals, fromCityTextView.getText().toString());
                 }
             }
         };
@@ -431,15 +399,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         System.out.println("Connection failed");
     }
 
-    private void saveDealsData() {
-        if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
-//            System.out.println("saving");
-            Context context = getActivity().getApplicationContext();
-            StorageHelper.saveDeals(context, imageURLs);
-            StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
-            StorageHelper.saveDealSearchCalendar(context, fromCalendar);
-        }
-    }
+//    private void saveDealsData() {
+//        if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
+////            System.out.println("saving");
+//            Context context = getActivity().getApplicationContext();
+//            StorageHelper.saveDeals(context, imageURLs);
+//            StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
+//            StorageHelper.saveDealSearchCalendar(context, );
+//        }
+//    }
 
     private void refreshResults() {
         Context context = getActivity().getApplicationContext();
@@ -449,7 +417,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
         String prevSearchcity = StorageHelper.getDealSearchCity(context);
 
-        boolean sameDay = prevSearchCal != null && prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR);
+//        boolean sameDay = prevSearchCal != null && prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR);
         boolean sameCity = prevSearchcity != null && prevSearchcity.equals(fromCityTextView.getText().toString());
 
         if (prevSearchCal != null && prevSearchcity != null) {
@@ -491,7 +459,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         final MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
         final MenuItem listIcon = menu.findItem(R.id.go_to_list_view);
 
-        mapfragment = MapViewFragment.newInstance(deals, fromCityTextView.getText().toString(), fromCalendar);
+        mapfragment = MapViewFragment.newInstance(deals, fromCityTextView.getText().toString());
 
         final View listView = rootView.findViewById(R.id.promo_card_list);
         mapIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -511,7 +479,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     mapView.setVisibility(View.VISIBLE);
                 mapIcon.setVisible(false);
                 listIcon.setVisible(true);
-                mapfragment.updateMap(deals, fromCityTextView.getText().toString(), fromCalendar);
+                mapfragment.updateMap(deals, fromCityTextView.getText().toString());
                 return true;
             }
         });
@@ -538,7 +506,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private void updateLabel() {
         String myFormat = getResources().getString(R.string.formato_fecha);
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        fromDateTextView.setText(sdf.format(fromCalendar.getTime()));
     }
 
     private void getCityImageURL(final DealGson deal) {
@@ -551,7 +518,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                             promoAdapter.notifyDataSetChanged();
 
                             // Ineficiente pero bue
-                            saveDealsData();
+//                            saveDealsData();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

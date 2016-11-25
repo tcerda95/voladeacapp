@@ -38,4 +38,5 @@
             android:key="cancelation_notifications_switch" />
     </PreferenceCategory>
 
+
 </PreferenceScreen>
