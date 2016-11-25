@@ -58,13 +58,28 @@
                 android:layout_marginTop="270dp"
                 android:text="@string/plus_arrow_text"
                 android:textAlignment="center"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textColor="@color/colorAccent"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_add_white_24px"
+                android:layout_marginBottom="70dp"
+                android:layout_marginEnd="170dp"
                 android:paddingStart="20dp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/empty_arrow"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="50dp"
+                />
+
     </FrameLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -72,7 +87,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
         </FrameLayout>
-
 
     </FrameLayout>
 
