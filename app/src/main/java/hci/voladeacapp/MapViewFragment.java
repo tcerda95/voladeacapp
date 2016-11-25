@@ -13,6 +13,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -88,7 +89,7 @@ public class MapViewFragment extends Fragment {
                     String cityName = deal.city.name;
                     String markerText = cityName + " Precio: " + deal.price;
                     LatLng pos = new LatLng(deal.city.latitude, deal.city.longitude);
-                    GMap.addMarker(new MarkerOptions().position(pos).title(markerText));
+                    GMap.addMarker(new MarkerOptions().position(pos).title(markerText).icon(BitmapDescriptorFactory.defaultMarker(getColor(deal.price))));
                 }
             });
         }
@@ -102,7 +103,20 @@ public class MapViewFragment extends Fragment {
             });
         }
 
+        private float getColor(Double price) {
+            if(price < 100){
+                return BitmapDescriptorFactory.HUE_GREEN;
+            }
+            else if(price < 500){
+                return BitmapDescriptorFactory.HUE_ORANGE;
+            }
+
+            return BitmapDescriptorFactory.HUE_RED;
+        }
+
+
     }
+
 
     public void updateMap(ArrayList<DealGson> deals, String fromCity, Calendar fromDate) {
         this.deals = deals;
