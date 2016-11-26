@@ -77,7 +77,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         String airlineId = StorageHelper.getAirlineIdMap(this).get(airlineData);
         /* Ver si se valida esto */
         if(airlineId == null)
-            Toast.makeText(this,"No existe esa aerolinea",Toast.LENGTH_SHORT);
+            Toast.makeText(this,"No existe esa aerolinea",Toast.LENGTH_SHORT).show();
 
         airlineInputLayout.setErrorEnabled(false);
         numberInputLayout.setErrorEnabled(false);
@@ -278,7 +278,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 .setOrientationLocked(false)
                 .setBeepEnabled(false)
                 .setBarcodeImageEnabled(false)
-                .setPrompt("Apunte al código QR en su pasaje")
+                .setPrompt(getString(R.string.prompt_QR))
                 .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
 
         findViewById(R.id.QR_code_button).setOnClickListener(new View.OnClickListener() {
@@ -289,7 +289,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         });
 
         setFocusChangeListeners();
-        
+
         if (savedInstanceState != null && savedInstanceState.getBoolean(SEARCH_DONE))
             addFlight((FlightStatusGson) savedInstanceState.getSerializable(FLIGHT_GSON));
     }
@@ -357,16 +357,15 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if(result != null) {
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 processQRData(result.getContents());
-                Toast.makeText(this, "Se encontró el cógido " + result.getContents(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_LONG).show();
             }
-            return;
         }
         else if (requestCode == DETAILS_REQUEST_CODE) {
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
@@ -377,12 +376,12 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 StorageHelper.deleteFlight(this, identifier);
                 Toast.makeText(this, "Vuelo borrado", Toast.LENGTH_SHORT).show();
             }
-            else if(addedNew){
+            else if(addedNew) {
                 //Agrego desde aca y se fue, hay que cambiar la tarjeta aca
                 Toast.makeText(this, "Se agrego", Toast.LENGTH_SHORT).show();
 
             }
-            else{
+            else {
                 //Aca no hizo nada
                 Toast.makeText(this, "No toco nada", Toast.LENGTH_SHORT).show();
             }
@@ -391,7 +390,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private void processQRData(String data) {
         if (!isAFlightNumber(data)) {
-            Toast.makeText(this, "El código no corresponde a un número de vuelo válido", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "", Toast.LENGTH_LONG).show();
         } else { // Es un número de vuelo
             String[] splitData = data.split(" ");
             FlightIdentifier identifier = new FlightIdentifier(splitData[0], splitData[1]);
