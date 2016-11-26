@@ -80,7 +80,7 @@ public class NotificationCreator extends Activity {
 
     private static NotificationCompat.Builder createTakeoffDelayedBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.delay_notif_title), f.getAirlineID(), f.getNumber());
-        String bigText = String.format(c.getString(R.string.takeoff_delay_notif_body), f.getArrivalSchedule().delay);
+        String bigText = String.format(c.getString(R.string.takeoff_delay_notif_body), f.getDepartureSchedule().delay);
 
         return createNotificationBuilder(c, R.drawable.ic_delayedbadge, contentTitle, bigText);
     }
