@@ -25,8 +25,8 @@ public class FlightStatusGson implements Serializable {
 
         public String actual_gate_time;
         public String actual_runway_time;
-        public String gate_delay;
-        public String runway_delay;
+        public Integer gate_delay;
+        public Integer runway_delay;
         public String scheduled_gate_time;
         public String scheduled_time;
         public String actual_time;

@@ -343,7 +343,6 @@ public class ApiService extends IntentService {
         }.getType();
 
         final String jsonReview = gson.toJson(review ,type);
-        System.out.println(jsonReview);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -351,7 +350,6 @@ public class ApiService extends IntentService {
                     public void onResponse(String response) {
                         try {
                             JSONObject obj = new JSONObject(response);
-                            System.out.println(response);
                             if(obj.has("review") && obj.getBoolean("review")) {
                             } else{
 
@@ -364,7 +362,6 @@ public class ApiService extends IntentService {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
 
             }
 
@@ -529,7 +526,6 @@ public class ApiService extends IntentService {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
                 sendRequestErrorOrderedBroadcast(callback);
 
             }
@@ -541,7 +537,7 @@ public class ApiService extends IntentService {
     }
 
     private void sendRequestErrorBroadcast(String callback){
-        System.out.println("SENDING ERROR BROADCAST TO CALLBACK [" + callback + "]");
+      //  System.out.println("SENDING ERROR BROADCAST TO CALLBACK [" + callback + "]");
         sendBroadcast(new Intent(callback).putExtra(API_REQUEST_ERROR, true));
     }
 
@@ -605,7 +601,6 @@ public class ApiService extends IntentService {
                                                 .getJSONObject("airline")
                                                 .getString("id");
 
-                                    System.out.println("THE ID IS " + id);
 
                                     String number = "" + flight.getJSONArray("outbound_routes")
                                             .getJSONObject(0)

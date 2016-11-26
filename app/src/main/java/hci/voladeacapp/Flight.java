@@ -71,6 +71,8 @@ public class Flight implements Serializable {
      * Agrupa la información que tanto la salida como la llegada poseen.
      */
     public static class FlightSchedule implements Serializable {
+        public boolean gate_delayed;
+        public boolean runway_delayed;
         public String airport;
         public String airportId;
         public String city;
@@ -78,6 +80,8 @@ public class Flight implements Serializable {
         public String terminal;
         public FlightDate flightDate;
         public FlightDate scheduledDate;
+
+        public int delay;
 
         public FlightSchedule(){
             flightDate = new FlightDate();
@@ -92,6 +96,19 @@ public class Flight implements Serializable {
             terminal = schedule.airport.terminal;
             flightDate = schedule.actual_time == null ? null : new FlightDate(schedule.actual_time);
             scheduledDate = new FlightDate(schedule.scheduled_time);
+
+            delay = 0;
+
+            if(schedule.gate_delay != null){
+                delay += schedule.gate_delay;
+                gate_delayed = true;
+            }
+
+            if(schedule.runway_delay != null){
+                delay += schedule.runway_delay;
+                runway_delayed = true;
+            }
+
         }
 
         @Override
@@ -136,6 +153,95 @@ public class Flight implements Serializable {
         departureSchedule = new FlightSchedule(seed.departure);
         arrivalSchedule = new FlightSchedule(seed.arrival);
     }
+
+
+    public NotificationCategory _update(FlightStatusGson newStatus){
+        List<NotificationCategory> changes = new ArrayList<>();
+        NotificationCategory change = null;
+
+
+        boolean delayCheck = false;
+        if(!arrivalSchedule.runway_delayed && newStatus.arrival.runway_delay != null){
+            arrivalSchedule.runway_delayed = true;
+            arrivalSchedule.delay += newStatus.arrival.runway_delay;
+            delayCheck = true;
+        }
+
+        if(!arrivalSchedule.gate_delayed && newStatus.arrival.gate_delay != null){
+            arrivalSchedule.runway_delayed = true;
+            arrivalSchedule.delay += newStatus.arrival.gate_delay;
+            delayCheck = true;
+        }
+
+        if(delayCheck){
+            setState("D");
+            change = NotificationCategory.DELAY_LANDING;
+        }
+
+
+        delayCheck = false;
+
+        if(!departureSchedule.runway_delayed && newStatus.departure.runway_delay != null){
+            departureSchedule.runway_delayed = true;
+            departureSchedule.delay += newStatus.departure.runway_delay;
+            delayCheck = true;
+        }
+
+        if(!departureSchedule.gate_delayed && newStatus.departure.gate_delay != null){
+            departureSchedule.runway_delayed = true;
+            departureSchedule.delay += newStatus.departure.gate_delay;
+            delayCheck = true;
+        }
+
+        if(delayCheck){
+            setState("D");
+            change = NotificationCategory.DELAY_TAKEOFF;
+        }
+
+        setBaggageClaim(newStatus.arrival.airport.baggage);
+
+
+        if(newStatus.departure.actual_time != null) {
+            if(!confirmedDeparture){
+                confirmedDeparture = true;
+
+                FlightDate newDepartureFlightDate = new FlightDate(newStatus.departure.actual_time);
+                departureSchedule.flightDate = newDepartureFlightDate;
+            }
+        }
+
+        if(newStatus.arrival.actual_time != null){
+            if(!confirmedArrival){
+                confirmedArrival = true;
+                FlightDate newDepartureFlightDate = new FlightDate(newStatus.arrival.actual_time);
+                arrivalSchedule.flightDate = newDepartureFlightDate;
+            }
+        }
+
+
+        if(!state.equals(newStatus.status)){
+            switch(newStatus.status) {
+                case "A":
+                    change = NotificationCategory.TAKEOFF;
+                    break;
+                case "R":
+                    change = NotificationCategory.DEVIATION;
+                    break;
+                case "L":
+                    change = NotificationCategory.LANDING;
+                    break;
+                case "C":
+                    change = NotificationCategory.CANCELATION;
+                    break;
+            }
+        }
+
+        setState(newStatus.status);
+
+
+        return change;
+    }
+
 
 
 
@@ -220,6 +326,9 @@ public class Flight implements Serializable {
     }
 
     public String getState() {
+        if (state.equals("S") && departureSchedule.delay != 0){
+            return "D";
+        }
         return state;
     }
 
@@ -326,7 +435,11 @@ public class Flight implements Serializable {
     }
 
     public String getArrivalBoardingTime() {
-        return arrivalSchedule.flightDate.timestamp;
+        if(arrivalSchedule.flightDate.timestamp != null) {
+            return arrivalSchedule.flightDate.timestamp;
+        } else {
+            return arrivalSchedule.scheduledDate.timestamp;
+        }
     }
 
     public String getDepartureGate() {

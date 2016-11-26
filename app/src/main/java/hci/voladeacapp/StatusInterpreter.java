@@ -19,15 +19,14 @@ public class StatusInterpreter {
             case "A":
                 return R.drawable.ic_takeoffbadge;
 
-            case "D":
-                return R.drawable.ic_deviationbadge;
-
             case "R":
                 return R.drawable.ic_deviationbadge;
 
             case "C":
                 return R.drawable.ic_cancelbadge2;
 
+            case "D":
+                return R.drawable.ic_delayedbadge;
         }
         return -1;
     }
@@ -39,13 +38,12 @@ public class StatusInterpreter {
                 return c.getString(R.string.landed);
             case "S":
                 return c.getString(R.string.programmed);
-
             case "A":
                 return c.getString(R.string.active);
-
-            case "D":
+            case "R":
                 return c.getString(R.string.diverted);
-
+            case "D":
+                return c.getString(R.string.late);
             case "C":
                 return c.getString(R.string.cancelled);
 
@@ -65,6 +63,9 @@ public class StatusInterpreter {
                 return Color.rgb(63, 81, 181);
 
             case "D":
+                return Color.rgb(255, 87, 34);
+
+            case "R":
                 return Color.rgb(255, 87, 34);
 
             case "C":
