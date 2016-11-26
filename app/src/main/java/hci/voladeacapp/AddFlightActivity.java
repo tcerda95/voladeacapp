@@ -156,14 +156,14 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 actionButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(AddFlightActivity.this);
-                        builder.setMessage("Dejar de seguir este vuelo?")
-                                .setTitle("Borrar")
-                                .setPositiveButton("Dejar de seguir", new Dialog.OnClickListener() {
+                        builder.setMessage(getString(R.string.dialog_remove_flight_body))
+                                .setTitle(R.string.dialog_remove_flight_title)
+                                .setPositiveButton(R.string.dialog_remove_flight_yes, new Dialog.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), R.string.singular_eliminado, Toast.LENGTH_LONG).show();
 
                                         Intent intent = new Intent();
 
@@ -176,11 +176,10 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
                                 });
 
-                        builder.setNegativeButton("Cancelar", new Dialog.OnClickListener() {
+                        builder.setNegativeButton(R.string.dialog_remove_flight_no, new Dialog.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getApplicationContext(), "No paso nada", Toast.LENGTH_LONG).show();
                                 dialog.cancel();
                             }
 
