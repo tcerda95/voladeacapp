@@ -1,14 +1,19 @@
 package hci.voladeacapp;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -275,7 +280,11 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         findViewById(R.id.QR_code_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                qrIntegrator.initiateScan();
+                if (!hasCameraPermissions()) {
+                    requestCameraPermissions();
+                } else {
+                    qrIntegrator.initiateScan();
+                }
             }
         });
 
@@ -374,6 +383,29 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 //Aca no hizo nada
                 Toast.makeText(this, "No toco nada", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private boolean hasCameraPermissions() {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCameraPermissions() {
+        if (!hasCameraPermissions()) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    Voladeacapp.CAMERA_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == Voladeacapp.CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                qrIntegrator.initiateScan();
+            else
+                Toast.makeText(this, "No podemos escanear el código QR sin acceso a tu cámara", Toast.LENGTH_LONG);
         }
     }
 

@@ -124,23 +124,23 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         notifiedConnectionError = true;
 
         dealIdReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                            ErrorHelper.connectionErrorShow(context);
-                            pDialog.hide();
-                      }
-                      else{
-                        boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
-                        if(found){
-                            ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
-                        }else {
-                            ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde");
-                        }
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
+                    ErrorHelper.connectionErrorShow(context);
+                    pDialog.hide();
+                }
+                else{
+                    boolean found = intent.getBooleanExtra(DATA_BEST_FLIGHT_FOUND, false);
+                    if(found){
+                        ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
+                    }else {
+                        ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde");
                     }
+                }
 
-                    }
-                };
+            }
+        };
 
         detailStarterReceiver = new BroadcastReceiver() {
             @Override
@@ -308,24 +308,20 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (!getLocationAndSearch()) {
-            //No permissions
+        if (hasLocationPermissions()) {
+            getLocationAndSearch();
+        } else  {
             requestLocationPermissions();
+
         }
     }
 
-    private boolean requestLocationPermissions() {
+    private void requestLocationPermissions() {
         if (!hasLocationPermissions()) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        Voladeacapp.LOCATION_PERMISSION_REQUEST_CODE);
-
-                Toast.makeText(getActivity().getApplicationContext(), "Supuesta explicacion", Toast.LENGTH_LONG).show();
-            } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                 alertDialog.setTitle("Localización");
-                alertDialog.setMessage("Permitinos usar tu localización para mostrarte promociones saliendo desde un lugar cerca tuyo.");
+                alertDialog.setMessage("Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.");
 
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -342,10 +338,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 });
 
                 alertDialog.show();
-                Toast.makeText(getActivity().getApplicationContext(), "De una corte", Toast.LENGTH_LONG);
+            }
+            else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        Voladeacapp.LOCATION_PERMISSION_REQUEST_CODE);
+
             }
         }
-        return true;
     }
 
     private boolean getLocationAndSearch() {
