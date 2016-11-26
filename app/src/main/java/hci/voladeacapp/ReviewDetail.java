@@ -8,16 +8,18 @@ import android.widget.TextView;
 
 public class ReviewDetail extends AppCompatActivity {
     private static final double SAD_RATING_BOUND = 7.0;
+    private static final float RATING_FACTOR = 0.5f;
+
     GlobalReview review;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_detail);
         Intent intent = getIntent();
         review = (GlobalReview)intent.getSerializableExtra("review");
-        setTitle(review.airline() + " " + review.flightNumber());
+        setTitle(getString(R.string.review_details_title, review.airline() + " " + review.flightNumber()));
         fillDetails();
-
     }
 
     private void fillDetails() {
@@ -29,13 +31,17 @@ public class ReviewDetail extends AppCompatActivity {
         RatingBar punctualityFlyerBar = (RatingBar) findViewById(R.id.punctuality_rating);
         TextView percentaje = (TextView) findViewById(R.id.percentage_recommend);
 
-        kindnessBar.setRating((float)review.friendliness()/2);
-        comfortBar.setRating((float)review.comfort()/2);
-        foodBar.setRating((float)review.food());
-        priceQualityBar.setRating((float)review.quality_price()/2);
-        frequentFlyerBar.setRating((float)review.mileage_program()/2);
-        punctualityFlyerBar.setRating((float)review.punctuality()/2);
+        kindnessBar.setRating(convertRating((float) review.friendliness()));
+        comfortBar.setRating(convertRating((float)review.comfort()));
+        foodBar.setRating(convertRating((float)review.food()));
+        priceQualityBar.setRating(convertRating((float)review.quality_price()));
+        frequentFlyerBar.setRating(convertRating((float)review.mileage_program()));
+        punctualityFlyerBar.setRating(convertRating((float)review.punctuality()));
         percentaje.setText(review.getRecommendedPercentage() + "%");
 
+    }
+
+    private float convertRating(float rating) {
+        return rating * RATING_FACTOR;
     }
 }
