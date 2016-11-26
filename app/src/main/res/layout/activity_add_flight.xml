@@ -55,6 +55,24 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp" />
 
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escanear código QR"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:backgroundTint="@color/colorPrimary"
+            android:textSize="16sp"
+            android:padding="14dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:drawableStart="@drawable/ic_photo_camera_white_24px"
+            android:drawablePadding="8dp"
+            android:id="@+id/QR_code_button"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            />
+
     </LinearLayout>
 
     <include layout="@layout/my_flight_card"

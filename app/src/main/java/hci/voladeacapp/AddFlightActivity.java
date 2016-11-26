@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -59,6 +61,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private TextInputLayout numberInputLayout;
     private TextInputLayout airlineInputLayout;
+
+    private IntentIntegrator qrIntegrator;
 
 
     @Override
@@ -262,9 +266,21 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             }
         });
 
-        setFocusChangeListeners();
+        qrIntegrator = new IntentIntegrator(AddFlightActivity.this)
+                .setOrientationLocked(false)
+                .setBeepEnabled(false)
+                .setBarcodeImageEnabled(false)
+                .setPrompt("Apunte al código QR en su pasaje")
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
 
-        
+        findViewById(R.id.QR_code_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                qrIntegrator.initiateScan();
+            }
+        });
+
+        setFocusChangeListeners();
     }
 
     private void hideKeyboard(View view) {
@@ -331,7 +347,17 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if (requestCode == DETAILS_REQUEST_CODE) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                processQRData(result.getContents());
+                Toast.makeText(this, "Se encontró el cógido " + result.getContents(), Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+        else if (requestCode == DETAILS_REQUEST_CODE) {
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
             if(deleted) {
@@ -350,10 +376,23 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 Toast.makeText(this, "No toco nada", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
+    private void processQRData(String data) {
+        if (!isAFlightNumber(data)) {
+            Toast.makeText(this, "El código no corresponde a un número de vuelo válido", Toast.LENGTH_LONG).show();
+        } else { // Es un número de vuelo
+            String[] splitData = data.split(" ");
+            FlightIdentifier identifier = new FlightIdentifier(splitData[0], splitData[1]);
+            findViewById(R.id.in_search_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.not_exists_result).setVisibility(View.GONE);
+            ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
+        }
+    }
 
+    private boolean isAFlightNumber(String str) {
+        return str != null && str.matches("[A-Z]{2} [0-9]+"); // TODO: Chequear REGEX
+    }
 
 
     @Override

@@ -53,6 +53,9 @@ dependencies {
 
     compile 'com.synnapps:carouselview:0.0.10'
 
+    compile 'com.journeyapps:zxing-android-embedded:3.4.0'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+
     compile 'com.mobsandgeeks:android-saripaar:2.0.0'
 
     testCompile 'junit:junit:4.12'
