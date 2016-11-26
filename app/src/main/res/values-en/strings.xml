@@ -86,6 +86,7 @@
     <string name="active">Active</string>
     <string name="cancelled">Cancelled</string>
     <string name="diverted">Diverted</string>
+    <string name="late">Late</string>
     <string name="landed">Landed</string>
     <string name="otro_string">Other</string>
     <string name="programmed">Programmed</string>
@@ -96,8 +97,8 @@
     <string name="scheduled_notif_body">Departure time: %1$s</string>
 
     <string name="delay_notif_title">Flight %1$s %2$s is delayed</string>
-    <string name="takeoff_delay_notif_body">Departure time has changed to %1$s</string>
-    <string name="landing_delay_notif_body">Arrival time has changed to %1$s \nUnboarding will proceed through gate %2$s</string>
+    <string name="takeoff_delay_notif_body">The flight is approximately %1$d minutes late for takeoff</string>
+    <string name="landing_delay_notif_body">The flight is approximately  %1$d minutes late for unboarding</string>
 
     <string name="takeoff_notif_title">Flight %1$s %2$s took off</string>
     <string name="takeoff_notif_body">Takeoff time: %1$s \nLanding is scheduled for %2$s</string>

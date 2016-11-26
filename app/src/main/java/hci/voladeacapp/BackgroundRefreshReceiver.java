@@ -46,22 +46,24 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
                     return;
                  }
                 Flight toUpdate = flight_details.get(idx);
-                List<NotificationCategory> changes = toUpdate.update(updatedGson);
+            //    List<NotificationCategory> changes = toUpdate.update(updatedGson);
+                NotificationCategory change = toUpdate._update(updatedGson);
                 FlightSettings flightSettings = StorageHelper.getSettings(context, toUpdate.getIdentifier());
-                for(NotificationCategory change: changes){
+            /*    for(NotificationCategory change: changes){
                     if(flightSettings.notificationsActive() && flightSettings.isActive(change)) {
                         System.out.println("UPDATING FLIGHT " + toUpdate.getIdentifier() + " " + change);
-                        NotificationCreator.createNotification(context, toUpdate, change);
                     } else{
                         System.out.println("FLIGHT " + toUpdate.getIdentifier() + " has " + change + "turned off");
                     }
                 }
+            */
 
                 StorageHelper.saveFlight(context, toUpdate);
 
-                if(changes.isEmpty()){
+                if(change == null){
                     System.out.println("Nothing changed for" + toUpdate.toString());
                 }else{
+                    NotificationCreator.createNotification(context, toUpdate, change);
                     System.out.println("Sending refresh for " + toUpdate.toString());
                     context.sendBroadcast(new Intent(MisVuelosFragment.FLIGHTS_REFRESHED));
                 }

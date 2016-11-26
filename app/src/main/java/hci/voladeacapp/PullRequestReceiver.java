@@ -36,6 +36,9 @@ public class PullRequestReceiver extends BroadcastReceiver {
         lastTime = time;
 
         Toast.makeText(context, "PULLING. Last pull was " + delta + "minutes ago", Toast.LENGTH_SHORT).show();
+
+        //Cambiar la configuracion al default si se borraron los datos
+        NotificationManager.setDefaultPreferences(context, false);
         }
 
 }

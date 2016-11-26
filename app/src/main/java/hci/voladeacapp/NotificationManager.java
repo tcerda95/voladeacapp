@@ -37,6 +37,11 @@ public class NotificationManager {
 
         if(activateNotifications){
             System.out.println("Activating notifications every " + minutes + " minutes");
+            if(minutes > 5) {
+                System.out.println("Changing " + minutes + " to 5 minutes jbc");
+                minutes = 5;
+            }
+
             alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), minutes * 60 * 1000, alarmIntent);
         }
 
@@ -45,13 +50,13 @@ public class NotificationManager {
 
 
 
-    public static boolean setDefaultPreferences(Context context, boolean activateIfExisting){
+    public static boolean setDefaultPreferences(Context context, boolean resetIfExisting){
         NotificationPreferences saved = StorageHelper.getNotificationPreferences(context);
         System.out.println("Saved preferences: " + saved);
         if(saved == null) {
-            System.out.println("Setting default preferecnes");
+            System.out.println("Setting default preferences");
             setPreferences(context, true, DEFAULT_MINUTES);
-        } else if (activateIfExisting){
+        } else if (resetIfExisting){
             setPreferences(context, saved.active, saved.minutes);
         }
 

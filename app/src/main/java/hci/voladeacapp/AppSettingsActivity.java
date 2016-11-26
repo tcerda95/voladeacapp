@@ -29,6 +29,7 @@ public class AppSettingsActivity extends AppCompatActivity {
 
         SharedPreferences.OnSharedPreferenceChangeListener spChanged;
         String previousLocale;
+        private boolean updatedNotificationSettings;
 
         @Override
         public void onCreate(final Bundle savedInstanceState)
@@ -53,11 +54,13 @@ public class AppSettingsActivity extends AppCompatActivity {
                                                               String key) {
                             switch(key){
                                 case "notifications_switch":
+                                    updatedNotificationSettings = false;
                                     Boolean val = SP.getBoolean(key, true);
                                     System.out.println(key + "Changed to: " + val);
                                     break;
 
                                 case "updateFrequency":
+                                    updatedNotificationSettings = false;
                                     String value = SP.getString(key, "NULL");
                                     System.out.println(key + "Changed to: " + value);
                                     updateFrequencyDescription();
@@ -87,6 +90,7 @@ public class AppSettingsActivity extends AppCompatActivity {
                     };
 
             SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            updatedNotificationSettings = true;
         }
 
         private void buildStack() {
@@ -113,8 +117,10 @@ public class AppSettingsActivity extends AppCompatActivity {
             ListPreference updateFreq = (ListPreference) findPreference("updateFrequency");
             Integer minutes = Integer.parseInt(updateFreq.getValue());
 
-            NotificationManager.setPreferences(getActivity(), activateNotifications, minutes);
-
+            if(!updatedNotificationSettings) {
+                updatedNotificationSettings = true;
+                NotificationManager.setPreferences(getActivity(), activateNotifications, minutes);
+            }
             sp.unregisterOnSharedPreferenceChangeListener(spChanged);
 
         }

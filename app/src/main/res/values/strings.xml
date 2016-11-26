@@ -100,6 +100,7 @@
     <string name="programmed">Programado</string>
     <string name="active">En Vuelo</string>
     <string name="diverted">Desviado</string>
+    <string name="late">Retrasado</string>
     <string name="cancelled">Cancelado</string>
 
 
@@ -107,8 +108,8 @@
     <string name="scheduled_notif_body">Horario de salida: %1$s</string>
 
     <string name="delay_notif_title">Vuelo %1$s %2$s retrasado</string>
-    <string name="takeoff_delay_notif_body">Nuevo horario de salida: %1$s</string>
-    <string name="landing_delay_notif_body">Nuevo horario de arribo: %1$s \n El desembarco se realizará por la puerta %2$s</string>
+    <string name="takeoff_delay_notif_body">El despegue está aproximadamente %1$d minutos retrasado</string>
+    <string name="landing_delay_notif_body">El desembarco está %1$d minutos atrasado</string>
 
     <string name="takeoff_notif_title">Vuelo %1$s %2$s ha despegado</string>
     <string name="takeoff_notif_body">Horario de despegue: %1$s \n Aterrizaje programado para las %2$s</string>

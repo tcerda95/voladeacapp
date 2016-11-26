@@ -21,29 +21,29 @@ public class NotificationCreator extends Activity {
     public static void createNotification(Context c, Flight f, NotificationCategory category) {
         switch(category){
             case TAKEOFF:
-                createNotification(c,f, createTakeoffBuilder(c,f));
+                createNotification(c,f, category, createTakeoffBuilder(c,f));
                 break;
             case LANDING:
-                createNotification(c,f,createLandedBuilder(c,f));
+                createNotification(c,f, category, createLandedBuilder(c,f));
                 break;
             case DEVIATION:
-                createNotification(c,f,createDeviationBuilder(c,f));
+                createNotification(c,f,category, createDeviationBuilder(c,f));
                 break;
             case DELAY_TAKEOFF:
-                createNotification(c, f, createTakeoffDelayedBuilder(c,f));
+                createNotification(c, f, category, createTakeoffDelayedBuilder(c,f));
                 break;
             case DELAY_LANDING:
-                createNotification(c, f, createLandingDelayedBuilder(c,f));
+                createNotification(c, f, category, createLandingDelayedBuilder(c,f));
                 break;
             case CANCELATION:
-                createNotification(c,f,createCancelationBuilder(c,f));
+                createNotification(c,f, category, createCancelationBuilder(c,f));
                 break;
         }
 
     }
 
 
-    private static void createNotification(Context c, Flight f, NotificationCompat.Builder builder) {
+    private static void createNotification(Context c, Flight f, NotificationCategory category, NotificationCompat.Builder builder) {
         Intent intent = new Intent(c, FlightDetails.class);
         intent.putExtra("Flight", f);
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -57,7 +57,7 @@ public class NotificationCreator extends Activity {
         NotificationManager notificationManager = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
         //El id está construido por el numero de vuelo
         //TODO: ver de incluir de alguna forma la aerolinea para que no se repitan
-        notificationManager.notify(Integer.parseInt(f.getNumber()), builder.build());
+        notificationManager.notify(f.hashCode(), builder.build());
         //TODO: ver que pasa si se superponen ¿deberia ser asi?¿ o las agrupo?
     }
 
@@ -80,7 +80,7 @@ public class NotificationCreator extends Activity {
 
     private static NotificationCompat.Builder createTakeoffDelayedBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.delay_notif_title), f.getAirlineID(), f.getNumber());
-        String bigText = String.format(c.getString(R.string.takeoff_delay_notif_body), f.getDepartureBoardingTime());
+        String bigText = String.format(c.getString(R.string.takeoff_delay_notif_body), f.getArrivalSchedule().delay);
 
         return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
     }
@@ -88,7 +88,7 @@ public class NotificationCreator extends Activity {
 
     private static NotificationCompat.Builder createLandingDelayedBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.delay_notif_title), f.getAirlineID(), f.getNumber());
-        String bigText = String.format(c.getString(R.string.landing_delay_notif_body), f.getDepartureBoardingTime(),f.getArrivalGate());
+        String bigText = String.format(c.getString(R.string.landing_delay_notif_body), f.getArrivalSchedule().delay);
 
         return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
     }
