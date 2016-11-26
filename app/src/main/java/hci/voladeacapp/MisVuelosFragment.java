@@ -19,8 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
@@ -30,15 +34,15 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
-import static hci.voladeacapp.ApiService.startActionGetReviews;
 
-public class MisVuelosFragment extends Fragment {
+public class MisVuelosFragment extends Fragment implements ShowCase{
 
 
     public static final String FLIGHTS_REFRESHED = "hci.voladeacapp.broadcast.FLIGHTS_REFRESHED";
 
     private BroadcastReceiver bgRefreshStatusRcv;
     private BroadcastReceiver errConnReceiver;
+
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
@@ -94,9 +98,14 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -214,9 +223,9 @@ public class MisVuelosFragment extends Fragment {
                 updateFlightsStatus();
             }
         });
-
         return rootView;
     }
+
 
 
     private void refreshList() {
@@ -365,4 +374,51 @@ public class MisVuelosFragment extends Fragment {
         getActivity().unregisterReceiver(bgRefreshStatusRcv);
 
     }
+
+
+    @Override
+    public void setShowcase() {
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lps.addRule(RelativeLayout.CENTER_VERTICAL);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setTarget(new ViewTarget(getActivity().findViewById(R.id.bottomBar)))
+                .hideOnTouchOutside()
+                .setContentTitle("Mis Vuelos")
+                .setContentText("Acá podes ver detalles de vuelos que seguís")
+                .blockAllTouches()
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                                .setStyle(R.style.CustomShowcaseTheme)
+                                .setTarget(new ViewTarget(getActivity().findViewById(R.id.add_button)))
+                                .hideOnTouchOutside()
+                                .setContentTitle("Seguir un vuelo")
+                                .setContentText("Haciendo click acá podes buscar un vuelo para seguirlo")
+                                .blockAllTouches()
+                                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                        ((Voladeacapp) getActivity()).onHiddenFlightShowcase();
+                                    }
+
+                                })
+                                .build();
+                        sv.setButtonPosition(lps);
+                    }
+
+                })
+                .build();
+        sv.setButtonPosition(lps);
+    }
+
 }

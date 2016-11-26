@@ -60,4 +60,8 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services-maps:9.8.0'
+
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
+
+
 }

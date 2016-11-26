@@ -5,17 +5,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.Comparator;
 
 import static hci.voladeacapp.ApiService.DATA_GLOBAL_REVIEW;
 
-public class ResenasFragment extends Fragment {
+public class ResenasFragment extends Fragment implements ShowCase{
     public final static String INSTANCE_TAG = "hci.voladeacapp.Resenas.INSTANCE_TAG";
     private static final String ACTION_FILL_REVIEWS = "hci.voladeacapp.Resenas.FILL_REVIEWS";
 
@@ -153,7 +154,54 @@ public class ResenasFragment extends Fragment {
             }
         });
         System.out.println("onCreateView");
+
         return rootView;
     }
 
+
+    @Override
+    public void setShowcase() {
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lps.addRule(RelativeLayout.CENTER_VERTICAL);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setTarget(new ViewTarget(getActivity().findViewById(R.id.action_resenas)))
+                .hideOnTouchOutside()
+                .blockAllTouches()
+                .setContentTitle("Reseñas")
+                .setContentText("Acá podes ver las reseñas de los vuelos que seguís")
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                                .setStyle(R.style.CustomShowcaseTheme)
+                                .setTarget(new ViewTarget(getActivity().findViewById(R.id.add_review_button)))
+                                .hideOnTouchOutside()
+                                .setContentTitle("Dejar una reseña")
+                                .setContentText("Haciendo click en este botón podes opinar sobre un vuelo")
+                                .blockAllTouches()
+                                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                        ((Voladeacapp)getActivity()).onHiddenReviewShowcase();
+                                    }
+
+                                })
+                                .build();
+                                sv.setButtonPosition(lps);
+                                sv.setButtonText("Finalizar");
+                    }
+
+                })
+                .build();
+        sv.setButtonPosition(lps);
+    }
 }

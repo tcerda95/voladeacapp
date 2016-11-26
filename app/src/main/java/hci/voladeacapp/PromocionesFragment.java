@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +41,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,7 +70,7 @@ import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
 import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
-public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ShowCase {
 
     public final static String INSTANCE_TAG = "hci.voladeacapp.Promociones.INSTANCE_TAG";
     private final static String RECEIVER_TAG = "_GET_DEALS_RECEIVE_";
@@ -626,5 +628,52 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         mapAdded = false;
         super.onDestroy();
     }
+
+    @Override
+    public void setShowcase() {
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_END);
+        lps.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setTarget(new ViewTarget(getActivity().findViewById(R.id.action_promociones)))
+                .hideOnTouchOutside()
+                .setContentTitle("Promociones")
+                .blockAllTouches()
+                .setContentText("En esta sección se pueden explorar promociones")
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                                .setStyle(R.style.CustomShowcaseTheme)
+                                .setTarget(new ViewTarget(getActivity().findViewById(R.id.promo_card_list)))
+                                .hideOnTouchOutside()
+                                .setContentTitle("Podés buscar promociones")
+                                .setContentText("Detalles")
+                                .blockAllTouches()
+                                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                                        ((Voladeacapp)getActivity()).onHiddenPromoShowcase();
+                                    }
+
+                                })
+                                .build();
+                        sv.setButtonPosition(lps);
+
+                    }
+
+                })
+                .build();
+            sv.setButtonPosition(lps);
+    }
+
+
 }
 

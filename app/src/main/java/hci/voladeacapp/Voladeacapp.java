@@ -1,14 +1,10 @@
 package hci.voladeacapp;
 
-import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,10 +12,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.support.annotation.IdRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -81,7 +76,11 @@ public class Voladeacapp extends AppCompatActivity {
         }
 
         setFragment(currentTabId);
+
+        setShowcase((ShowCase)misVuelosFragment);
+
     }
+
 
     private void checkConnection() {
         ConnectivityManager connectivityManager
@@ -211,4 +210,38 @@ public class Voladeacapp extends AppCompatActivity {
     private boolean isSmartphone() {
         return findViewById(R.id.bottom_bar_container) != null;
     }
+
+    public void onHiddenFlightShowcase() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.selectTabWithId(R.id.action_promociones);
+        promocionesFragment.setShowcase();
+    }
+
+    public void onHiddenPromoShowcase(){
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.selectTabWithId(R.id.action_resenas);
+    }
+
+    public void onHiddenReviewShowcase(){
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.selectTabWithId(R.id.action_mis_vuelos);
+    }
+
+    public void setShowcase(final ShowCase f){
+        ShowcaseView sv = new ShowcaseView.Builder(this)
+                .setStyle(R.style.CustomShowcaseTheme)
+                .hideOnTouchOutside()
+                .setContentTitle("Bienvenidos")
+                .setContentText("Voladeacapp")
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        f.setShowcase();
+                    }
+
+                })
+                .build();
+    }
 }
+
