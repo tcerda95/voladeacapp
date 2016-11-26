@@ -33,6 +33,7 @@ public class StorageHelper {
     public final static String DEALS_WITH_IMG = "hci.voladeacapp.data.DEALS_WITH_IMG";
     public final static String DEALS_CITY_ID = "hci.voladeacapp.data.DEALS_CITY_ID";
     public final static String DEALS_CALENDAR = "hci.voladeacapp.data.DEALS_CALENDAR";
+    private static final String DATA_NOTIFICATION_PREFERENCES = "hci.voladeacapp.data.DATA_NOTIFICATION_PREFERENCES";
 
 
     public static ArrayList<Flight> getFlights(Context context) {
@@ -269,6 +270,26 @@ public class StorageHelper {
         }
     }
 
+
+    public static void saveNotificationPreferences(Context context, NotificationManager.NotificationPreferences preferences){
+        Gson gson = new Gson();
+        String s = gson.toJson(preferences, new TypeToken<NotificationManager.NotificationPreferences>(){}.getType());
+        SharedPreferences.Editor editor = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE).edit();
+        editor.putString(DATA_NOTIFICATION_PREFERENCES, s);
+        editor.commit();
+    }
+
+
+    public static NotificationManager.NotificationPreferences getNotificationPreferences(Context context){
+        Gson gson = new Gson();
+        SharedPreferences sp = context.getSharedPreferences(FLIGHTS, MODE_PRIVATE);
+        String pref = sp.getString(DATA_NOTIFICATION_PREFERENCES, null);
+        if(pref == null)
+            return null;
+
+        NotificationManager.NotificationPreferences preferences = gson.fromJson(pref, new TypeToken<NotificationManager.NotificationPreferences>(){}.getType());
+        return preferences;
+    }
 
     public static void saveDeals(Context context, Map<DealGson, String> deals) {
         saveData(context, deals, DEALS_WITH_IMG);

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -54,6 +55,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     public final static String PARENT_ADD_FLIGHT_ACTIVITY = "hci.voladeacapp.AddFlightActivity.parent";
     public static final String NEW_FLIGHT_ADDED = "hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED";
 
+    private final static String SEARCH_DONE = "hci.voladeacapp.AddFlightActivity.SEARCH_DONE";
+    private final static String FLIGHT_GSON = "hci.voladeacapp.AddFlightActivity.FLIGHT_GSON";
+
     @NotEmpty
     private EditText flightNumberEdit;
 
@@ -69,6 +73,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     private IntentIntegrator qrIntegrator;
 
+    private FlightStatusGson flightGson; // Se guarda para el savedInstanceState
 
     @Override
     public void onValidationSucceeded() {
@@ -143,6 +148,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
         View notExists = findViewById(R.id.not_exists_result);
 
+        flightGson = flGson;
+
         if(flGson != null) {
             notExists.setVisibility(View.GONE);
             //text.setText(flGson.toString());
@@ -151,7 +158,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
             final FlightIdentifier flightIdentifier = new FlightIdentifier(flGson);
 
-            if (!StorageHelper.flightExists(this, flightIdentifier)) {  // Se coloca el botón de agregar pues vuelo no existe
+            if (!StorageHelper.flightExists(this, flightIdentifier)) {  // Se coloca el botón de agregar pues vuelo no pertenece a Mis Vuelos
                 actionButton.setText(getString(R.string.add_to_my_flights));
                 actionButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -160,7 +167,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     }
                 });
             }
-            else { // Se coloca el botón de borrar pues vuelo existe
+            else { // Se coloca el botón de borrar pues vuelo pertence a Mis Vuelos
                 actionButton.setText(getString(R.string.remove_from_my_flights));
                 actionButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -245,7 +252,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.search_flight_title));
+
         setContentView(R.layout.activity_add_flight);
+
         Map<String,String> airlineMap = StorageHelper.getAirlineIdMap(this);
 
         flightNumberEdit = (EditText) findViewById(R.id.fl_num_data);
@@ -289,6 +298,9 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         });
 
         setFocusChangeListeners();
+        
+        if (savedInstanceState != null && savedInstanceState.getBoolean(SEARCH_DONE))
+            addFlight((FlightStatusGson) savedInstanceState.getSerializable(FLIGHT_GSON));
     }
 
     private void hideKeyboard(View view) {
@@ -441,6 +453,17 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         unregisterReceiver(adder);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
+        View notExists = findViewById(R.id.not_exists_result);
 
+        // Se muestra tarjeta o vuelo no encontrado. Entonces se realizó la búsqueda.
+        if (resultCardView.getVisibility() == View.VISIBLE || notExists.getVisibility() == View.VISIBLE) {
+            outState.putBoolean(SEARCH_DONE, true);
+            outState.putSerializable(FLIGHT_GSON, flightGson);
+        }
+    }
 }
