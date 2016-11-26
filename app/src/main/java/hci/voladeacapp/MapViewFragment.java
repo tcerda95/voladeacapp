@@ -139,7 +139,6 @@ public class MapViewFragment extends Fragment {
     }
 
     private class mapPromoDetailsListener implements GoogleMap.OnInfoWindowClickListener {
-
         @Override
         public void onInfoWindowClick(Marker marker) {
             //TODO
