@@ -1,12 +1,15 @@
 package hci.voladeacapp;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -125,7 +128,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     private void addFlight(final FlightStatusGson flGson) {
         /* ACA SE LLENAN LOS DATOS DE LA TARJETA */
         //TextView text = (TextView) findViewById(R.id.flight_info);
-        Button add = (Button) findViewById(R.id.add_btn);
+        Button actionButton = (Button) findViewById(R.id.add_btn);
         Button detailsButton = (Button) findViewById(R.id.details_btn);
         ((LinearLayout)findViewById(R.id.buttons)).setVisibility(View.VISIBLE);
         LinearLayout resultCardView = (LinearLayout) findViewById(R.id.result_card);
@@ -136,12 +139,58 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             //text.setText(flGson.toString());
             fillData(flGson);
             resultCardView.setVisibility(View.VISIBLE);
-            add.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra(ApiService.DATA_FLIGHT_GSON, flGson));
-                    finish();
-                }
-            });
+
+            final FlightIdentifier flightIdentifier = new FlightIdentifier(flGson);
+
+            if (!StorageHelper.flightExists(this, flightIdentifier)) {  // Se coloca el botón de agregar pues vuelo no existe
+                actionButton.setText(getString(R.string.add_to_my_flights));
+                actionButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra(ApiService.DATA_FLIGHT_GSON, flGson));
+                        finish();
+                    }
+                });
+            }
+            else { // Se coloca el botón de borrar pues vuelo existe
+                actionButton.setText(getString(R.string.remove_from_my_flights));
+                actionButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(AddFlightActivity.this);
+                        builder.setMessage("Dejar de seguir este vuelo?")
+                                .setTitle("Borrar")
+                                .setPositiveButton("Dejar de seguir", new Dialog.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        Toast.makeText(getApplicationContext(), "Dejado de seguir", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent();
+
+                                        intent.putExtra(MisVuelosFragment.FLIGHT_IDENTIFIER, flightIdentifier).putExtra(MisVuelosFragment.FLIGHT_REMOVED, true);
+
+                                        setResult(MisVuelosFragment.DELETE_FLIGHT, intent);
+
+                                        AddFlightActivity.this.finish();
+                                    }
+
+                                });
+
+                        builder.setNegativeButton("Cancelar", new Dialog.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplicationContext(), "No paso nada", Toast.LENGTH_LONG).show();
+                                dialog.cancel();
+                            }
+
+                        });
+
+                        builder.show();
+                    }
+                });
+            }
+
             detailsButton.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view) {
 

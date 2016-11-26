@@ -19,6 +19,10 @@ public class FlightIdentifier implements Serializable {
         setNumber(numberData);
     }
 
+    public FlightIdentifier(FlightStatusGson gson) {
+        this(gson.airline.id, String.valueOf(gson.number));
+    }
+
     public String getNumber(){
         return number;
     }
