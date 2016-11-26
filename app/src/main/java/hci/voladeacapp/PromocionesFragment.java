@@ -76,11 +76,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private final static String DEFAULT_CITY = "Buenos Aires, Ciudad de Buenos Aires";
     private static final String START_DETAIL_CALLBACK = "hci.voladeacapp.START_DETAIL_CALLBACK";
 
+    private static String REQUEST_TAG = "_VOLLEY_PHOTO_REQUEST_TAG_";
+
     private View rootView;
-    private LayoutInflater layoutInflater;
-
     private AutoCompleteTextView fromCityTextView;
-
     private RequestQueue requestQueue;
 
     private ArrayList<DealGson> deals;
@@ -217,7 +216,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        layoutInflater = inflater;
+        LayoutInflater layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
         pDialog = new ProgressDialog(getActivity());
@@ -232,6 +231,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         fromCityTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                fromCityTextView.setError(null);
                 hideKeyboard(rootView);
                 refreshResults();
             }
@@ -399,18 +399,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         System.out.println("Connection failed");
     }
 
-//    private void saveDealsData() {
-//        if (getActivity() != null) { //por si se muere el fragment y queda la petición corriendo.
-////            System.out.println("saving");
-//            Context context = getActivity().getApplicationContext();
-//            StorageHelper.saveDeals(context, imageURLs);
-//            StorageHelper.saveDealSearchCity(context, fromCityTextView.getText().toString());
-//            StorageHelper.saveDealSearchCalendar(context, );
-//        }
-//    }
-
     private void refreshResults() {
-        Context context = getActivity().getApplicationContext();
         if (!isValidCity(fromCityTextView.getText().toString())) {
             // Deja la búsqueda como la última realizada
             if (currentCity != null)
@@ -418,41 +407,19 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             return;
         }
 
-        Calendar prevSearchCal = StorageHelper.getDealSearchCalendar(context);
-        String prevSearchcity = StorageHelper.getDealSearchCity(context);
-
-//        boolean sameDay = prevSearchCal != null && prevSearchCal.get(Calendar.DAY_OF_YEAR) != fromCalendar.get(Calendar.DAY_OF_YEAR);
-        boolean sameCity = prevSearchcity != null && prevSearchcity.equals(fromCityTextView.getText().toString());
-
-        if (prevSearchCal != null && prevSearchcity != null) {
-            System.out.println("Prev city: " + prevSearchcity);
-            System.out.println("Prev cal" + prevSearchCal.get(Calendar.DAY_OF_MONTH) + "/" + prevSearchCal.get(Calendar.MONTH));
+        deals.clear();
+        if (!registeredReceiver) {
+            getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
+            registeredReceiver = true;
         }
+        CityGson city = citiesMap.get(fromCityTextView.getText().toString());
 
-        if (false) { //(sameCity && sameDay) TODO: se rompe todo
-            System.out.println("Using cache!");
-            imageURLs = StorageHelper.getDeals(context);
-            deals = new ArrayList<>(imageURLs.keySet());
-            promoAdapter.notifyDataSetChanged();
+        if (city == null) {
+            System.out.println("INVALID CITY");
+        } else {
+            currentCity = city;
+            ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
         }
-        else {
-            System.out.println("NOT using cache!");
-            deals.clear();
-            if (!registeredReceiver) {
-                getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
-                System.out.println("Registered");
-                registeredReceiver = true;
-            }
-            CityGson city = citiesMap.get(fromCityTextView.getText().toString());
-
-            if (city == null) {
-                System.out.println("INVALID CITY");
-            } else {
-                currentCity = city;
-                ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
-            }
-        }
-
     }
 
     boolean mapAdded = false;
@@ -513,16 +480,14 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     }
 
     private void getCityImageURL(final DealGson deal) {
-        StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(deal),
+        StringRequest sr = new StringRequest(Request.Method.GET, FlickrParser.getAPIPetition(deal.city.name),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            imageURLs.put(deal, getImageURL(new JSONObject(response)));
+                            imageURLs.put(deal, FlickrParser.getImageURL(new JSONObject(response), 0));
                             promoAdapter.notifyDataSetChanged();
 
-                            // Ineficiente pero bue
-//                            saveDealsData();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -533,33 +498,13 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             }
         });
 
+        sr.setTag(REQUEST_TAG);
         requestQueue.add(sr);
-    }
-
-    private String getImageURL(JSONObject obj) {
-        try {
-            JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(0);
-            return "https://farm"
-                    + photo.getString("farm") + ".staticflickr.com/"
-                    + photo.getString("server") + "/"
-                    + photo.getString("id") + "_"
-                    + photo.getString("secret") + ".jpg";
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private String getAPIPetition(DealGson deal) {
-        return
-                "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                        "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                        + "&tags=city" + "&text=" + deal.city.name.replace(',', ' ').replace(' ', '+')
-                        + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
     }
 
     @Override
     public void onPause() {
+        requestQueue.cancelAll(REQUEST_TAG);
         if (registeredReceiver) {
             getActivity().unregisterReceiver(dealsReceiver);
             registeredReceiver = false;
@@ -567,7 +512,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         }
         getActivity().unregisterReceiver(dealIdReceiver);
         getActivity().unregisterReceiver(detailStarterReceiver);
-
         super.onPause();
     }
 

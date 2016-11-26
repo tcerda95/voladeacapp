@@ -14,7 +14,7 @@
         android:layout_height="200dp"
         app:fillColor="#FFFFFFFF"
         app:pageColor="#00000000"
-        app:radius="6dp"
+        app:radius="4dp"
         app:slideInterval="3000"
         app:strokeColor="#FFFFFF"
         app:strokeWidth="1dp"

@@ -38,6 +38,8 @@ public class PromoDetailsActivity extends AppCompatActivity {
 
     private static int CAROUSEL_SIZE = 7;
 
+    private static String REQUEST_TAG = "_VOLLEY_PHOTO_REQUEST_TAG_";
+
     @Override
     protected void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -67,7 +69,7 @@ public class PromoDetailsActivity extends AppCompatActivity {
     private void setImageInPosition(final ImageView img, final int position) {
         final ProgressBar progressBar = (ProgressBar) ((View) img.getParent()).findViewById(R.id.img_loading_indicator);
         progressBar.setVisibility(View.VISIBLE);
-        StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(flight.getArrivalCity()),
+        StringRequest sr = new StringRequest(Request.Method.GET, FlickrParser.getAPIPetition(flight.getArrivalCity()),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -84,6 +86,7 @@ public class PromoDetailsActivity extends AppCompatActivity {
             }
         });
 
+        sr.setTag(REQUEST_TAG);
         requestQueue.add(sr);
     }
 
@@ -91,7 +94,7 @@ public class PromoDetailsActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) ((View) img.getParent()).findViewById(R.id.img_loading_indicator);
 
         Glide.with(img.getContext())
-                .load(getImageURL(resp, position))
+                .load(FlickrParser.getImageURL(resp, position))
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -111,27 +114,11 @@ public class PromoDetailsActivity extends AppCompatActivity {
                 .into(img);
     }
 
-    private String getImageURL(JSONObject obj, int index) {
-        try {
-            JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(index);
-            if (photo == null)
-                return null;
-            return "https://farm"
-                    + photo.getString("farm") + ".staticflickr.com/"
-                    + photo.getString("server") + "/"
-                    + photo.getString("id") + "_"
-                    + photo.getString("secret") + ".jpg";
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    private String getAPIPetition(String city) {
-        return
-                "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                        "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                        + "&tags=city" + "&text=" + city.replace(',', ' ').replace(' ', '+')
-                        + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+
+    @Override
+    protected void onPause() {
+        requestQueue.cancelAll(REQUEST_TAG);
+        super.onPause();
     }
 }
