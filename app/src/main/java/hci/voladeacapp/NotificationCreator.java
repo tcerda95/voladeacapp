@@ -75,14 +75,14 @@ public class NotificationCreator extends Activity {
     private static NotificationCompat.Builder createScheduledBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.scheduled_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.scheduled_notif_body), f.getDepartureBoardingTime());
-        return createNotificationBuilder(c, R.drawable.ic_flight_takeoff_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_flight_darkgrey_24px, contentTitle, bigText);
     }
 
     private static NotificationCompat.Builder createTakeoffDelayedBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.delay_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.takeoff_delay_notif_body), f.getArrivalSchedule().delay);
 
-        return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_delayedbadge, contentTitle, bigText);
     }
 
 
@@ -90,7 +90,7 @@ public class NotificationCreator extends Activity {
         String contentTitle = String.format(c.getString(R.string.delay_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.landing_delay_notif_body), f.getArrivalSchedule().delay);
 
-        return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_delayedbadge, contentTitle, bigText);
     }
 
 
@@ -98,7 +98,7 @@ public class NotificationCreator extends Activity {
         String contentTitle = String.format(c.getString(R.string.deviation_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.deviation_notif_body), f.getArrivalBoardingTime(), f.getArrivalAirport());
 
-        return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_deviationbadge, contentTitle, bigText);
     }
 
 
@@ -106,7 +106,7 @@ public class NotificationCreator extends Activity {
         String contentTitle = String.format(c.getString(R.string.cancelation_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.cancelation_notif_body), f.getFullAirlineName());
 
-        return createNotificationBuilder(c, R.drawable.ic_info_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_cancelbadge2, contentTitle, bigText);
     }
 
 
@@ -122,7 +122,7 @@ public class NotificationCreator extends Activity {
     private static NotificationCompat.Builder createTakeoffBuilder(Context c, Flight f) {
         String contentTitle = String.format(c.getString(R.string.takeoff_notif_title), f.getAirlineID(), f.getNumber());
         String bigText = String.format(c.getString(R.string.takeoff_notif_body), f.getDepartureBoardingTime(), f.getArrivalBoardingTime());
-        return createNotificationBuilder(c, R.drawable.ic_flight_land_black_24px, contentTitle, bigText);
+        return createNotificationBuilder(c, R.drawable.ic_flight_takeoff_black_24px, contentTitle, bigText);
     }
 
 

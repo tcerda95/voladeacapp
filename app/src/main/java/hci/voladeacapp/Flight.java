@@ -188,7 +188,7 @@ public class Flight implements Serializable {
         }
 
         if(!departureSchedule.gate_delayed && newStatus.departure.gate_delay != null){
-            departureSchedule.runway_delayed = true;
+            departureSchedule.gate_delayed = true;
             departureSchedule.delay += newStatus.departure.gate_delay;
             delayCheck = true;
         }
