@@ -127,6 +127,6 @@
     <string name="scan_QR">Scan QR code</string>
     <string name="prompt_QR">Focus on the QR in your ticket</string>
     <string name="found_QR">Found code %1$s</string>
-    <string name="invalid_QR">Code doesn't correspond to a valid flight number</string>
+    <string name="invalid_QR">Code doesn\'t correspond to a valid flight number</string>
 
 </resources>
