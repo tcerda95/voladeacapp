@@ -1,6 +1,9 @@
 package hci.voladeacapp;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,11 +35,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
+
 public class PromoDetailsActivity extends AppCompatActivity {
 
     CarouselView carouselView;
     RequestQueue requestQueue;
     Flight flight;
+    double promoPrice;
 
     private static int CAROUSEL_SIZE = 7;
 
@@ -49,8 +57,11 @@ public class PromoDetailsActivity extends AppCompatActivity {
         carouselView = (CarouselView) findViewById(R.id.carouselView);
         carouselView.setPageCount(CAROUSEL_SIZE);
 
-        flight = new Flight();
-        flight.setArrivalCity("Buenos Aires Argentina");
+        Intent intent = getIntent();
+        flight = (Flight) intent.getSerializableExtra("Flight");
+        promoPrice = intent.getDoubleExtra(PROMO_DETAIL_PRICE, -1);
+
+        setTitle(flight.getArrivalCity().split(",")[0]);
 
         ViewListener viewListener = new ViewListener() {
             @Override
@@ -64,6 +75,14 @@ public class PromoDetailsActivity extends AppCompatActivity {
         };
 
         carouselView.setViewListener(viewListener);
+    }
+
+    private void fillDetails(Flight flight) {
+        Resources res = getResources();
+    }
+
+    private TextView getTextView(int id) {
+        return (TextView) findViewById(id);
     }
 
     private void setImageInPosition(final ImageView img, final int position) {

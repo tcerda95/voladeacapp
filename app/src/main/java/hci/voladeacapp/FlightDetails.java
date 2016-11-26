@@ -160,7 +160,7 @@ public class FlightDetails extends AppCompatActivity {
         addButton.setVisible(!added);
     }
 
-    private void fillDetails(Flight flight) {
+    private void fillDetails(final Flight flight) {
         Resources res = getResources();
         FragmentManager manager = getFragmentManager();
         String baggageClaim = flight.getBaggageClaim() == null ? res.getString(R.string.a_confirmar) : flight.getBaggageClaim();
@@ -184,6 +184,8 @@ public class FlightDetails extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent newpromoint = new Intent(getApplicationContext(), PromoDetailsActivity.class);
+                    newpromoint.putExtra("Flight", flight);
+                    newpromoint.putExtra(PROMO_DETAIL_PRICE, promoPrice);
                     startActivity(newpromoint);
                 }
             });
