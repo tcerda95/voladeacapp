@@ -108,8 +108,15 @@ public class AppSettingsActivity extends AppCompatActivity {
         @Override
         public void onPause() {
             super.onPause();
-            getPreferenceScreen().getSharedPreferences()
-                    .unregisterOnSharedPreferenceChangeListener(spChanged);
+            SharedPreferences sp =  getPreferenceScreen().getSharedPreferences();
+            boolean activateNotifications = sp.getBoolean("notifications_switch", true);
+            ListPreference updateFreq = (ListPreference) findPreference("updateFrequency");
+            Integer minutes = Integer.parseInt(updateFreq.getValue());
+
+            NotificationManager.setPreferences(getActivity(), activateNotifications, minutes);
+
+            sp.unregisterOnSharedPreferenceChangeListener(spChanged);
+
         }
 
         @Override

@@ -11,7 +11,7 @@
             android:title="@string/update_frequency"
             android:summary="@string/update_frequency_description"
             android:key="updateFrequency"
-            android:defaultValue="1"
+            android:defaultValue="15"
             android:entries="@array/intervalArray"
             android:entryValues="@array/intervalValues" />
 

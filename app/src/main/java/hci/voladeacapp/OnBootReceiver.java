@@ -15,13 +15,7 @@ public class OnBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            AlarmManager alarmMgr;
-            PendingIntent alarmIntent;
-
-            alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            Intent myIntent = new Intent(context, PullRequestReceiver.class);
-            alarmIntent = PendingIntent.getBroadcast(context, 0, myIntent, 0);
-            alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 30 * 1000, alarmIntent);
+            NotificationManager.setDefaultPreferences(context, true);
         }
 
     }

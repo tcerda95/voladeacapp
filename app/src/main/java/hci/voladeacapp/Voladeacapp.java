@@ -50,20 +50,11 @@ public class Voladeacapp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("Registering alarm");
-        AlarmManager alarmMgr;
-        PendingIntent alarmIntent;
-
-        alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Intent myIntent = new Intent(this, PullRequestReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 180 * 1000, alarmIntent);
-
-
         checkConnection();
         loadLanguage();
 
         StorageHelper.initialize(this);
+        NotificationManager.setDefaultPreferences(this, false);
 
         setContentView(R.layout.activity_voladeacapp);
 
