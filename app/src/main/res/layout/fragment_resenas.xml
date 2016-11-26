@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Acá aparecen las reseñas de los vuelos que seguís"
+                    android:text="@string/empty_review_list"
                     android:textAlignment="center"
                     android:textSize="16sp"
                     android:textColor="@color/darkgrey"
@@ -88,7 +88,7 @@
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Tocá acá para ver tus vuelos seguidos"
+                android:text="@string/empty_review_arrow"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textColor="@color/colorPrimary"
