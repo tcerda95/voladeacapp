@@ -75,9 +75,11 @@ public class MisVuelosFragment extends Fragment {
 
     public final static String FLIGHT_REMOVED = "hci.voladeacapp.MisVuelos.FLIGHT_REMOVED";
 
-    protected final static int DETAILS_REQUEST_CODE = 2;
 
     public final static int GET_FLIGHT = 1;
+    protected final static int DETAILS_REQUEST_CODE = 2;
+    public static final int DELETE_FLIGHT = 3;
+
     private final static long UNDO_TIMEOUT = 3000;
 
     private DynamicListView flightsListView;
@@ -288,7 +290,7 @@ public class MisVuelosFragment extends Fragment {
         if (requestCode == DETAILS_REQUEST_CODE && resultCode == AddFlightActivity.RESULT_OK) {
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
             if(deleted) {
-                FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                FlightIdentifier identifier = (FlightIdentifier) data.getSerializableExtra(FLIGHT_IDENTIFIER);
                 StorageHelper.deleteFlight(getActivity(), identifier);
             }
         }
@@ -301,12 +303,20 @@ public class MisVuelosFragment extends Fragment {
             Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
                     .show();
 
-            FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
-            if(requestCode == GET_FLIGHT){
-                Flight f = new Flight(resultado);
+            if(requestCode == GET_FLIGHT) {
+                boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
 
-                StorageHelper.saveFlight(getActivity(), new Flight(resultado));
-                StorageHelper.saveSettings(getActivity(), f.getIdentifier(), new FlightSettings());
+                if (deleted) {
+                    FlightIdentifier identifier = (FlightIdentifier) data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                    StorageHelper.deleteFlight(getActivity(), identifier);
+                }
+                else {
+                    FlightStatusGson resultado = (FlightStatusGson)data.getSerializableExtra(DATA_FLIGHT_GSON);
+                    Flight f = new Flight(resultado);
+
+                    StorageHelper.saveFlight(getActivity(), new Flight(resultado));
+                    StorageHelper.saveSettings(getActivity(), f.getIdentifier(), new FlightSettings());
+                }
             }
         }
 

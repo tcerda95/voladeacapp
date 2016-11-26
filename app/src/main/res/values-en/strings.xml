@@ -116,6 +116,7 @@
     <string name="my_flights_reviews">My Flights reviews</string>
     <string name="searching_flight">Searching flight</string>
     <string name="plus_arrow_text">Touch here to start following a flight</string>
+    <string name="remove_from_my_flights">Remove from My Flights</string>
 
 
 </resources>
