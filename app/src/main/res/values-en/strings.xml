@@ -70,7 +70,7 @@
     <string name="every">Every</string>
     <string name="airline_name">Airline name</string>
     <string name="flight_number">Flight number</string>
-    <string name="missing_data"></string>
+    <string name="missing_data">Incomplete form</string>
     <string name="not_exists">Flight not found</string>
     <string name="error_required_airline">The airline is required</string>
     <string name="error_required_flight_number">The flight number is required</string>
@@ -117,6 +117,10 @@
     <string name="searching_flight">Searching flight</string>
     <string name="plus_arrow_text">Touch here to start following a flight</string>
     <string name="remove_from_my_flights">Remove from My Flights</string>
+    <string name="dialog_remove_flight_body">Stop following flight?</string>
+    <string name="dialog_remove_flight_no">Cancel</string>
+    <string name="dialog_remove_flight_title">Remove</string>
+    <string name="dialog_remove_flight_yes">Stop following</string>
 
 
 </resources>

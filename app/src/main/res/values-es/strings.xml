@@ -116,6 +116,10 @@
     <string name="searching_flight">Buscando el vuelo</string>
     <string name="plus_arrow_text">Tocá acá para empezar a seguir un vuelo</string>
     <string name="remove_from_my_flights">Quitar de Mis Vuelos</string>
+    <string name="dialog_remove_flight_body">¿Dejar de seguir este vuelo?</string>
+    <string name="dialog_remove_flight_title">Borrar</string>
+    <string name="dialog_remove_flight_no">Cancelar</string>
+    <string name="dialog_remove_flight_yes">Dejar de seguir</string>
 
 
 </resources>
