@@ -135,6 +135,7 @@
     <string name="dialog_remove_flight_no">Cancelar</string>
     <string name="empty_review_list">Acá aparecen las reseñas de los vuelos que seguís</string>
     <string name="empty_review_arrow">Tocá acá para ver tus vuelos seguidos</string>
+    <string name="scan_QR">Escanear código QR</string>
 
 
 </resources>

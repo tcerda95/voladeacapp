@@ -123,6 +123,7 @@
     <string name="dialog_remove_flight_yes">Stop following</string>
     <string name="empty_review_list">Here you can see reviews of followed flights</string>
     <string name="empty_review_arrow">Touch here to see your followed flights</string>
+    <string name="scan_QR">Scan QR code</string>
 
 
 </resources>
