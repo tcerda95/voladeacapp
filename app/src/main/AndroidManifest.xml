@@ -63,10 +63,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity
-            android:name=".MapActivity"
-            android:label="@string/mapa"
-            android:parentActivityName=".Voladeacapp" />
 
         <service
             android:name=".ApiService"
@@ -128,7 +124,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".PromoDetailsActivity" />
+        <activity
+            android:name=".PromoDetailsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".Voladeacapp"
+            />
     </application>
 
 </manifest>

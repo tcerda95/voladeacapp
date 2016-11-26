@@ -8,16 +8,157 @@
     tools:context="hci.voladeacapp.PromoDetailsActivity">
 
 
-    <com.synnapps.carouselview.CarouselView
-        android:id="@+id/carouselView"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:fillColor="#FFFFFFFF"
-        app:pageColor="#00000000"
-        app:radius="6dp"
-        app:slideInterval="3000"
-        app:strokeColor="#FFFFFF"
-        app:strokeWidth="1dp"
-        />
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.synnapps.carouselview.CarouselView
+                android:id="@+id/carouselView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:fillColor="#FFFFFFFF"
+                app:pageColor="#00000000"
+                app:radius="4dp"
+                app:slideInterval="3000"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CORDOBA"
+                android:textSize="28sp"
+                android:textColor="@color/white"
+                android:shadowColor="@color/darkgrey"
+                android:shadowRadius="10"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:padding="7dp"
+                android:id="@+id/promo_city" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp">
+                <TextView
+                    android:text="PROMOCIÓN  |  U$D 320"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/promo_price"
+                    android:textAlignment="center"
+                    android:background="@null"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24sp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:text="Saliendo el"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_date_label"
+                    android:textSize="18sp"
+                    android:paddingStart="8dp" />
+
+                <TextView
+                    android:text="23-11-2017"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_date"
+                    android:textSize="20sp"
+                    android:paddingStart="12dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:text="A las"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_time_label"
+                    android:textSize="18sp"
+                    android:paddingStart="8dp" />
+
+                <TextView
+                    android:text="12:40 hs."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_time"
+                    android:textSize="20sp"
+                    android:paddingStart="12dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:text="Desde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_city_label"
+                    android:textSize="18sp"
+                    android:paddingStart="8dp" />
+
+                <TextView
+                    android:text="Buenos Aires"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departure_city"
+                    android:textSize="20sp"
+                    android:paddingStart="12dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <Button
+                android:text="Detalles del vuelo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp" />
+
+            <com.google.android.gms.maps.MapView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mapView2" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -130,4 +130,6 @@
     <string name="found_QR">Found code %1$s</string>
     <string name="invalid_QR">Code doesn\'t correspond to a valid flight number</string>
 
+    <string name="review_details_title">Details review of %1$s</string>
+
 </resources>

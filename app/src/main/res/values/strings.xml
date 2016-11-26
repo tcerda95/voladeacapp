@@ -142,6 +142,7 @@
     <string name="prompt_QR">Apunte al código QR en su pasaje</string>
     <string name="found_QR">Se encontró el cógido %1$s</string>
     <string name="invalid_QR">El código no corresponde a un número de vuelo válido</string>
+    <string name="review_details_title">Detalles reseña de %1$s</string>
 
 
 </resources>

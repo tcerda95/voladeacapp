@@ -1,6 +1,9 @@
 package hci.voladeacapp;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,13 +35,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
+
 public class PromoDetailsActivity extends AppCompatActivity {
 
     CarouselView carouselView;
     RequestQueue requestQueue;
     Flight flight;
+    double promoPrice;
 
     private static int CAROUSEL_SIZE = 7;
+
+    private static String REQUEST_TAG = "_VOLLEY_PHOTO_REQUEST_TAG_";
 
     @Override
     protected void onCreate (Bundle savedInstanceState){
@@ -47,8 +57,11 @@ public class PromoDetailsActivity extends AppCompatActivity {
         carouselView = (CarouselView) findViewById(R.id.carouselView);
         carouselView.setPageCount(CAROUSEL_SIZE);
 
-        flight = new Flight();
-        flight.setArrivalCity("Buenos Aires Argentina");
+        Intent intent = getIntent();
+        flight = (Flight) intent.getSerializableExtra("Flight");
+        promoPrice = intent.getDoubleExtra(PROMO_DETAIL_PRICE, -1);
+
+        setTitle(flight.getArrivalCity().split(",")[0]);
 
         ViewListener viewListener = new ViewListener() {
             @Override
@@ -64,10 +77,18 @@ public class PromoDetailsActivity extends AppCompatActivity {
         carouselView.setViewListener(viewListener);
     }
 
+    private void fillDetails(Flight flight) {
+        Resources res = getResources();
+    }
+
+    private TextView getTextView(int id) {
+        return (TextView) findViewById(id);
+    }
+
     private void setImageInPosition(final ImageView img, final int position) {
         final ProgressBar progressBar = (ProgressBar) ((View) img.getParent()).findViewById(R.id.img_loading_indicator);
         progressBar.setVisibility(View.VISIBLE);
-        StringRequest sr = new StringRequest(Request.Method.GET, getAPIPetition(flight.getArrivalCity()),
+        StringRequest sr = new StringRequest(Request.Method.GET, FlickrParser.getAPIPetition(flight.getArrivalCity()),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -84,6 +105,7 @@ public class PromoDetailsActivity extends AppCompatActivity {
             }
         });
 
+        sr.setTag(REQUEST_TAG);
         requestQueue.add(sr);
     }
 
@@ -91,7 +113,7 @@ public class PromoDetailsActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) ((View) img.getParent()).findViewById(R.id.img_loading_indicator);
 
         Glide.with(img.getContext())
-                .load(getImageURL(resp, position))
+                .load(FlickrParser.getImageURL(resp, position))
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -111,27 +133,11 @@ public class PromoDetailsActivity extends AppCompatActivity {
                 .into(img);
     }
 
-    private String getImageURL(JSONObject obj, int index) {
-        try {
-            JSONObject photo = obj.getJSONObject("photos").getJSONArray("photo").getJSONObject(index);
-            if (photo == null)
-                return null;
-            return "https://farm"
-                    + photo.getString("farm") + ".staticflickr.com/"
-                    + photo.getString("server") + "/"
-                    + photo.getString("id") + "_"
-                    + photo.getString("secret") + ".jpg";
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    private String getAPIPetition(String city) {
-        return
-                "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                        "&api_key=3fc73140f600953c1eea5e534bac4670&"
-                        + "&tags=city" + "&text=" + city.replace(',', ' ').replace(' ', '+')
-                        + "&sort=interestingness-desc" + "&format=json&nojsoncallback=1";
+
+    @Override
+    protected void onPause() {
+        requestQueue.cancelAll(REQUEST_TAG);
+        super.onPause();
     }
 }
