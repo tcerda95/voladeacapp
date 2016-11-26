@@ -109,5 +109,14 @@
             tools:layout="@layout/fragment_flight_schedule" />
 
 
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW PROMO DETAILS"
+            android:visibility="gone"
+            android:id="@+id/promo_new_button"
+            />
     </LinearLayout>
+
 </ScrollView>

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -179,6 +180,15 @@ public class FlightDetails extends AppCompatActivity {
         getTextView(R.id.state_name).setTextColor(StatusInterpreter.getStatusColor(flight.getState()));
 
         if (isPromoDetail) {
+            Button debug =  (Button) findViewById(R.id.promo_new_button);
+            debug.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent newpromoint = new Intent(getApplicationContext(), PromoDetailsActivity.class);
+                    startActivity(newpromoint);
+                }
+            });
+            debug.setVisibility(View.VISIBLE);
             findViewById(R.id.promo_details_layout).setVisibility(View.VISIBLE);
             getTextView(R.id.promo_details_price).setText("U$D " + new Double(promoPrice).intValue());
         }
