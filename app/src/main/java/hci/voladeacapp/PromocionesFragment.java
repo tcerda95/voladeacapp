@@ -147,7 +147,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == DETAILS_REQUEST_CODE) {
+        if (requestCode == DETAILS_REQUEST_CODE && data != null) {
 
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
@@ -162,7 +162,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onStart() {
         client.connect();
-        errConnReceiver = new ErrConnReceiver(getView().getRootView());
+        final View viewPos = getActivity().findViewById(R.id.snackbarCoordinator);
+        errConnReceiver = new ErrConnReceiver(viewPos);
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
         super.onStart();

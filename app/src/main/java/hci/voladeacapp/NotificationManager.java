@@ -36,11 +36,6 @@ public class NotificationManager {
         alarmMgr.cancel(alarmIntent);
 
         if(activateNotifications){
-            System.out.println("Activating notifications every " + minutes + " minutes");
-            if(minutes > 5) {
-                System.out.println("Changing " + minutes + " to 5 minutes jbc");
-                minutes = 5;
-            }
 
             alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), minutes * 60 * 1000, alarmIntent);
         }

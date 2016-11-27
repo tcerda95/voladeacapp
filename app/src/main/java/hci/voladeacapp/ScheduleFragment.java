@@ -34,7 +34,7 @@ public class ScheduleFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.date_data)).setText(schedule.getDateInFormat(dateFormat));
 
-        ((TextView) view.findViewById(R.id.boarding_data)).setText(schedule.getBoardingTime());
+        ((TextView) view.findViewById(R.id.boarding_data)).setText(schedule.getBoardingTime() + " " + String.format(res.getString(R.string.utc_indicator), schedule.timezone));
 
         ((TextView) view.findViewById(R.id.airport_data)).setText(schedule.getAirport());
 

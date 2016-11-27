@@ -243,7 +243,17 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         destCityView.setText(flGson.arrival.airport.city.name.split(",")[0]);
         Flight.FlightDate date = new Flight.FlightDate(flGson.departure.scheduled_time);
         departDateView.setText(new SimpleDateFormat("dd-MM-yyyy").format(date.date));
-        stateView.setImageResource(StatusInterpreter.getStateImage(flGson.status));
+        stateView.setImageResource(StatusInterpreter.getStateImage(getCorrectedStatus(flGson)));
+
+    }
+
+    private String getCorrectedStatus(FlightStatusGson flGson) {
+        if(flGson.status.equals("S") && (flGson.departure.gate_delay != null || flGson.departure.runway_delay != null)){
+            return "D";
+        } else {
+            return flGson.status;
+        }
+
 
     }
 

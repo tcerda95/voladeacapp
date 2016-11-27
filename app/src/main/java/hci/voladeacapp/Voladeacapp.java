@@ -52,7 +52,7 @@ public class Voladeacapp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         checkConnection();
-        loadLanguage();
+        StorageHelper.loadLanguage(this);
 
         StorageHelper.initialize(this);
         NotificationManager.setDefaultPreferences(this, false);
@@ -93,18 +93,6 @@ public class Voladeacapp extends AppCompatActivity {
         }
     }
 
-    private void loadLanguage() {
-        SharedPreferences shp = getSharedPreferences(
-                "hci.voladeacapp.PREFERENCES",Context.MODE_PRIVATE);
-        String language = shp.getString("USER_LANGUAGE", "es");
-
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics()); //TODO: deprecated
-    }
-
     public void hideActions() {
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setVisibility(View.GONE);
@@ -138,11 +126,6 @@ public class Voladeacapp extends AppCompatActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0) {
             promocionesFragment.notifyLocationPermission(grantResults[0] == PackageManager.PERMISSION_GRANTED);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override

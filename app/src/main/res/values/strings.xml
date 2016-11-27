@@ -105,23 +105,23 @@
 
 
     <string name="scheduled_notif_title">Vuelo %1$s %2$s programado</string>
-    <string name="scheduled_notif_body">Horario de salida: %1$s</string>
+    <string name="scheduled_notif_body">Horario de salida: %1$s (UTC %2$s)</string>
 
     <string name="delay_notif_title">Vuelo %1$s %2$s retrasado</string>
     <string name="takeoff_delay_notif_body">El despegue está aproximadamente %1$d minutos retrasado</string>
     <string name="landing_delay_notif_body">El desembarco está %1$d minutos atrasado</string>
 
     <string name="takeoff_notif_title">Vuelo %1$s %2$s ha despegado</string>
-    <string name="takeoff_notif_body">Horario de despegue: %1$s \n Aterrizaje programado para las %2$s</string>
+    <string name="takeoff_notif_body">Horario de despegue: %1$s (UTC %3$s) \n Aterrizaje programado para las %2$s (UTC %4$s)</string>
 
     <string name="deviation_notif_title">Vuelo %1$s %2$s desviado</string>
-    <string name="deviation_notif_body">Aterrizaje reprogramado para las %1$s en %2$s</string>
+    <string name="deviation_notif_body">Aterrizaje reprogramado para las %1$s (UTC %3$s) en %2$s</string>
 
     <string name="cancelation_notif_title">Vuelo %1$s %2$s cancelado</string>
-    <string name="cancelation_notif_body">Consulte %1$s para más detalles</string>
+    <string name="cancelation_notif_body">Consulte a %1$s para más detalles</string>
 
     <string name="landed_notif_title">Vuelo %1$s %2$s ha aterrizado</string>
-    <string name="landed_notif_body">Puerta de embarque: %1$s \n El equipaje se retira por la cinta %2$s</string>
+    <string name="landed_notif_body">Horario de aterrizaje: %2$s (UTC %3$s). Puerta de embarque: %1$s.</string>
 
 
     <string name="no_flights">No estás siguiendo ningún vuelo</string>
@@ -143,6 +143,8 @@
     <string name="found_QR">Se encontró el cógido %1$s</string>
     <string name="invalid_QR">El código no corresponde a un número de vuelo válido</string>
     <string name="review_details_title">Detalles reseña de %1$s</string>
+
+    <string name="utc_indicator"> (hora local, UTC %1$s)</string>
 
 
 </resources>

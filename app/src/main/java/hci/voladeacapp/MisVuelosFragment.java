@@ -39,14 +39,30 @@ public class MisVuelosFragment extends Fragment {
 
     private BroadcastReceiver bgRefreshStatusRcv;
     private BroadcastReceiver errConnReceiver;
+    private int refreshCount;
+    private boolean refreshMsgShown;
 
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            refreshCount--;
+
+            if(refreshCount <= 0){
+                hideRefreshIcon();
+            }
+
             if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                ErrorHelper.connectionErrorShow(context);
+                if(!refreshMsgShown){
+                    ErrorHelper.connectionErrorShow(context);
+                    refreshMsgShown = true;
+                }
                 return;
+            }
+
+            if(refreshCount <= 0 && !refreshMsgShown){
+                refreshMsgShown = true;
+                Toast.makeText(getActivity(), getResources().getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
             }
 
 
@@ -58,9 +74,9 @@ public class MisVuelosFragment extends Fragment {
                 return;
             }
             Flight toUpdate = flight_details.get(idx);
-            toUpdate.update(updatedGson);
+            toUpdate._update(updatedGson);
             adapter.notifyDataSetChanged();
-        //    abortBroadcast();
+        //    abortBroadcast(f);
         }
     }
 
@@ -274,11 +290,15 @@ public class MisVuelosFragment extends Fragment {
             ApiService.startActionGetFlightStatus(getActivity(), f.getIdentifier(), ACTION_GET_REFRESH);
         }
 
-        Toast.makeText(getActivity(), getResources().getString(R.string.refreshed), Toast.LENGTH_SHORT).show();
+        refreshMsgShown = false;
+        refreshCount = flight_details.size();
+
+    }
+
+    private void hideRefreshIcon(){
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh_mis_vuelos);
         swipeRefreshLayout.setRefreshing(false); // Quita el ícono del refresh
     }
-
 
 
 
@@ -336,10 +356,12 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        refreshCount = 0;
         ErrorHelper.checkConnection(getActivity());
         IntentFilter ifilter = new IntentFilter(ACTION_GET_REFRESH);
         ifilter.setPriority(10);
         getActivity().registerReceiver(receiver, ifilter);
+
     }
 
 
@@ -349,14 +371,20 @@ public class MisVuelosFragment extends Fragment {
         errConnReceiver = new ErrConnReceiver(getView());
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
+
     }
 
+
+    public void onStop(){
+        super.onStop();
+        getActivity().unregisterReceiver(errConnReceiver);
+    }
 
     @Override
     public void onPause(){
         super.onPause();
+        hideRefreshIcon();
         getActivity().unregisterReceiver(receiver);
-        getActivity().unregisterReceiver(errConnReceiver);
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
 

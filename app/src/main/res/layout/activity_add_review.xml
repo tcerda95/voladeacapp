@@ -309,6 +309,7 @@
         android:layout_height="70dip"
         android:text="@string/enviar_resena"
         android:layout_gravity="center"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/send_review_button"
         />
     </LinearLayout>
