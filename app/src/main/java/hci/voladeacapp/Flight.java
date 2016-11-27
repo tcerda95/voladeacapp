@@ -265,7 +265,7 @@ public class Flight implements Serializable {
 
     public Flight(){
         this.identifier = new FlightIdentifier();
-    } //TODO:Sacar
+    }
 
     private String imageURL;
 

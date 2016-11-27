@@ -127,7 +127,7 @@
         <activity
             android:name=".PromoDetailsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".Voladeacapp"
+            android:parentActivityName=".FlightDetails"
             />
     </application>
 

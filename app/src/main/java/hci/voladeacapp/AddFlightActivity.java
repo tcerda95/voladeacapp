@@ -206,25 +206,26 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 });
             }
 
-            detailsButton.setOnClickListener(new View.OnClickListener(){
+            View.OnClickListener detailsClickListener = new View.OnClickListener(){
                 public void onClick(View view) {
 
                     Flight flight = new Flight(flGson);
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
-                    intent.putExtra("Flight",flight);
+                    intent.putExtra("Flight", flight);
                     intent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
                     intent.putExtra(PARENT_ADD_FLIGHT_ACTIVITY, true); // Indica a FlightDetails que esta actividad es la padre
                     startActivityForResult(intent, DETAILS_REQUEST_CODE);
-                    //TODO: Ver lo de FlightDetails por que aparece como si tuvie
-
                 }
-            });
+            };
 
-        }else{
+            detailsButton.setOnClickListener(detailsClickListener);
+            resultCardView.setOnClickListener(detailsClickListener);
+
+        }
+        else {
             resultCardView.setVisibility(View.GONE);
             notExists.setVisibility(View.VISIBLE);
         }
-        // finish();
     }
 
     private void fillData(FlightStatusGson flGson) {

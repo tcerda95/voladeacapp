@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,14 +43,12 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,8 +62,6 @@ import static hci.voladeacapp.ApiService.DATA_DEAL_LIST;
 import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
-import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
-import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 public class PromocionesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -85,7 +80,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private ArrayList<DealGson> deals;
     private Map<DealGson, String> imageURLs;
     private BroadcastReceiver dealsReceiver;
-    private boolean registeredReceiver = false;
 
     private PromoCardAdapter promoAdapter;
     private Map<String, CityGson> citiesMap;
@@ -122,6 +116,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         inListView = true;
         notifiedConnectionError = true;
 
+        pDialog = new ProgressDialog(getActivity());
+
         dealIdReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -135,48 +131,17 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
                     }else {
                         ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde");
+                        pDialog.hide();
                     }
                 }
 
             }
         };
 
-        detailStarterReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if(pDialog != null){
-                    pDialog.hide();
-                }
-
-                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)) {
-                    return;
-                }
-                else {
-                    FlightStatusGson flGson = (FlightStatusGson) intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
-                    Flight flight = new Flight(flGson);
-                    Intent detailIntent = new Intent(getActivity(), FlightDetails.class);
-                    detailIntent.putExtra("Flight", flight);
-                    detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
-                    detailIntent.putExtra(IS_PROMO_DETAIL, true);
-                    DealGson asDeal = getDealFromCity(flight.getArrivalCity());
-                    if (asDeal != null)
-                        detailIntent.putExtra(PROMO_DETAIL_PRICE, asDeal.price);
-                    startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
-                }
-            }
-        };
-
+        detailStarterReceiver = new BestFlightReceiver(getActivity(), pDialog, deals);
     }
 
-    private DealGson getDealFromCity(String arrivalCity) {
-        for (DealGson d: deals) {
-            System.out.println("ArrivalCity: " + arrivalCity);
-            System.out.println("DealCity: " + d.city.name);
-            if (d.city.name.equals(arrivalCity))
-                return d;
-        }
-        return null;
-    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -197,12 +162,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onStart() {
         client.connect();
-
         final View viewPos = getActivity().findViewById(R.id.snackbarCoordinator);
         errConnReceiver = new ErrConnReceiver(viewPos);
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
-
         super.onStart();
     }
 
@@ -211,8 +174,18 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onResume(){
         super.onResume();
         ErrorHelper.checkConnection(getActivity());
+        registerDetailsReceivers();
+        getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
+    }
+
+    private void registerDetailsReceivers() {
         getActivity().registerReceiver(dealIdReceiver,  new IntentFilter(BEST_FLIGHT_RESPONSE));
         getActivity().registerReceiver(detailStarterReceiver, new IntentFilter(START_DETAIL_CALLBACK));
+    }
+
+    private void unRegisterDetailsReceivers() {
+        getActivity().unregisterReceiver(dealIdReceiver);
+        getActivity().unregisterReceiver(detailStarterReceiver);
     }
 
     @Override
@@ -220,7 +193,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         LayoutInflater layoutInflater = inflater;
         rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
-        pDialog = new ProgressDialog(getActivity());
         fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
         updateLabel();
 
@@ -274,12 +246,9 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         dealsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
                     return; //Me voy
                 }
-
-
                 List<DealGson> list = (List<DealGson>) intent.getSerializableExtra(DATA_DEAL_LIST);
                 if (list == null) {
                     System.out.println("NULL LIST");
@@ -288,11 +257,14 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                         deals.add(d);
                         getCityImageURL(d);
                     }
-//                    saveDealsData();
-                    if (inListView)
+
+                    if (inListView) {
                         promoAdapter.notifyDataSetChanged();
-                    else
-                        mapfragment.updateMap(deals, fromCityTextView.getText().toString());
+                    } else {
+                        CityGson city = getFromCity();
+                        String id = city != null ? city.id : null;
+                        mapfragment.updateMap(deals, id);
+                    }
                 }
             }
         };
@@ -378,6 +350,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             cityLocation.setLatitude(e.getValue().latitude);
             cityLocation.setLongitude(e.getValue().longitude);
             double auxDistance = userLocation.distanceTo(cityLocation);
+
             if (auxDistance < minDistance) {
                 closestCity = e.getKey();
                 minDistance = auxDistance;
@@ -409,18 +382,17 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         }
 
         deals.clear();
-        if (!registeredReceiver) {
-            getActivity().registerReceiver(dealsReceiver, new IntentFilter(RECEIVER_TAG));
-            registeredReceiver = true;
-        }
-        CityGson city = citiesMap.get(fromCityTextView.getText().toString());
-
+        CityGson city = getFromCity();
         if (city == null) {
             System.out.println("INVALID CITY");
         } else {
             currentCity = city;
             ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);
         }
+    }
+
+    private CityGson getFromCity() {
+        return citiesMap.get(fromCityTextView.getText().toString());
     }
 
     boolean mapAdded = false;
@@ -431,7 +403,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         final MenuItem mapIcon = menu.findItem(R.id.go_to_map_view);
         final MenuItem listIcon = menu.findItem(R.id.go_to_list_view);
 
-        mapfragment = MapViewFragment.newInstance(deals, fromCityTextView.getText().toString());
+        mapfragment = MapViewFragment.newInstance(deals, pDialog);
 
         final View listView = rootView.findViewById(R.id.promo_card_list);
         mapIcon.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -447,11 +419,15 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
                 View mapView = rootView.findViewById(R.id.mapView);
                 listView.setVisibility(View.GONE);
+
                 if (mapView != null)
                     mapView.setVisibility(View.VISIBLE);
                 mapIcon.setVisible(false);
                 listIcon.setVisible(true);
-                mapfragment.updateMap(deals, fromCityTextView.getText().toString());
+
+                CityGson city = getFromCity();
+                String id = city != null ? city.id : null;
+                mapfragment.updateMap(deals, id);
                 return true;
             }
         });
@@ -463,6 +439,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 inListView = true;
                 listView.setVisibility(View.VISIBLE);
                 View mapView = rootView.findViewById(R.id.mapView);
+
                 if (mapView != null)
                     mapView.setVisibility(View.GONE);
                 mapIcon.setVisible(true);
@@ -506,13 +483,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onPause() {
         requestQueue.cancelAll(REQUEST_TAG);
-        if (registeredReceiver) {
-            getActivity().unregisterReceiver(dealsReceiver);
-            registeredReceiver = false;
-            System.out.println("Unregistered");
-        }
-        getActivity().unregisterReceiver(dealIdReceiver);
-        getActivity().unregisterReceiver(detailStarterReceiver);
+        getActivity().unregisterReceiver(dealsReceiver);
+        unRegisterDetailsReceivers();
         super.onPause();
     }
 
