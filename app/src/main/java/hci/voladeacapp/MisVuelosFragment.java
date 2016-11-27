@@ -377,7 +377,6 @@ public class MisVuelosFragment extends Fragment {
 
     public void onStop(){
         super.onStop();
-        getActivity().unregisterReceiver(receiver);
         getActivity().unregisterReceiver(errConnReceiver);
     }
 
@@ -385,6 +384,7 @@ public class MisVuelosFragment extends Fragment {
     public void onPause(){
         super.onPause();
         hideRefreshIcon();
+        getActivity().unregisterReceiver(receiver);
         StorageHelper.saveFlights(getActivity().getApplicationContext(), flight_details);
     }
 
