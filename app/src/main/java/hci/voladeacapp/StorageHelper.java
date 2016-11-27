@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -384,10 +387,19 @@ public class StorageHelper {
             ApiService.startActionGetCities(context, callback);
 
         }
-
-
     }
 
+    public static void loadLanguage(Context c) {
+        SharedPreferences shp = c.getSharedPreferences(
+                "hci.voladeacapp.PREFERENCES", Context.MODE_PRIVATE);
+        String language = shp.getString("USER_LANGUAGE", Locale.getDefault().toString().toLowerCase());
+
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        c.getResources().updateConfiguration(config, c.getResources().getDisplayMetrics()); //TODO: deprecated
+    }
 
     public static boolean isInitialized(Context context) {
 
