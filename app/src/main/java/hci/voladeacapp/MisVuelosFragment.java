@@ -58,7 +58,7 @@ public class MisVuelosFragment extends Fragment {
                 return;
             }
             Flight toUpdate = flight_details.get(idx);
-            toUpdate.update(updatedGson);
+            toUpdate._update(updatedGson);
             adapter.notifyDataSetChanged();
         //    abortBroadcast();
         }

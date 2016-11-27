@@ -198,7 +198,8 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onStart() {
         client.connect();
 
-        errConnReceiver = new ErrConnReceiver(getView().getRootView());
+        final View viewPos = getActivity().findViewById(R.id.snackbarCoordinator);
+        errConnReceiver = new ErrConnReceiver(viewPos);
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.NO_CONNECTION_ERROR));
         getActivity().registerReceiver(errConnReceiver, new IntentFilter(ErrorHelper.RECONNECTION_NOTICE));
 

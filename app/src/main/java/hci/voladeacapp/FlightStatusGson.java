@@ -18,6 +18,7 @@ public class FlightStatusGson implements Serializable {
         public String id;
         public String terminal;
         public String baggage;
+        public String time_zone;
     }
 
     public class Schedule implements Serializable{
