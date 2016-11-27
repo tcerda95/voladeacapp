@@ -17,6 +17,8 @@ import java.util.Locale;
 //TODO: STACK no preserva el fragment que tenía
 public class AppSettingsActivity extends AppCompatActivity {
 
+    private static int MINUTES_IN_HOUR = 60;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,10 +155,10 @@ public class AppSettingsActivity extends AppCompatActivity {
             Integer minutes = Integer.parseInt(updateFreq.getValue());
 
             String str = null;
-            if (minutes < 60) { // TODO: magic number
+            if (minutes < MINUTES_IN_HOUR) {
                 str = getResources().getQuantityString(R.plurals.update_frequency_description_minutes, minutes, minutes);
             } else {
-                int hours = minutes / 60;
+                int hours = minutes / MINUTES_IN_HOUR;
                 str = getResources().getQuantityString(R.plurals.update_frequency_description_hours, hours, hours);
             }
             updateFreq.setSummary(str);

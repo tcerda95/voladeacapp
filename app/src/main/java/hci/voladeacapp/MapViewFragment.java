@@ -1,6 +1,11 @@
 package hci.voladeacapp;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,17 +25,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static hci.voladeacapp.ApiService.BEST_FLIGHT_RESPONSE;
+import static hci.voladeacapp.ApiService.DATA_BEST_FLIGHT_FOUND;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
+import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
+
 public class MapViewFragment extends Fragment {
     MapView mMapView;
     private GoogleMap GMap;
 
-    private String fromCity;
+    private String fromCityID;
     private ArrayList<DealGson> deals;
     private Map<Marker, DealGson> markerDeals;
 
+    private ProgressDialog pDialog;
+
+    private static final String START_DETAIL_CALLBACK = "hci.voladeacapp.START_DETAIL_CALLBACK";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("Creating map fragment");
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -48,26 +62,21 @@ public class MapViewFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 GMap = mMap;
-                //TODO: se podría mover la camara a la ciudad de salida
-//              CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//              GMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//
-                System.out.println("CITY: " + fromCity);
-
                 GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
-                updateMap(deals, fromCity);
+                updateMap(deals, fromCityID);
             }
         });
+
+
 
         return rootView;
     }
 
-    public static MapViewFragment newInstance(ArrayList<DealGson> deals, String fromCity)
-    {
+    public static MapViewFragment newInstance(ArrayList<DealGson> deals, ProgressDialog dialog) {
         MapViewFragment newFragment = new MapViewFragment();
         newFragment.deals = deals;
-        newFragment.fromCity = fromCity;
         newFragment.markerDeals = new HashMap<>();
+        newFragment.pDialog = dialog;
 
         return newFragment;
     }
@@ -90,7 +99,6 @@ public class MapViewFragment extends Fragment {
                 @Override
                 public void run() {
                     String cityName = deal.city.name;
-                    String markerText = cityName + " Precio: U$D" + deal.price;
                     LatLng pos = new LatLng(deal.city.latitude, deal.city.longitude);
                     MarkerOptions marker = new MarkerOptions().position(pos)
                                                             .title(cityName.split(",")[0])
@@ -123,15 +131,12 @@ public class MapViewFragment extends Fragment {
 
             return BitmapDescriptorFactory.HUE_RED;
         }
-
-
     }
 
 
-    public void updateMap(ArrayList<DealGson> deals, String fromCity) {
+    public void updateMap(ArrayList<DealGson> deals, String fromCityID) {
         this.deals = deals;
-        this.fromCity = fromCity;
-        System.out.println("UPDATING MAP");
+        this.fromCityID = fromCityID;
         if (GMap == null)
             return;
 
@@ -141,8 +146,9 @@ public class MapViewFragment extends Fragment {
     private class mapPromoDetailsListener implements GoogleMap.OnInfoWindowClickListener {
         @Override
         public void onInfoWindowClick(Marker marker) {
-            //TODO
-            System.out.println("CLICKED INFO WINDOW! " + markerDeals.get(marker).city + " " + markerDeals.get(marker).price);
+            pDialog.show();
+            DealGson deal = markerDeals.get(marker);
+            ApiService.startActionGetBestFlight(getContext(), fromCityID, deal.city.id, deal.price);
         }
     }
 
