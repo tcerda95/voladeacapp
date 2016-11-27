@@ -182,7 +182,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == DETAILS_REQUEST_CODE) {
+        if (requestCode == DETAILS_REQUEST_CODE && data != null) {
 
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
