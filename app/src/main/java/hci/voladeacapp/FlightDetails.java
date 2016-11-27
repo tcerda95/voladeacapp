@@ -3,8 +3,11 @@ package hci.voladeacapp;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +23,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
@@ -39,6 +44,8 @@ public class FlightDetails extends AppCompatActivity {
         setContentView(R.layout.activity_flight_details);
 
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
+
+        StorageHelper.loadLanguage(this);
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
         this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
