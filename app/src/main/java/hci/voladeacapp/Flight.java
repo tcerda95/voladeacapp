@@ -75,11 +75,13 @@ public class Flight implements Serializable {
         public boolean runway_delayed;
         public String airport;
         public String airportId;
+        public String timezone;
         public String city;
         public String gate;
         public String terminal;
         public FlightDate flightDate;
         public FlightDate scheduledDate;
+
 
         public int delay;
 
@@ -96,6 +98,7 @@ public class Flight implements Serializable {
             terminal = schedule.airport.terminal;
             flightDate = schedule.actual_time == null ? null : new FlightDate(schedule.actual_time);
             scheduledDate = new FlightDate(schedule.scheduled_time);
+            timezone = schedule.airport.time_zone;
 
             delay = 0;
 
@@ -210,6 +213,11 @@ public class Flight implements Serializable {
             }
         }
 
+        if(newStatus.arrival.scheduled_time != null){
+            FlightDate newDepartureScheduledDate = new FlightDate(newStatus.arrival.scheduled_time);
+            arrivalSchedule.scheduledDate = newDepartureScheduledDate;
+        }
+
         if(newStatus.arrival.actual_time != null){
             if(!confirmedArrival){
                 confirmedArrival = true;
@@ -240,60 +248,6 @@ public class Flight implements Serializable {
 
 
         return change;
-    }
-
-
-
-
-    public List<NotificationCategory> update(FlightStatusGson newStatus){
-        List<NotificationCategory> changes = new ArrayList<>();
-        if(!state.equals(newStatus.status)){
-            switch(newStatus.status) {
-                case "A":
-                    changes.add(NotificationCategory.TAKEOFF);
-                    break;
-                case "D":
-                    changes.add(NotificationCategory.DEVIATION);
-                    break;
-                case "L":
-                    changes.add(NotificationCategory.LANDING);
-                    break;
-                case "C":
-                    changes.add(NotificationCategory.CANCELATION);
-                    break;
-            }
-        }
-
-        setState(newStatus.status);
-
-        if(newStatus.departure.actual_time != null) {
-            FlightDate newDepartureFlightDate = new FlightDate(newStatus.departure.actual_time);
-
-            if(!confirmedDeparture){
-                confirmedDeparture = true;
-                departureSchedule.flightDate = newDepartureFlightDate;
-                if(!departureSchedule.flightDate.equals(departureSchedule.scheduledDate)){
-                    changes.add(NotificationCategory.DELAY_TAKEOFF);
-                }
-            }
-        }
-
-        if(newStatus.arrival.actual_time != null){
-            FlightDate newDepartureFlightDate = new FlightDate(newStatus.arrival.actual_time);
-
-            if(!confirmedArrival){
-                confirmedArrival = true;
-                arrivalSchedule.flightDate = newDepartureFlightDate;
-                if(!arrivalSchedule.flightDate.equals(arrivalSchedule.scheduledDate)){
-                    changes.add(NotificationCategory.DELAY_LANDING);
-                }
-            }
-        }
-
-        setBaggageClaim(newStatus.arrival.airport.baggage);
-
-
-        return changes;
     }
 
 

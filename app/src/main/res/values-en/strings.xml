@@ -94,20 +94,20 @@
 
 
     <string name="scheduled_notif_title">Flight %1$s %2$s has been scheduled</string>
-    <string name="scheduled_notif_body">Departure time: %1$s</string>
+    <string name="scheduled_notif_body">Departure time: %1$s (UTC %2$s)</string>
 
     <string name="delay_notif_title">Flight %1$s %2$s is delayed</string>
     <string name="takeoff_delay_notif_body">The flight is approximately %1$d minutes late for takeoff</string>
     <string name="landing_delay_notif_body">The flight is approximately  %1$d minutes late for unboarding</string>
 
     <string name="takeoff_notif_title">Flight %1$s %2$s took off</string>
-    <string name="takeoff_notif_body">Takeoff time: %1$s \nLanding is scheduled for %2$s</string>
+    <string name="takeoff_notif_body">Takeoff time: %1$s (UTC %3$s)\nLanding is scheduled for %2$s (UTC %4$s)</string>
 
     <string name="deviation_notif_title">Flight %1$s %2$s has been re-routed</string>
-    <string name="deviation_notif_body">Landing rescheduled for %1$s at %2$s</string>
+    <string name="deviation_notif_body">Landing rescheduled for %1$s (UTC %3$s) at %2$s</string>
 
     <string name="landed_notif_title">Flight %1$s %2$s has landed</string>
-    <string name="landed_notif_body">Unboarding gate: %1$s \nBaggage claim on area %2$s</string>
+    <string name="landed_notif_body">Arrival time: %2$s (UTC %3$s). Unboarding gate: %1$s</string>
 
     <string name="cancelation_notif_title">Flight %1$s %2$s has been cancelled</string>
     <string name="cancelation_notif_body">Refer to %1$s for more details</string>
