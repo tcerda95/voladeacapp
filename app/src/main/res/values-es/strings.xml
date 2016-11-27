@@ -129,5 +129,6 @@
     <string name="found_QR">Se encontró el cógido %1$s</string>
     <string name="invalid_QR">El código no corresponde a un número de vuelo válido</string>
     <string name="review_details_title">Detalles reseña de %1$s</string>
+    <string name="utc_indicator"> (hora local, UTC %1$s)</string>
 
 </resources>

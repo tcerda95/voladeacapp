@@ -87,6 +87,7 @@ public class Flight implements Serializable {
 
         public FlightSchedule(){
             flightDate = new FlightDate();
+            scheduledDate = new FlightDate();
         }
 
         public FlightSchedule(FlightStatusGson.Schedule schedule) {
@@ -96,7 +97,7 @@ public class Flight implements Serializable {
             city = schedule.airport.city.name;
             gate = schedule.airport.gate;
             terminal = schedule.airport.terminal;
-            flightDate = schedule.actual_time == null ? null : new FlightDate(schedule.actual_time);
+            flightDate = schedule.actual_time == null ? new FlightDate() : new FlightDate(schedule.actual_time);
             scheduledDate = new FlightDate(schedule.scheduled_time);
             timezone = schedule.airport.time_zone;
 
@@ -124,7 +125,7 @@ public class Flight implements Serializable {
         }
 
         public String getBoardingTime() {
-            return flightDate == null ? scheduledDate.timestamp : flightDate.timestamp;
+            return flightDate.timestamp == null ? scheduledDate.timestamp : flightDate.timestamp;
         }
 
         public String getAirport() {
@@ -187,7 +188,7 @@ public class Flight implements Serializable {
             delayCheck = true;
         }
 
-        if(delayCheck){
+        if(delayCheck && !state.equals("L")){
             setState("D");
             change = NotificationCategory.DELAY_LANDING;
         }
@@ -207,7 +208,7 @@ public class Flight implements Serializable {
             delayCheck = true;
         }
 
-        if(delayCheck){
+        if(delayCheck && !state.equals("L")){
             setState("D");
             change = NotificationCategory.DELAY_TAKEOFF;
         }
