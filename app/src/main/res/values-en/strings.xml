@@ -118,14 +118,13 @@
     <string name="no_flights">You don\'t have any flights</string>
     <string name="my_flights_reviews">My Flights reviews</string>
     <string name="searching_flight">Searching flight</string>
-    <string name="plus_arrow_text">Tap here to start adding flights</string>
+    <string name="plus_arrow_text">Tap here to start adding flights to track</string>
     <string name="remove_from_my_flights">Remove from My Flights</string>
-    <string name="dialog_remove_flight_body">Remove from My Flights?</string>
+    <string name="dialog_remove_flight_body">Remove %1$s from My Flights?</string>
     <string name="dialog_remove_flight_no">Cancel</string>
     <string name="dialog_remove_flight_title">Remove</string>
     <string name="dialog_remove_flight_yes">Remove</string>
     <string name="empty_review_list">Here you can check out the ratings for your flights</string>
-    <string name="empty_review_arrow">Touch here to see your followed flights</string>
 
     <string name="scan_QR">Scan QR code</string>
     <string name="prompt_QR">Focus on the QR in your ticket</string>
@@ -135,5 +134,6 @@
     <string name="review_details_title">Details review of %1$s</string>
     <string name="utc_indicator">(local time, UTC %1$s)</string>
     <string name="details_title">Flight details</string>
+    <string name="empty_review_arrow">You can start tracking flights adding them from here</string>
 
 </resources>

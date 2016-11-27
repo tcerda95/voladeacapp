@@ -115,14 +115,14 @@
     <string name="no_flights">No hay vuelos agregados</string>
     <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
     <string name="searching_flight">Buscando vuelo</string>
-    <string name="plus_arrow_text">Tocá acá para agregar un vuelo</string>
-    <string name="remove_from_my_flights">Quitar de Mis Vuelos</string>
-    <string name="dialog_remove_flight_body">¿Borrar de Mis Vuelos?</string>
+    <string name="plus_arrow_text">Tocá acá para agregar un vuelo y comenzar a seguirlo</string>
+    <string name="remove_from_my_flights">Borrar de Mis Vuelos</string>
+    <string name="dialog_remove_flight_body">¿Borrar %1$s de Mis Vuelos?</string>
     <string name="dialog_remove_flight_title">Borrar</string>
     <string name="dialog_remove_flight_no">Cancelar</string>
     <string name="dialog_remove_flight_yes">Borrar</string>
-    <string name="empty_review_list">Acá aparecen las reseñas de los vuelos que seguís</string>
-    <string name="empty_review_arrow">Tocá acá para ver tus vuelos seguidos</string>
+    <string name="empty_review_list">Acá aparecen las reseñas de tus vuelos</string>
+    <string name="empty_review_arrow">Podés agregar vuelos para seguir desde acá</string>
 
     <string name="scan_QR">Escanear código QR</string>
     <string name="prompt_QR">Apunte al código QR en su pasaje</string>

@@ -76,7 +76,7 @@ public class FlightDetails extends AppCompatActivity {
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(FlightDetails.this);
-            builder.setMessage(getString(R.string.dialog_remove_flight_body))
+            builder.setMessage(getString(R.string.dialog_remove_flight_body, flight.getAirlineID() + " " + flight.getNumber()))
                     .setTitle(getString(R.string.dialog_remove_flight_title))
                     .setPositiveButton(R.string.dialog_remove_flight_yes, new Dialog.OnClickListener() {
 
