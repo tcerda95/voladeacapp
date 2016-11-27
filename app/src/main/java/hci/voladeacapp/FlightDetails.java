@@ -48,7 +48,7 @@ public class FlightDetails extends AppCompatActivity {
         StorageHelper.loadLanguage(this);
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
-        this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
+//        this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
 //        this.promoPrice = getIntent().getDoubleExtra(PROMO_DETAIL_PRICE, -1);
 
         setTitle(flight.getAirlineID() + " " + flight.getNumber());

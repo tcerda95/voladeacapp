@@ -132,5 +132,6 @@
 
     <string name="review_details_title">Details review of %1$s</string>
     <string name="utc_indicator"> (local time, UTC %1$s)</string>
+    <string name="formato_fecha">MM-dd-yyyy</string>
 
 </resources>

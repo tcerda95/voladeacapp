@@ -42,7 +42,7 @@ public class PromoCardAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return cardsData.size() > 0 ? cardsData.get(position) : null;
+        return cardsData.size() > position ? cardsData.get(position) : null;
     }
 
     @Override

@@ -44,6 +44,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
 import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 public class PromoDetailsActivity extends AppCompatActivity
@@ -92,6 +93,16 @@ public class PromoDetailsActivity extends AppCompatActivity
             }
         };
 
+        findViewById(R.id.more_details_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent flightDetailsIntent = new Intent(getApplicationContext(), FlightDetails.class);
+                flightDetailsIntent.putExtra("Flight", flight);
+                flightDetailsIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+                startActivity(flightDetailsIntent);
+            }
+        });
+
         try {
             MapsInitializer.initialize(this);
         } catch (Exception e) {
@@ -109,11 +120,14 @@ public class PromoDetailsActivity extends AppCompatActivity
         });
 
         carouselView.setViewListener(viewListener);
+        fillDetails(flight);
     }
 
     private void fillDetails(Flight flight) {
-        //TODO
-        Resources res = getResources();
+        getTextView(R.id.promo_price).append(" " + TextHelper.getAsPrice(promoPrice));
+        getTextView(R.id.departure_city).setText(flight.getDepartureCity());
+        getTextView(R.id.departure_date).setText(TextHelper.getSimpleDate(flight.getDepartureDate(), this));
+        getTextView(R.id.departure_time).setText(flight.getDepartureBoardingTime());
     }
 
     private TextView getTextView(int id) {

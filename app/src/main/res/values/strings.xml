@@ -19,7 +19,7 @@
     <string name="llegada_label">Llegada</string>
     <string name="baggage_claim_label">Recolección de equipaje</string>
 
-    <string name="formato_fecha" translatable="false">dd-MM-yyyy</string>
+    <string name="formato_fecha">dd-MM-yyyy</string>
 
     <string name="a_confirmar">A confirmar</string>
 
@@ -146,5 +146,10 @@
 
     <string name="utc_indicator"> (hora local, UTC %1$s)</string>
 
+    <string name="departure_label_promo">Desde</string>
+    <string name="departure_time_label_promo">A las</string>
+    <string name="departure_date_label_promo">Saliendo el</string>
+    <string name="promo_price_label">PROMOCIÓN | </string>
+    <string name="detalles_del_vuelo">Detalles del vuelo</string>
 
 </resources>

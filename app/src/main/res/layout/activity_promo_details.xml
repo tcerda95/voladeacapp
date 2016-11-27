@@ -4,12 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/activity_promo_details"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--tools:context="hci.voladeacapp.PromoDetailsActivity">-->
-        <LinearLayout
+    <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -34,7 +29,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CORDOBA"
                     android:textSize="28sp"
                     android:textColor="@color/white"
                     android:shadowColor="@color/darkgrey"
@@ -61,7 +55,7 @@
                     android:layout_marginBottom="15dp"
                     android:layout_marginTop="15dp">
                     <TextView
-                        android:text="PROMOCIÓN  |  U$D 320"
+                        android:text="@string/promo_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/promo_price"
@@ -81,7 +75,7 @@
                     android:layout_gravity="center">
 
                     <TextView
-                        android:text="Saliendo el"
+                        android:text="@string/departure_date_label_promo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_date_label"
@@ -89,7 +83,6 @@
                         android:paddingStart="8dp" />
 
                     <TextView
-                        android:text="23-11-2017"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_date"
@@ -106,7 +99,7 @@
                     android:layout_gravity="center">
 
                     <TextView
-                        android:text="A las"
+                        android:text="@string/departure_time_label_promo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_time_label"
@@ -114,7 +107,6 @@
                         android:paddingStart="8dp" />
 
                     <TextView
-                        android:text="12:40 hs."
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_time"
@@ -131,7 +123,7 @@
                     android:layout_gravity="center">
 
                     <TextView
-                        android:text="Desde"
+                        android:text="@string/from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_city_label"
@@ -139,7 +131,6 @@
                         android:paddingStart="8dp" />
 
                     <TextView
-                        android:text="Buenos Aires"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_city"
@@ -149,10 +140,10 @@
                 </LinearLayout>
 
                 <Button
-                    android:text="Detalles del vuelo"
+                    android:text="@string/detalles_del_vuelo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button2"
+                    android:id="@+id/more_details_btn"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
@@ -165,14 +156,8 @@
                     android:orientation="vertical"
                     android:id="@+id/map_layout"
                     />
-                <!--<com.google.android.gms.maps.MapView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/detailsMapView"-->
-                <!--/>-->
             </LinearLayout>
 
         </LinearLayout>
-    <!--</RelativeLayout>-->
 </ScrollView>
 
