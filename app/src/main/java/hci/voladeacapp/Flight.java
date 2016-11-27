@@ -163,6 +163,17 @@ public class Flight implements Serializable {
         NotificationCategory change = null;
 
 
+        departureSchedule.gate = newStatus.departure.airport.gate;
+        departureSchedule.terminal = newStatus.departure.airport.terminal;
+
+        arrivalSchedule.gate = newStatus.arrival.airport.gate;
+        arrivalSchedule.terminal = newStatus.arrival.airport.terminal;
+
+        setBaggageClaim(newStatus.arrival.airport.baggage);
+
+
+
+
         boolean delayCheck = false;
         if(!arrivalSchedule.runway_delayed && newStatus.arrival.runway_delay != null){
             arrivalSchedule.runway_delayed = true;
