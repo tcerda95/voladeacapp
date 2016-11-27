@@ -36,7 +36,7 @@ public class FlightDetails extends AppCompatActivity {
     private Flight flight;
     private FlightIdentifier identifier;
     private boolean isPromoDetail;
-    private double promoPrice;
+//    private double promoPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class FlightDetails extends AppCompatActivity {
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
         this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
-        this.promoPrice = getIntent().getDoubleExtra(PROMO_DETAIL_PRICE, -1);
+//        this.promoPrice = getIntent().getDoubleExtra(PROMO_DETAIL_PRICE, -1);
 
         setTitle(flight.getAirlineID() + " " + flight.getNumber());
         fillDetails(flight);
@@ -186,21 +186,21 @@ public class FlightDetails extends AppCompatActivity {
         getTextView(R.id.state_name).setText(StatusInterpreter.getStatusName(getApplicationContext(),flight.getState()));
         getTextView(R.id.state_name).setTextColor(StatusInterpreter.getStatusColor(flight.getState()));
 
-        if (isPromoDetail) {
-            Button debug =  (Button) findViewById(R.id.promo_new_button);
-            debug.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent newpromoint = new Intent(getApplicationContext(), PromoDetailsActivity.class);
-                    newpromoint.putExtra("Flight", flight);
-                    newpromoint.putExtra(PROMO_DETAIL_PRICE, promoPrice);
-                    startActivity(newpromoint);
-                }
-            });
-            debug.setVisibility(View.VISIBLE);
-            findViewById(R.id.promo_details_layout).setVisibility(View.VISIBLE);
-            getTextView(R.id.promo_details_price).setText("U$D " + new Double(promoPrice).intValue());
-        }
+//        if (isPromoDetail) {
+//            Button debug =  (Button) findViewById(R.id.promo_new_button);
+//            debug.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent newpromoint = new Intent(getApplicationContext(), PromoDetailsActivity.class);
+//                    newpromoint.putExtra("Flight", flight);
+//                    newpromoint.putExtra(PROMO_DETAIL_PRICE, promoPrice);
+//                    startActivity(newpromoint);
+//                }
+//            });
+//            debug.setVisibility(View.VISIBLE);
+//            findViewById(R.id.promo_details_layout).setVisibility(View.VISIBLE);
+//            getTextView(R.id.promo_details_price).setText("U$D " + new Double(promoPrice).intValue());
+//        }
     }
 
     private TextView getTextView(int id) {

@@ -87,7 +87,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     private GoogleApiClient client;
     MapViewFragment mapfragment;
 
-    private boolean inListView ;
+    private boolean inListView;
 
     private BroadcastReceiver dealIdReceiver;
     private BroadcastReceiver detailStarterReceiver;

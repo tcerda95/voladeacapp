@@ -37,14 +37,18 @@ public class BestFlightReceiver extends BroadcastReceiver {
         else {
             FlightStatusGson flGson = (FlightStatusGson) intent.getSerializableExtra(ApiService.DATA_FLIGHT_GSON);
             Flight flight = new Flight(flGson);
-            Intent detailIntent = new Intent(this.activity, FlightDetails.class);
-            detailIntent.putExtra("Flight", flight);
-            detailIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
-            detailIntent.putExtra(IS_PROMO_DETAIL, true);
+            double promoPrice = intent.getDoubleExtra(PROMO_DETAIL_PRICE, -1);
+
             DealGson asDeal = getDealFromCity(flight.getArrivalCity());
-            if (asDeal != null)
-                detailIntent.putExtra(PROMO_DETAIL_PRICE, asDeal.price);
-            activity.startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
+
+            Intent promoIntent = new Intent(this.activity, PromoDetailsActivity.class);
+            promoIntent.putExtra("Flight", flight);
+            promoIntent.putExtra(PROMO_DETAIL_PRICE, promoPrice);
+            promoIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+            promoIntent.putExtra(PROMO_DETAIL_PRICE, asDeal.price);
+            activity.startActivity(promoIntent);
+
+//            activity.startActivityForResult(detailIntent, MisVuelosFragment.DETAILS_REQUEST_CODE);
         }
     }
 

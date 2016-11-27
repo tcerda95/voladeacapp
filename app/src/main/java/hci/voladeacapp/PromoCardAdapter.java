@@ -42,7 +42,7 @@ public class PromoCardAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return cardsData.get(position);
+        return cardsData.size() > 0 ? cardsData.get(position) : null;
     }
 
     @Override
@@ -60,11 +60,11 @@ public class PromoCardAdapter extends BaseAdapter {
         }
 
         DealGson deal = (DealGson) getItem(position);
-        holder.cityView.setText(deal.city.name.split(",")[0]);
-        holder.priceView.setText("U$D " + deal.price.intValue());
-
-        // IMAGEN
-        setImageView(deal, holder.photoView);
+        if (deal != null) {
+            holder.cityView.setText(deal.city.name.split(",")[0]);
+            holder.priceView.setText("U$D " + deal.price.intValue());
+            setImageView(deal, holder.photoView);
+        }
 
         return convertView;
     }
