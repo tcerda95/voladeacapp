@@ -34,8 +34,7 @@
                     android:id="@+id/airline_input"
                     android:ems="10"
                     android:hint="@string/airline_label"
-                    android:cursorVisible="false"
-                    android:maxLines="1" />
+                    android:cursorVisible="false" />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_weight="1"

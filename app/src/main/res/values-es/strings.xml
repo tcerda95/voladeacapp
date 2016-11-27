@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Voladeacapp</string>
+    <string name="app_name">VolaDeAcapp</string>
     <string name="a_confirmar">A confirmar</string>
     <string name="add_to_my_flights">Agregar a Mis Vuelos</string>
     <string name="airline_label">Aerolinea</string>
@@ -20,7 +20,7 @@
     <string name="delayedNotif">" está retrasado"</string>
     <string name="deleted">Eliminado</string>
     <string name="eliminar">Eliminar</string>
-    <string name="enviar_resena">Enviar Reseña</string>
+    <string name="enviar_resena">Enviar reseña</string>
     <string name="exitGateNotif">Puerta de salida</string>
     <string name="flight_number_label">Número de vuelo</string>
     <string name="gate_label">Puerta</string>
@@ -42,20 +42,20 @@
     <string name="salida">Salida</string>
     <string name="salida_label">Salida</string>
     <string name="search">Buscar</string>
-    <string name="singular_eliminado">Vuelo eliminado</string>
+    <string name="singular_eliminado">Vuelo borrado</string>
     <string name="terminal_label">Terminal</string>
     <string name="the_flight_notif">El vuelo</string>
     <string name="title_activity_app_settings">Configuración</string>
     <string name="title_activity_settings">Configuración</string>
-    <string name="title_dejar_resena">Dejá tu reseña</string>
+    <string name="title_dejar_resena">Dejá una reseña</string>
     <string name="title_mis_vuelos">Mis Vuelos</string>
     <string name="title_promociones">Promociones</string>
     <string name="title_resenas">Reseñas</string>
     <string name="tookOffNotif">" ha despegado"</string>
     <string name="undo">Deshacer</string>
     <string name="ver_en_mapa">Ver en mapa</string>
-    <string name="viajeros_frecuentes_label">Programa de viajeros frecuentes:</string>
-    <string name="notification_title">Notificaciones</string>
+    <string name="viajeros_frecuentes_label">Programa de viajeros frecuentes</string>
+    <string name="notification_title">Notificaciones para %1$s %2$s</string>
     <string name="update_frequency">Frecuencia de actualización</string>
     <string name="localization">Localización</string>
     <string name="language">Idioma</string>
@@ -69,10 +69,10 @@
     <string name="departing_on">Saliendo el</string>
     <string name="every">Cada</string>
     <string name="not_exists">No existe el vuelo</string>
-    <string name="missing_data">Campo Incompleto</string>
+    <string name="missing_data">Campo incompleto</string>
     <string name="airline_name">Nombre de Aerolinea</string>
     <string name="flight_number">Numero de vuelo</string>
-    <string name="search_flight_title">Buscá tu vuelo</string>
+    <string name="search_flight_title">Buscar vuelo</string>
     <string name="error_required_airline">La aerolinea es requerida</string>
     <string name="error_required_flight_number">El número de vuelo es requerido</string>
     <string name="invalid_city_message">Elija una ciudad válida</string>
@@ -96,7 +96,7 @@
     <string name="scheduled_notif_body">Horario de salida: %1$s (UTC%2$s)</string>
 
     <string name="delay_notif_title">Vuelo %1$s %2$s retrasado</string>
-    <string name="takeoff_delay_notif_body">El despegue está aproximadamente %1$d minutos retrasado</string>
+    <string name="takeoff_delay_notif_body">El despegue está %1$d minutos retrasado</string>
     <string name="landing_delay_notif_body">El desembarco está %1$d minutos atrasado</string>
 
     <string name="takeoff_notif_title">Vuelo %1$s %2$s ha despegado</string>
@@ -112,10 +112,10 @@
     <string name="landed_notif_body">Horario de aterrizaje: %2$s (UTC%3$s). Puerta de embarque: %1$s.</string>
 
 
-    <string name="no_flights">No estás siguiendo ningún vuelo</string>
+    <string name="no_flights">No hay vuelos agregados</string>
     <string name="my_flights_reviews">Reseñas de Mis Vuelos</string>
-    <string name="searching_flight">Buscando el vuelo</string>
-    <string name="plus_arrow_text">Tocá acá para empezar a seguir un vuelo</string>
+    <string name="searching_flight">Buscando vuelo</string>
+    <string name="plus_arrow_text">Tocá acá para agregar un vuelo</string>
     <string name="remove_from_my_flights">Quitar de Mis Vuelos</string>
     <string name="dialog_remove_flight_body">¿Dejar de seguir este vuelo?</string>
     <string name="dialog_remove_flight_title">Borrar</string>
@@ -129,6 +129,7 @@
     <string name="found_QR">Se encontró el cógido %1$s</string>
     <string name="invalid_QR">El código no corresponde a un número de vuelo válido</string>
     <string name="review_details_title">Detalles reseña de %1$s</string>
-    <string name="utc_indicator"> (hora local, UTC %1$s)</string>
+    <string name="utc_indicator">(hora local, UTC %1$s)</string>
+    <string name="notifications">Notificaciones</string>
 
 </resources>
