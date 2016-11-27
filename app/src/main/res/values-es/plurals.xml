@@ -6,8 +6,8 @@
     </plurals>
 
     <plurals name="deleted_flights">
-        <item quantity="one">Vuelo eliminado</item>
-        <item quantity="other">Vuelos eliminados</item>
+        <item quantity="one">Vuelo borrado</item>
+        <item quantity="other">Vuelos borrados</item>
     </plurals>
 
     <plurals name="update_frequency_description_minutes">

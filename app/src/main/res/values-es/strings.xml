@@ -18,8 +18,8 @@
     <string name="confort_label">Confort</string>
     <string name="date_label">Fecha</string>
     <string name="delayedNotif">" está retrasado"</string>
-    <string name="deleted">Eliminado</string>
-    <string name="eliminar">Eliminar</string>
+    <string name="deleted">Borrado</string>
+    <string name="eliminar">Borrar</string>
     <string name="enviar_resena">Enviar reseña</string>
     <string name="exitGateNotif">Puerta de salida</string>
     <string name="flight_number_label">Número de vuelo</string>
@@ -32,7 +32,7 @@
     <string name="newLandTimeNotif">Nuevo horario de llegada:</string>
     <string name="newTakeOffTimeNotif">Nuevo horario de salida:</string>
     <string name="onTimeNotif">" ya ha sido programado."</string>
-    <string name="plural_eliminado">Vuelos eliminados</string>
+    <string name="plural_eliminado">Vuelos borrados</string>
     <string name="pref_title_vibrate">Vibrar</string>
     <string name="puntuacion_total_label">Puntuación total</string>
     <string name="puntualidad_label">Puntualidad</string>
@@ -117,10 +117,10 @@
     <string name="searching_flight">Buscando vuelo</string>
     <string name="plus_arrow_text">Tocá acá para agregar un vuelo</string>
     <string name="remove_from_my_flights">Quitar de Mis Vuelos</string>
-    <string name="dialog_remove_flight_body">¿Dejar de seguir este vuelo?</string>
+    <string name="dialog_remove_flight_body">¿Borrar de Mis Vuelos?</string>
     <string name="dialog_remove_flight_title">Borrar</string>
     <string name="dialog_remove_flight_no">Cancelar</string>
-    <string name="dialog_remove_flight_yes">Dejar de seguir</string>
+    <string name="dialog_remove_flight_yes">Borrar</string>
     <string name="empty_review_list">Acá aparecen las reseñas de los vuelos que seguís</string>
     <string name="empty_review_arrow">Tocá acá para ver tus vuelos seguidos</string>
 
@@ -131,5 +131,6 @@
     <string name="review_details_title">Detalles reseña de %1$s</string>
     <string name="utc_indicator">(hora local, UTC %1$s)</string>
     <string name="notifications">Notificaciones</string>
+    <string name="details_title">Detalles del vuelo</string>
 
 </resources>

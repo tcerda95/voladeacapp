@@ -39,9 +39,9 @@
     <string name="title_activity_settings">Configuración</string>
 
 
-    <string name="eliminar">Eliminar</string>
+    <string name="eliminar">Borrar</string>
     <string name="singular_eliminado">Vuelo borrado</string>
-    <string name="plural_eliminado">Vuelos eliminados</string>
+    <string name="plural_eliminado">Vuelos borrados</string>
 
 
     <string name="error_required_airline">La aerolínea es requerida</string>
@@ -62,7 +62,7 @@
     <string name="enviar_resena">Enviar Reseña</string>
     <string name="title_activity_app_settings">Configuración</string>
     <string name="undo">Deshacer</string>
-    <string name="deleted">Eliminado</string>
+    <string name="deleted">Borrado</string>
     <string name="refreshed">Actualizado</string>
     <string name="comentario_label">Comentario</string>
     <string name="ver_en_mapa">Ver en mapa</string>
@@ -130,12 +130,12 @@
     <string name="plus_arrow_text">Tocá acá para agregar un vuelo</string>
     <string name="remove_from_my_flights">Quitar de Mis Vuelos</string>
 
-    <string name="dialog_remove_flight_body">¿Dejar de seguir este vuelo?</string>
+    <string name="dialog_remove_flight_body">¿Borrar de Mis Vuelos?</string>
     <string name="dialog_remove_flight_title">Borrar</string>
-    <string name="dialog_remove_flight_yes">Dejar de seguir</string>
+    <string name="dialog_remove_flight_yes">Borrar</string>
     <string name="dialog_remove_flight_no">Cancelar</string>
 
-    <string name="empty_review_list">Acá aparecen las reseñas de los vuelos que seguís</string>
+    <string name="empty_review_list">Acá aparecen las reseñas de tus vuelos</string>
     <string name="empty_review_arrow">Tocá acá para ver tus vuelos seguidos</string>
 
     <string name="scan_QR">Escanear código QR</string>
@@ -146,6 +146,8 @@
 
     <string name="utc_indicator">(hora local, UTC %1$s)</string>
     <string name="notifications">Notificaciones</string>
+
+    <string name="details_title">Detalles del vuelo</string>
 
 
 </resources>

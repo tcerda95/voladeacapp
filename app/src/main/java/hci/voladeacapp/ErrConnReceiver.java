@@ -24,8 +24,8 @@ public class ErrConnReceiver extends BroadcastReceiver {
     public ErrConnReceiver(View v){
         view = v;
         Resources res = view.getResources();
+        view.setZ(10);
         snackbar = Snackbar.make(view, res.getString(R.string.global_conn_err_msg), Snackbar.LENGTH_INDEFINITE);
-
         TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text); //Get reference of snackbar textview
         textView.setMaxLines(3); // Change your max lines
 
