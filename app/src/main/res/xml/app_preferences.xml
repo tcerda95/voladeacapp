@@ -4,12 +4,11 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:title="@string/notification_title"
+            android:title="@string/notifications"
             android:key="notifications_switch" />
 
         <ListPreference
             android:title="@string/update_frequency"
-            android:summary="@string/update_frequency_description"
             android:key="updateFrequency"
             android:defaultValue="15"
             android:entries="@array/intervalArray"

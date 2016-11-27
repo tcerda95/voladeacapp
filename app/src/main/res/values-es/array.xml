@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="intervalArray">
-        <item>Cada 1 Minuto</item>
-        <item>Cada 15 Minutos</item>
-        <item>Cada 1 Hora</item>
-        <item>Cada 24 Horas</item>
+        <item>Cada 1 minuto</item>
+        <item>Cada 15 minutos</item>
+        <item>Cada 1 hora</item>
+        <item>Cada 24 horas</item>
     </string-array>
 
     <string-array name="intervalValues">

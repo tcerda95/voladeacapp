@@ -51,7 +51,7 @@ public class FlightDetails extends AppCompatActivity {
 //        this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
 //        this.promoPrice = getIntent().getDoubleExtra(PROMO_DETAIL_PRICE, -1);
 
-        setTitle(flight.getAirlineID() + " " + flight.getNumber());
+        setTitle(getString(R.string.details_title));
         fillDetails(flight);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,7 +76,7 @@ public class FlightDetails extends AppCompatActivity {
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(FlightDetails.this);
-            builder.setMessage(getString(R.string.dialog_remove_flight_body))
+            builder.setMessage(getString(R.string.dialog_remove_flight_body, flight.getAirlineID() + " " + flight.getNumber()))
                     .setTitle(getString(R.string.dialog_remove_flight_title))
                     .setPositiveButton(R.string.dialog_remove_flight_yes, new Dialog.OnClickListener() {
 
@@ -179,7 +179,7 @@ public class FlightDetails extends AppCompatActivity {
         departureFragment.setSchedule(res.getString(R.string.salida), flight.getDepartureSchedule());
         arrivalFragment.setSchedule(res.getString(R.string.llegada), flight.getArrivalSchedule(), baggageClaim);
 
-        getTextView(R.id.airline_name).setText(flight.getFullAirlineName());
+        getTextView(R.id.airline_name).setText(flight.getFullAirlineName() + " " + flight.getNumber());
 
         // Estado
         ((ImageView)findViewById(R.id.state_badge)).setImageResource(StatusInterpreter.getStateImage(flight.getState()));

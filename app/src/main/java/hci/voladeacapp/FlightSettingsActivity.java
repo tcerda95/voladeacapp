@@ -17,7 +17,7 @@ public class FlightSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new FlightPreferenceFragment()).commit();
         FlightIdentifier identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
-        this.setTitle(getTitle().toString() + identifier.getAirline() + " " + identifier.getNumber());
+        this.setTitle(getString(R.string.notification_title, identifier.getAirline(), identifier.getNumber()));
     }
 
     public static class FlightPreferenceFragment extends PreferenceFragment
@@ -87,15 +87,6 @@ public class FlightSettingsActivity extends AppCompatActivity {
             super.onResume();
 
             settings = StorageHelper.getSettings(getActivity(), identifier);
-
-
-            System.out.println("HEY THESE ARE THE SETTINGS");
-            System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
-            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY_LANDING));
-            System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
-            System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
-            System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
-            System.out.println("ALL: " + settings.notificationsActive());
 
             SharedPreferences.Editor editor = sp.edit();
             editor.putBoolean("flight_notifications_switch", settings.notificationsActive());

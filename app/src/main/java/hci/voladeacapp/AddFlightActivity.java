@@ -172,7 +172,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 actionButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(AddFlightActivity.this);
-                        builder.setMessage(getString(R.string.dialog_remove_flight_body))
+                        builder.setMessage(getString(R.string.dialog_remove_flight_body, flightIdentifier.getAirline() + " " +  flightIdentifier.getNumber()))
                                 .setTitle(R.string.dialog_remove_flight_title)
                                 .setPositiveButton(R.string.dialog_remove_flight_yes, new Dialog.OnClickListener() {
 

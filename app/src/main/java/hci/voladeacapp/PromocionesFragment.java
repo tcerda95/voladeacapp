@@ -515,7 +515,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if(editable.length() > 2 && !fromCityTextView.isPopupShowing() && !isValidCity(editable.toString())) {
+            if(editable.length() > 2 && !fromCityTextView.isPopupShowing() && !isValidCity(editable.toString()) && !citiesMap.isEmpty()) {
                 fromCityTextView.setError(getResources().getString(R.string.invalid_city_message));
             }
         }

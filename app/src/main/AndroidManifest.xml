@@ -82,7 +82,6 @@
         />
         <activity
             android:name=".FlightSettingsActivity"
-            android:label="Notificaciones de "
             android:launchMode="singleTop"
             android:parentActivityName=".FlightDetails" />
         <activity

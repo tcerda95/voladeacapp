@@ -315,13 +315,7 @@ public class MisVuelosFragment extends Fragment {
             }
         }
 
-        if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "Resultado cancelado", Toast.LENGTH_SHORT)
-                    .show();
-        }
-        else {
-            Toast.makeText(getActivity(), "Recibi resultado", Toast.LENGTH_SHORT)
-                    .show();
+        if (resultCode != RESULT_CANCELED)  {
 
             if(requestCode == GET_FLIGHT) {
                 boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
