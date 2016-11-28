@@ -216,6 +216,7 @@ public class StorageHelper {
         if(idx < 0) {
             list.add(flight);
         } else {
+            System.out.println("Removing at idx " + idx);
             list.remove(flight);
             list.add(idx, flight);
         }

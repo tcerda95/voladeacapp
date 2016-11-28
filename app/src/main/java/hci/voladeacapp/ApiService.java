@@ -499,12 +499,13 @@ public class ApiService extends IntentService {
         String url = "http://hci.it.itba.edu.ar/v1/api/status.groovy?method=getflightstatus&airline_id="
                 + airline + "&flight_number=" + number;
 
-
+        System.out.println(url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            System.out.println(response);
                             JSONObject obj = new JSONObject(response);
 
                             Gson gson = new Gson();
@@ -514,6 +515,8 @@ public class ApiService extends IntentService {
                             FlightStatusGson status;
                             if(obj.has("status")) {
                                 status = gson.fromJson(obj.getString("status"), type);
+                                System.out.println("TIME:");
+                                System.out.println(status.departure.scheduled_time);
                             } else{
                                 //No existe el vuelo
                                 status = null;
