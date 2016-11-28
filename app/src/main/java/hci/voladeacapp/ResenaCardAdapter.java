@@ -54,8 +54,7 @@ public class ResenaCardAdapter extends BaseAdapter{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.review_card, parent, false);
             holder = new ResenaCardAdapter.ViewHolder();
-            holder.airlineView = (TextView) convertView.findViewById(R.id.flight_airline_text);
-            holder.numberView = (TextView) convertView.findViewById(R.id.flight_number_text);
+            holder.airlineIdentifier = (TextView) convertView.findViewById(R.id.flight_airline_text);
             holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingbar_resena);
             holder.percentageView = (TextView) convertView.findViewById(R.id.percentage);
             holder.noReviews = (TextView) convertView.findViewById(R.id.no_reviews_text);
@@ -65,13 +64,11 @@ public class ResenaCardAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        TextView numberTextView = holder.numberView;
-        TextView airlineTextView = holder.airlineView;
+        TextView airlineTextView = holder.airlineIdentifier;
         RatingBar ratingBarView = holder.ratingBar;
         TextView percentageView = holder.percentageView;
         TextView noReviewsView = holder.noReviews;
         CardView cardView = holder.card;
-
 
         ratingBarView.setClickable(false);
 
@@ -79,8 +76,7 @@ public class ResenaCardAdapter extends BaseAdapter{
 
         Boolean hasReviews = resena.hasReviews();
 
-        numberTextView.setText(resena.flightNumber().toString());
-        airlineTextView.setText(resena.airline());
+        airlineTextView.setText(resena.airline() + " " + resena.flightNumber().toString());
         if(!hasReviews){
             noReviewsView.setVisibility(View.VISIBLE);
             ratingBarView.setVisibility(View.GONE);
@@ -97,8 +93,7 @@ public class ResenaCardAdapter extends BaseAdapter{
     }
 
     private static class ViewHolder {
-        TextView airlineView;
-        TextView numberView;
+        TextView airlineIdentifier;
         TextView percentageView;
         RatingBar ratingBar;
         TextView noReviews;
