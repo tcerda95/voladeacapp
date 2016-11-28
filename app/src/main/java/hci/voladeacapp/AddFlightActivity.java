@@ -52,11 +52,12 @@ import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 public class AddFlightActivity extends AppCompatActivity implements Validator.ValidationListener{
 
 
-    public final static String PARENT_ADD_FLIGHT_ACTIVITY = "hci.voladeacapp.AddFlightActivity.parent";
     public static final String NEW_FLIGHT_ADDED = "hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED";
 
     private final static String SEARCH_DONE = "hci.voladeacapp.AddFlightActivity.SEARCH_DONE";
     private final static String FLIGHT_GSON = "hci.voladeacapp.AddFlightActivity.FLIGHT_GSON";
+
+    public final static String PARENTSHIP = "hci.voladeacapp.AddFlightActivity.PARENTSHIP";
 
     @NotEmpty
     private EditText flightNumberEdit;
@@ -213,7 +214,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                     Intent intent = new Intent(getApplication(),FlightDetails.class);
                     intent.putExtra("Flight", flight);
                     intent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
-                    intent.putExtra(PARENT_ADD_FLIGHT_ACTIVITY, true); // Indica a FlightDetails que esta actividad es la padre
+                    intent.putExtra(FlightDetails.PARENT_ACTIVITY, PARENTSHIP); // Indica a FlightDetails que esta actividad es la padre
                     startActivityForResult(intent, DETAILS_REQUEST_CODE);
                 }
             };
