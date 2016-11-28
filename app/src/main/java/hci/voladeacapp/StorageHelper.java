@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 import static hci.voladeacapp.ApiService.DATA_AIRLINE_ID_MAP;
+import static hci.voladeacapp.ApiService.DATA_AIRNAME_ID_MAP;
 
 /**
  * Created by chelo on 11/20/16.
@@ -32,6 +33,7 @@ public class StorageHelper {
     private static final String AIRLINE_LIST = "hci.voladeacapp.StorageHelper.AIRLINE_LIST";
     private static final String CITY_MAP = "hci.voladeacapp.StorageHelper.CITY_MAP";
     private static final String FLIGHT_SETTINGS_MAP = "hci.voladeacapp.StorageHelper.FLIGHT_SETTINGS_MAP";
+    private static final String AIRNAME_LIST = "hci.voladeacapp.StorageHelper.AIRNAME_LIST";
 
     public final static String DEALS_WITH_IMG = "hci.voladeacapp.data.DEALS_WITH_IMG";
     public final static String DEALS_CITY_ID = "hci.voladeacapp.data.DEALS_CITY_ID";
@@ -139,6 +141,24 @@ public class StorageHelper {
 
         SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
         String mapString = sp.getString(AIRLINE_LIST, null); //Si no hay nada devuelve null
+
+        if(mapString != null){
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String,String>>(){}.getType();
+            map = gson.fromJson(mapString, type);
+        } else {
+            map = new HashMap<>();
+        }
+
+        return map;
+    }
+
+
+    public static Map<String, String> getAirlineNameMap(Context context){
+        Map<String, String> map;
+
+        SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
+        String mapString = sp.getString(AIRNAME_LIST, null); //Si no hay nada devuelve null
 
         if(mapString != null){
             Gson gson = new Gson();
@@ -319,8 +339,9 @@ public class StorageHelper {
     public static void initialize(Context context) {
         final SharedPreferences sp = context.getSharedPreferences(DATA, MODE_PRIVATE);
         final String airlines = sp.getString(AIRLINE_LIST, null);
+        final String airnames = sp.getString(AIRNAME_LIST, null);
 
-        if(airlines == null){
+        if(airlines == null || airnames == null){
             //Solo si no lo tengo lo voy a buscar
             String callback = "hci.voladeacapp.initialize.AIRLINE_SAVER";
 
@@ -334,6 +355,8 @@ public class StorageHelper {
 
 
                     HashMap<String, String> idMap = (HashMap<String,String>)intent.getSerializableExtra(DATA_AIRLINE_ID_MAP);
+                    HashMap<String, String> nameMap =  (HashMap<String,String>)intent.getSerializableExtra(DATA_AIRNAME_ID_MAP);
+
                     if(idMap != null) {
                         Gson gson = new Gson();
                         String map = gson.toJson(idMap);
@@ -341,7 +364,15 @@ public class StorageHelper {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(AIRLINE_LIST, map);
                         editor.commit();
-                    } else{
+                    }
+
+                    if(nameMap != null){
+                        Gson gson = new Gson();
+                        String map = gson.toJson(nameMap);
+                        System.out.println(nameMap);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString(AIRNAME_LIST, map);
+                        editor.commit();
                     }
 
                     //Automaticamente me desuscribo

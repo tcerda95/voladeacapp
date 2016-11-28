@@ -40,6 +40,7 @@ public class ApiService extends IntentService {
     public static final String DATA_GLOBAL_REVIEW = "hci.voladeacapp.data.DATA_REVIEW_LIST";
     public static final String DATA_DEAL_LIST = "hci.voladeacapp.data.DATA_DEAL_LIST";
     public static final String DATA_AIRLINE_ID_MAP = "hci.voladeacapp.data.DATA_AIRLINE_ID_MAP";
+    public static final String DATA_AIRNAME_ID_MAP = "hci.voladeacapp.data.DATA_AIRNAME_ID_MAP";
     public static final String DATA_CITY_MAP = "hci.voladeacapp.data.DATA_CITY_MAP";
 
     public static final String API_REQUEST_ERROR = "hci.voladeacapp.error.API_REQUEST_ERROR";
@@ -228,6 +229,7 @@ public class ApiService extends IntentService {
                         try {
                             JSONObject obj = new JSONObject(response);
                             HashMap<String, String> idMap = new HashMap<>();
+                            HashMap<String, String> nameMap = new HashMap<>();
 
                             if(obj.has("airlines")){
 
@@ -239,13 +241,15 @@ public class ApiService extends IntentService {
                                 ArrayList<AirlineDescriptor> list = gson.fromJson(obj.getJSONArray("airlines").toString(), type);
                                 for(AirlineDescriptor air : list){
                                     idMap.put(air.name, air.id);
+                                    nameMap.put(air.id, air.name);
                                 }
 
                             } else{
                                 idMap = null;
                             }
 
-                        sendBroadcast(new Intent(callback).putExtra(DATA_AIRLINE_ID_MAP, idMap));
+                        sendBroadcast(new Intent(callback).putExtra(DATA_AIRLINE_ID_MAP, idMap).putExtra(DATA_AIRNAME_ID_MAP, nameMap));
+
 
                         }catch(Exception e){
                             e.printStackTrace();
