@@ -85,8 +85,6 @@ public class ResenasFragment extends Fragment {
         flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
     }
 
-
-
     @Override
     public void onStart(){
         super.onStart();

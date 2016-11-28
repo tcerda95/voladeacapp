@@ -128,15 +128,22 @@
     <string name="prompt_QR">Apunte al código QR en su pasaje</string>
     <string name="found_QR">Se encontró el cógido %1$s</string>
     <string name="invalid_QR">El código no corresponde a un número de vuelo válido</string>
-    <string name="review_details_title">Detalles reseña de %1$s</string>
+    <string name="review_details_title">Detalles reseña</string>
 
-    <string name="no_reviews">Sin calificaciones</string>
+    <string name="no_reviews">Sin reseñas</string>
 
     <string name="utc_indicator"> (hora local, UTC %1$s)</string>
     <string name="formato_fecha">dd-MM-yyyy</string>
     <string name="notifications">Notificaciones</string>
     <string name="details_title">Detalles del vuelo</string>
     <string name="we_cant_scan_wo_camera">No podemos escanear el código QR sin acceso a tu cámara</string>
+    <string name="promo_price_label">PROMOCIÓN |</string>
+    <string name="detalles_del_vuelo">Detalles del vuelo</string>
+    <string name="departure_time_label_promo">A las</string>
+    <string name="flight_added">Vuelo agregado</string>
+    <string name="review_sent">Reseña enviada</string>
+    <string name="error_invalid_airline">Elija una aerolínea válida</string>
+>>>>>>> origin/master
 
 
 </resources>

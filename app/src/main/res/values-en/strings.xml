@@ -131,13 +131,20 @@
     <string name="found_QR">Found code %1$s</string>
     <string name="invalid_QR">Code doesn\'t correspond to a valid flight number</string>
 
-    <string name="review_details_title">Details review of %1$s</string>
+    <string name="review_details_title">Review details</string>
     <string name="no_reviews">No reviews</string>
 
     <string name="utc_indicator"> (local time, UTC %1$s)</string>
     <string name="formato_fecha">MM-dd-yyyy</string>
     <string name="details_title">Flight details</string>
     <string name="empty_review_arrow">You can start tracking flights adding them from here</string>
+    <string name="promo_price_label">PROMO |</string>
+    <string name="departure_label_promo"></string>
+    <string name="detalles_del_vuelo">Flight details</string>
+    <string name="departure_time_label_promo">At</string>
+    <string name="flight_added">Flight added</string>
+    <string name="review_sent">Review sent</string>
+    <string name="error_invalid_airline">Choose a valid airline</string>
 
 
 </resources>

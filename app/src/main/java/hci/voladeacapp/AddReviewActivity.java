@@ -23,10 +23,13 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddReviewActivity extends AppCompatActivity implements Validator.ValidationListener{
 
     final private static String RECOMMENDED_BOOLEAN = "voladeacapp.RECOMMENDED_BOOLEAN";
+
+    private Map<String, String> airlineIdMap;
 
     @NotEmpty
     private AutoCompleteTextView airline;
@@ -58,6 +61,8 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
         setContentView(R.layout.activity_add_review);
 
         scrollView = (ScrollView) findViewById(R.id.activity_add_review);
+
+        airlineIdMap = StorageHelper.getAirlineIdMap(this);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -163,10 +168,30 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
     }
 
     private void setOnFocusChangeListeners() {
-        TextInputLayout airlineTextInputLayout = findTextInputLayout(airline);
+        final TextInputLayout airlineTextInputLayout = findTextInputLayout(airline);
         TextInputLayout flightNumberTextInputLayout = findTextInputLayout(flightNumber);
 
-        airline.setOnFocusChangeListener(new NotEmptyOnFocusChangeListener(airlineTextInputLayout, getString(R.string.error_required_airline)));
+        airline.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focused) {
+                EditText editText = (EditText) view;
+
+                if (focused) {
+                    airlineTextInputLayout.setError(null);
+                    editText.setCursorVisible(true);
+                }
+                else if (editText.getText().length() < 1) {
+                    airlineTextInputLayout.setError(getString(R.string.error_required_airline));
+                }
+                else if (!airlineIdMap.containsKey(editText.getText().toString())) {
+                    airlineTextInputLayout.setError(getString(R.string.error_invalid_airline));
+                }
+                else {
+                    airlineTextInputLayout.setError(null);
+                }
+            }
+        });
+
         flightNumber.setOnFocusChangeListener(new NotEmptyOnFocusChangeListener(flightNumberTextInputLayout, getString(R.string.error_required_flight_number)));
     }
 
@@ -200,12 +225,6 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
         }
     }
 
-
-    private boolean checkCompletedFields(ReviewGson res) {
-        if(res.flight.airline.id == null || res.flight.number == null || res.yes_recommend == null)
-            return false;
-        return true;
-    }
 
     private void addCommonMethods(final HashMap<DiscreteSeekBar,TextView> map, final RatingBar stars) {
         /*Seteo las estrellas al inicio */
@@ -250,15 +269,14 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
 
     @Override
     public void onValidationSucceeded() {
-        ReviewGson res = new ReviewGson(aerolinea, numeroVuelo, comentario, amabilidad.getProgress(), confort.getProgress(),comida.getProgress(),
-                preciocalidad.getProgress(),puntualidad.getProgress(),viajerosFrec.getProgress(), recommended);
+        if (airlineIdMap.containsKey(aerolinea)) {
+            String airlineId = airlineIdMap.get(aerolinea);
+            ReviewGson res = new ReviewGson(airlineId, numeroVuelo, comentario, amabilidad.getProgress(), confort.getProgress(), comida.getProgress(),
+                    preciocalidad.getProgress(), puntualidad.getProgress(), viajerosFrec.getProgress(), recommended.booleanValue());
 
-        if (res.yes_recommend != null) {
             ApiService.startActionSendReview(this, res);
-            Toast.makeText(getApplication(), "¡Reseña enviada!", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Toast.makeText(getApplication(),"Falta recomendado",Toast.LENGTH_SHORT).show(); // TODO: front-end
+            Toast.makeText(getApplication(), getString(R.string.review_sent), Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 

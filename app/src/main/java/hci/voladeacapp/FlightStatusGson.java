@@ -48,8 +48,8 @@ public class FlightStatusGson implements Serializable {
         private static final long serialVersionUID = 1L;
 
         public String id;
-        public double latitude;
-        public double longitude;
+        public Double latitude;
+        public Double longitude;
         public String name;
     }
 
