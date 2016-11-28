@@ -30,11 +30,7 @@ public class NotificationManager {
         alarmIntent = PendingIntent.getBroadcast(context, PULL_REQUEST_CODE, myIntent, 0);
 
         alarmMgr.cancel(alarmIntent);
-
-        if(activateNotifications){
-
-            alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), minutes * 60 * 1000, alarmIntent);
-        }
+        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), minutes * 60 * 1000, alarmIntent);
 
         StorageHelper.saveNotificationPreferences(context, new NotificationPreferences(activateNotifications, minutes));
     }
