@@ -77,6 +77,10 @@ public class Flight implements Serializable {
         public String airportId;
         public String timezone;
         public String city;
+
+        public Double latitude;
+        public Double longitude;
+
         public String gate;
         public String terminal;
         public FlightDate flightDate;
@@ -95,11 +99,20 @@ public class Flight implements Serializable {
             airport = splittedAirport[0];
             airportId = schedule.airport.id;
             city = schedule.airport.city.name;
+
+            latitude = schedule.airport.city.latitude;
+            longitude = schedule.airport.city.longitude;
+
+            System.out.println("Latitude:" + latitude + " longitude: " + longitude);
+
+
             gate = schedule.airport.gate;
             terminal = schedule.airport.terminal;
             flightDate = schedule.actual_time == null ? new FlightDate() : new FlightDate(schedule.actual_time);
             scheduledDate = new FlightDate(schedule.scheduled_time);
             timezone = schedule.airport.time_zone;
+
+
 
             delay = 0;
 

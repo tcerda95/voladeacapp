@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,7 +45,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static hci.voladeacapp.AddFlightActivity.NEW_FLIGHT_ADDED;
+import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
+import static hci.voladeacapp.MisVuelosFragment.FLIGHT_REMOVED;
 import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 public class PromoDetailsActivity extends AppCompatActivity
@@ -102,7 +106,7 @@ public class PromoDetailsActivity extends AppCompatActivity
                 flightDetailsIntent.putExtra("Flight", flight);
                 flightDetailsIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
                 flightDetailsIntent.putExtra(FlightDetails.PARENT_ACTIVITY, PARENTSHIP);
-                startActivity(flightDetailsIntent);
+                startActivityForResult(flightDetailsIntent,DETAILS_REQUEST_CODE);
             }
         });
 
@@ -125,6 +129,25 @@ public class PromoDetailsActivity extends AppCompatActivity
         carouselView.setViewListener(viewListener);
         fillDetails(flight);
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == DETAILS_REQUEST_CODE && data != null) {
+
+            boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
+            boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
+            if(deleted) {
+                //Borró y hay que borrarlo de la lista
+                FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
+                StorageHelper.deleteFlight(this, identifier);
+            }
+        }
+    }
+
+
 
     private void fillDetails(Flight flight) {
         getTextView(R.id.promo_price).append(" " + TextHelper.getAsPrice(promoPrice));
