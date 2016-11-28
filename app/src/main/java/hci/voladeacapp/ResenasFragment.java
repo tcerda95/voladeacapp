@@ -144,8 +144,6 @@ public class ResenasFragment extends Fragment {
                 startActivity(detailIntent);
             }
         });
-
-        System.out.println("onCreateView");
         return rootView;
     }
 

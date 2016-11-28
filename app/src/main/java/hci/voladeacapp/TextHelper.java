@@ -1,14 +1,9 @@
 package hci.voladeacapp;
 
-import android.app.Activity;
 import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-/**
- * Created by Bianchi on 27/11/16.
- */
 
 public class TextHelper {
     public static String getSimpleDate(Date date, Context context) {

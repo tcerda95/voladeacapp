@@ -7,10 +7,6 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-/**
- * Created by chelo on 11/24/16.
- */
-
 public class ErrorHelper {
 
     public static final String NO_CONNECTION_ERROR = "hci.voladeacapp.error.NO_CONNECTION_ERROR";

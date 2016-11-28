@@ -5,14 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.app.NotificationCompat;
-
-import java.util.Random;
-
-
-//TODO: Completar con los datos del Flight real
+import android.support.v4.app.TaskStackBuilder;
 
 /**
  * Se encarga de generar las notificaciones según el estado de un vuelo

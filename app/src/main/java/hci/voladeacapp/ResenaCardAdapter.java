@@ -15,7 +15,6 @@ import com.android.volley.RequestQueue;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-//TODO: ARREGLAR TODOS LOS MAGIC NUMBERS
 public class ResenaCardAdapter extends BaseAdapter{
     private static final double SAD_RATING_BOUND = 7.0;
     private ArrayList<GlobalReview> cardsData;

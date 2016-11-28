@@ -123,12 +123,6 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
                 validator.validate(); // Se llama a onValidationSucceded o OnValidationFailed.
                                       // Se valida los EditText que tienen las anotaciones @NotEmpty
 
-//              Intent intent = new Intent(getApplication(),PostResenaDummy.class);
- //             intent.putExtra("resena", res);
-
-//                startActivity(intent);
-                //TODO: Mandar a la api
-                //Salir de la actividad
 
             }
         });
@@ -255,7 +249,6 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
         float sum = amabilidad.getProgress() + confort.getProgress() +
                 comida.getProgress() + preciocalidad.getProgress() + puntualidad.getProgress() +
                 viajerosFrec.getProgress() ;
-        //stars.setRating(((sum*5)/60));
         stars.setRating(((sum-6.0f) / 54.0f) * 5.0f);
 
     }

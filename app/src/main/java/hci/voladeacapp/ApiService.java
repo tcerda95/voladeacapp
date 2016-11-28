@@ -1,10 +1,8 @@
 package hci.voladeacapp;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -505,7 +503,6 @@ public class ApiService extends IntentService {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            System.out.println(response);
                             JSONObject obj = new JSONObject(response);
 
                             Gson gson = new Gson();
@@ -515,8 +512,6 @@ public class ApiService extends IntentService {
                             FlightStatusGson status;
                             if(obj.has("status")) {
                                 status = gson.fromJson(obj.getString("status"), type);
-                                System.out.println("TIME:");
-                                System.out.println(status.departure.scheduled_time);
                             } else{
                                 //No existe el vuelo
                                 status = null;
@@ -540,7 +535,6 @@ public class ApiService extends IntentService {
     }
 
     private void sendRequestErrorBroadcast(String callback){
-      //  System.out.println("SENDING ERROR BROADCAST TO CALLBACK [" + callback + "]");
         sendBroadcast(new Intent(callback).putExtra(API_REQUEST_ERROR, true));
     }
 
@@ -576,7 +570,6 @@ public class ApiService extends IntentService {
                 + "&from=" + from + "&to=" + to + "&adults=1&children=0&infants=0&dep_date=" + dateStr + "&sort_key=total&page_size=1";
 
 
-       // System.out.println("Sending request with url  [" + url + "]  I still have " + tries + " tries left");
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

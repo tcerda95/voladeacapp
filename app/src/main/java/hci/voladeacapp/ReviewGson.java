@@ -2,10 +2,6 @@ package hci.voladeacapp;
 
 import java.io.Serializable;
 
-/**
- * Created by chelo on 11/19/16.
- */
-
 public class ReviewGson implements Serializable{
     private static final long serialVersiouUID = 1L;
 

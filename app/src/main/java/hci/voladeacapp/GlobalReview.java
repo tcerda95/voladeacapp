@@ -1,12 +1,8 @@
 package hci.voladeacapp;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by chelo on 11/21/16.
- */
 
 public class GlobalReview implements Serializable{
     private static final long serialVersiouUID = 1L;

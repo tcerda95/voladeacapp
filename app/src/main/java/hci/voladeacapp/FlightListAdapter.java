@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
@@ -73,9 +72,7 @@ public class FlightListAdapter extends BaseAdapter implements UndoAdapter {
 
        try{ holder.stateView.setImageResource(StatusInterpreter.getStateImage(flight.getState())); }
        catch(Exception e){
-           System.out.println("EXCEPTION!!!!!!!!!!!!!");
-           System.out.println("Details:");
-           System.out.println(flight.getState());
+
        }
 
         return convertView;

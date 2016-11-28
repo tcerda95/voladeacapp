@@ -1,6 +1,5 @@
 package hci.voladeacapp;
 
-import android.*;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -10,8 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,11 +37,9 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import static hci.voladeacapp.MisVuelosFragment.ACTION_GET_FLIGHT;
 import static hci.voladeacapp.MisVuelosFragment.DETAILS_REQUEST_CODE;
@@ -449,8 +444,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     }
 
     private boolean isAFlightNumber(String str) {
-        System.out.println("Regex " + str != null && str.matches("[A-Z]{2} [0-9]+"));// TODO: Chequear REGEX
-        return str != null && str.matches("[A-Z]{2} [0-9]+"); // TODO: Chequear REGEX
+        return str != null && str.matches("[A-Z]{2} [0-9]+");
     }
 
 
