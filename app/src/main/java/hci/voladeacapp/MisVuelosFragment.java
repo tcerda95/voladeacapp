@@ -26,6 +26,8 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCa
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -117,6 +119,14 @@ public class MisVuelosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         flight_details = StorageHelper.getFlights(getActivity().getApplicationContext());
+
+        Collections.sort(flight_details, new Comparator<Flight>() {
+            @Override
+            public int compare(Flight flight, Flight t1) {
+                return flight.getDepartureDate().compareTo(t1.getDepartureDate());
+            }
+        });
+
         rootView = inflater.inflate(R.layout.fragment_misvuelos, parent, false);
 
         receiver = new RefreshReceiver();
@@ -344,6 +354,12 @@ public class MisVuelosFragment extends Fragment {
         for(Flight f : list){
             flight_details.add(f);
         }
+        Collections.sort(flight_details, new Comparator<Flight>() {
+            @Override
+            public int compare(Flight flight, Flight t1) {
+                return flight.getDepartureDate().compareTo(t1.getDepartureDate());
+            }
+        });
         adapter.notifyDataSetChanged();
     }
 
