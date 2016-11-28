@@ -75,7 +75,7 @@
                     android:layout_gravity="center">
 
                     <TextView
-                        android:text="@string/departure_date_label_promo"
+                        android:text="@string/departing_on"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/departure_date_label"

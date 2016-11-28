@@ -164,6 +164,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                 actionButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         setResult(MisVuelosFragment.GET_FLIGHT, new Intent().putExtra(ApiService.DATA_FLIGHT_GSON, flGson));
+                        Toast.makeText(getApplicationContext(), R.string.flight_added, Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
@@ -180,7 +181,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        Toast.makeText(getApplicationContext(), R.string.singular_eliminado, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), R.string.singular_eliminado, Toast.LENGTH_SHORT).show();
 
                                         Intent intent = new Intent();
 
@@ -382,29 +383,23 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
             } else {
                 processQRData(result.getContents());
-                Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == DETAILS_REQUEST_CODE) {
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
             boolean deleted = data.getBooleanExtra(FLIGHT_REMOVED, false);
-            if(deleted) {
+            if (deleted) {
                 //Borró y hay que borrarlo de la lista
                 FlightIdentifier identifier = (FlightIdentifier)data.getSerializableExtra(FLIGHT_IDENTIFIER);
                 StorageHelper.deleteFlight(this, identifier);
-                Toast.makeText(this, "Vuelo borrado", Toast.LENGTH_SHORT).show();
+                addFlight(flightGson);  // Actualiza la tarjeta
             }
-            else if(addedNew) {
-                //Agrego desde aca y se fue, hay que cambiar la tarjeta aca
-                Toast.makeText(this, "Se agrego", Toast.LENGTH_SHORT).show();
-
-            }
-            else {
-                //Aca no hizo nada
-                Toast.makeText(this, "No toco nada", Toast.LENGTH_SHORT).show();
+            else if (addedNew) {
+                addFlight(flightGson);  // Actualiza la tarjeta
             }
         }
     }
@@ -428,7 +423,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 qrIntegrator.initiateScan();
             else
-                Toast.makeText(this, "No podemos escanear el código QR sin acceso a tu cámara", Toast.LENGTH_LONG);
+                Toast.makeText(this, "No podemos escanear el código QR sin acceso a tu cámara", Toast.LENGTH_SHORT).show();
         }
     }
 

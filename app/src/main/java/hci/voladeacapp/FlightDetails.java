@@ -85,7 +85,7 @@ public class FlightDetails extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    Toast.makeText(getApplicationContext(), R.string.singular_eliminado, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.singular_eliminado, Toast.LENGTH_SHORT).show();
                     setRemovedFlightResult(flight, true);
 
                     dialog.cancel();
@@ -130,7 +130,7 @@ public class FlightDetails extends AppCompatActivity {
                 getIntent().putExtra(AddFlightActivity.NEW_FLIGHT_ADDED, true);
             }
 
-            Toast.makeText(getApplicationContext(), "Agregado a Mis Vuelos", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.flight_added), Toast.LENGTH_SHORT).show();
             setRemovedFlightResult(flight, false);
             updateOptionsMenuVisibility();
             return true;
