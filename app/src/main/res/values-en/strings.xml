@@ -155,6 +155,7 @@
     <string name="takeoff">Takeoff</string>
     <string name="why_we_use_your_localization">We use your location to show you promos departing from a city near you.</string>
     <string name="ok">OK</string>
+    <string name="searching_reviews">Searching reviews</string>
 
 
 </resources>

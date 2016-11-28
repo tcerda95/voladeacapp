@@ -84,6 +84,7 @@ public class ResenaCardAdapter extends BaseAdapter{
             percentageView.setVisibility(View.GONE);
             convertView.findViewById(R.id.recommends_text).setVisibility(View.GONE);
             cardView.setForeground(null);  // Quita el ripple
+            cardView.findViewById(R.id.resenas_card_layout).setBackgroundColor(parent.getResources().getColor(R.color.grey));
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
