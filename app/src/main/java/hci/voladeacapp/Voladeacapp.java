@@ -44,6 +44,8 @@ public class Voladeacapp extends AppCompatActivity {
 
     private static final String TAB_ID = "hci.voladeacapp.Voladeacapp.TAB_ID";
 
+    public static final String PARENTSHIP = "hci.voladeacapp.Voladeacapp.PARENTSHIP";
+
     public final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static int CAMERA_PERMISSION_REQUEST_CODE = 2;
 

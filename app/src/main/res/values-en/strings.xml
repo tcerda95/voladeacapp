@@ -132,13 +132,9 @@
     <string name="invalid_QR">Code doesn\'t correspond to a valid flight number</string>
 
     <string name="review_details_title">Details review of %1$s</string>
-<<<<<<< HEAD
     <string name="utc_indicator"> (local time, UTC %1$s)</string>
     <string name="formato_fecha">MM-dd-yyyy</string>
-=======
-    <string name="utc_indicator">(local time, UTC %1$s)</string>
     <string name="details_title">Flight details</string>
     <string name="empty_review_arrow">You can start tracking flights adding them from here</string>
->>>>>>> origin/master
 
 </resources>
