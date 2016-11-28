@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 
@@ -48,7 +49,7 @@ public class ResenaCardAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
         ViewHolder holder;
         if (convertView == null) {
@@ -82,7 +83,13 @@ public class ResenaCardAdapter extends BaseAdapter{
             ratingBarView.setVisibility(View.GONE);
             percentageView.setVisibility(View.GONE);
             convertView.findViewById(R.id.recommends_text).setVisibility(View.GONE);
-            cardView.setOnClickListener(null);
+            cardView.setForeground(null);  // Quita el ripple
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(parent.getContext(), parent.getResources().getString(R.string.no_reviews), Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
             ratingBarView.setRating((float) resena.getRating() / 2);
             percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()) +"%");
