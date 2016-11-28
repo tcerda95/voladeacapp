@@ -35,12 +35,9 @@ public class ResenasFragment extends Fragment {
     private ErrConnReceiver errConnReceiver;
     private ArrayList<Flight> flight_list;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
-
-
 
         reviewList = new ArrayList<>();
         receiver = new BroadcastReceiver() {
@@ -77,8 +74,6 @@ public class ResenasFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-
-
     public void onResume(){
         super.onResume();
         ErrorHelper.checkConnection(getActivity());
@@ -106,10 +101,15 @@ public class ResenasFragment extends Fragment {
 
     private void fillList() {
         refreshCount = 0;
-        for(Flight f: flight_list){
+
+        if (flight_list.size() > 0)
+            rootView.findViewById(R.id.emptyElement).setVisibility(View.GONE);
+
+        for(Flight f: flight_list) {
             ApiService.startActionGetReviews(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_FILL_REVIEWS);
             refreshCount++;
         }
+
     }
 
     @Override
@@ -128,9 +128,8 @@ public class ResenasFragment extends Fragment {
         adapter = new ResenaCardAdapter(getActivity(), reviewList);
         cardListView = (GridView) rootView.findViewById(R.id.resenas_list);
         cardListView.setAdapter(adapter);
-        fillList();
-
         cardListView.setEmptyView(rootView.findViewById(R.id.emptyElement));
+        fillList();
 
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -143,9 +142,9 @@ public class ResenasFragment extends Fragment {
                 detailIntent.putExtra("review",review);
 
                 startActivity(detailIntent);
-
             }
         });
+
         System.out.println("onCreateView");
         return rootView;
     }
