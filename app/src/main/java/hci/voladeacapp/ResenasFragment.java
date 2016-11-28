@@ -5,13 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -135,8 +131,8 @@ public class ResenasFragment extends Fragment {
         cardListView = (GridView) rootView.findViewById(R.id.resenas_list);
         cardListView.setAdapter(adapter);
         fillList();
-        cardListView.setEmptyView(rootView.findViewById(R.id.emptyElement));
 
+        cardListView.setEmptyView(rootView.findViewById(R.id.emptyElement));
 
         cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

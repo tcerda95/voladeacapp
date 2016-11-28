@@ -52,6 +52,8 @@ public class PromoDetailsActivity extends AppCompatActivity
     MapView mMapView;
     private GoogleMap GMap;
 
+    public final static String PARENTSHIP = "hci.voladeacapp.PromoDetailsActivity.PARENTSHIP";
+
     CarouselView carouselView;
     RequestQueue requestQueue;
     Flight flight;
@@ -108,6 +110,7 @@ public class PromoDetailsActivity extends AppCompatActivity
                 Intent flightDetailsIntent = new Intent(getApplicationContext(), FlightDetails.class);
                 flightDetailsIntent.putExtra("Flight", flight);
                 flightDetailsIntent.putExtra(FLIGHT_IDENTIFIER, flight.getIdentifier());
+                flightDetailsIntent.putExtra(FlightDetails.PARENT_ACTIVITY, PARENTSHIP);
                 startActivity(flightDetailsIntent);
             }
         });

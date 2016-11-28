@@ -38,6 +38,8 @@ public class FlightDetails extends AppCompatActivity {
     private boolean isPromoDetail;
 //    private double promoPrice;
 
+    public static final String PARENT_ACTIVITY = "hci.voladeacapp.FlightDetails.PARENT_ACTIVITY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -228,16 +230,25 @@ public class FlightDetails extends AppCompatActivity {
     }
 
     private Intent getParentActivityIntentImpl() {
-        Intent parentIntent;
-        boolean isAddFlightParent = getIntent().getBooleanExtra(AddFlightActivity.PARENT_ADD_FLIGHT_ACTIVITY, false);
+        Intent parentIntent = null;
+        String parentActivity = getIntent().getStringExtra(PARENT_ACTIVITY);
 
-        if (isAddFlightParent) {
-            parentIntent = new Intent(this, AddFlightActivity.class);
-            parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
-        }
-        else {  // El otro único padre es Mis Vuelos. Considerar pasar un String por el Intent en lugar de un boolean si hubiesen más padres.
-            parentIntent = new Intent(this, Voladeacapp.class);
-            parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+        if (parentActivity == null)
+            parentActivity = Voladeacapp.PARENTSHIP;
+
+        switch (parentActivity) {
+            case AddFlightActivity.PARENTSHIP:
+                parentIntent = new Intent(this, AddFlightActivity.class);
+                parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+                break;
+            case PromoDetailsActivity.PARENTSHIP:
+                parentIntent = new Intent(this, PromoDetailsActivity.class);
+                parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+                break;
+            default:
+                parentIntent = new Intent(this, Voladeacapp.class);
+                parentIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Se reusa la instancia anterior
+                break;
         }
 
         return parentIntent;

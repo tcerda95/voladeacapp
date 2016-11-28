@@ -154,5 +154,6 @@
     <string name="departure_date_label_promo">Saliendo el</string>
     <string name="promo_price_label">PROMOCIÓN | </string>
     <string name="detalles_del_vuelo">Detalles del vuelo</string>
+    <string name="no_reviews">Sin calificaciones</string>
 
 </resources>

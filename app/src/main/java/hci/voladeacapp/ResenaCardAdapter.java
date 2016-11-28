@@ -1,6 +1,7 @@
 package hci.voladeacapp;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public class ResenaCardAdapter extends BaseAdapter{
             holder.numberView = (TextView) convertView.findViewById(R.id.flight_number_text);
             holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingbar_resena);
             holder.percentageView = (TextView) convertView.findViewById(R.id.percentage);
+            holder.noReviews = (TextView) convertView.findViewById(R.id.no_reviews_text);
+            holder.card = (CardView) convertView.findViewById(R.id.resenas_card);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -66,16 +69,29 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView airlineTextView = holder.airlineView;
         RatingBar ratingBarView = holder.ratingBar;
         TextView percentageView = holder.percentageView;
-        ratingBarView.setClickable(false);
+        TextView noReviewsView = holder.noReviews;
+        CardView cardView = holder.card;
 
+
+        ratingBarView.setClickable(false);
 
         GlobalReview resena = (GlobalReview) getItem(position);
 
+        Boolean hasReviews = resena.hasReviews();
+
         numberTextView.setText(resena.flightNumber().toString());
         airlineTextView.setText(resena.airline());
-        ratingBarView.setRating((float)resena.getRating()/2);
+        if(!hasReviews){
+            noReviewsView.setVisibility(View.VISIBLE);
+            ratingBarView.setVisibility(View.GONE);
+            percentageView.setVisibility(View.GONE);
+            convertView.findViewById(R.id.recommends_text).setVisibility(View.GONE);
+            cardView.setOnClickListener(null);
+        } else {
+            ratingBarView.setRating((float) resena.getRating() / 2);
+            percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()) +"%");
+        }
 
-        percentageView.setText(new DecimalFormat("#.##").format(resena.getRecommendedPercentage()) +"%");
 
         return convertView;
     }
@@ -85,5 +101,7 @@ public class ResenaCardAdapter extends BaseAdapter{
         TextView numberView;
         TextView percentageView;
         RatingBar ratingBar;
+        TextView noReviews;
+        CardView card;
     }
 }

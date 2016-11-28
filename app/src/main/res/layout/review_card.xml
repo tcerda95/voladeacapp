@@ -4,16 +4,17 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:id="@+id/card_view"
-    android:descendantFocusability="blocksDescendants"
-    >
+    android:descendantFocusability="blocksDescendants">
+
     <android.support.v7.widget.CardView
         android:id="@+id/resenas_card"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardUseCompatPadding="true"
+        android:layout_height="120dp">
 
         <LinearLayout
+            android:id="@+id/resenas_card_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -67,6 +68,14 @@
                 android:weightSum="1"
                 android:layout_margin="20dp">
 
+
+                <TextView
+                    android:id="@+id/no_reviews_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_reviews"
+                    android:visibility="gone"/>
+
                 <TextView
                     android:id="@+id/percentage"
                     android:layout_width="wrap_content"
@@ -75,6 +84,7 @@
                     android:layout_gravity="center"
                     android:textSize="24sp" />
                 <TextView
+                    android:id="@+id/recommends_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lo_recomienda"
@@ -83,8 +93,6 @@
                     android:textSize="18sp"
                     android:layout_marginStart="10dp" />
             </LinearLayout>
-
-
 
         </LinearLayout>
 
