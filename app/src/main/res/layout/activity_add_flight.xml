@@ -48,7 +48,7 @@
                     android:id="@id/fl_num_data"
                     android:hint="@string/flight_number_label"
                     android:nextFocusDown="@+id/fl_search_btn"
-                    android:imeOptions="actionDone" />
+                    android:imeOptions="actionSearch" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
