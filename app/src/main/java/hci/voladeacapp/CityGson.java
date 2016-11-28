@@ -2,10 +2,6 @@ package hci.voladeacapp;
 
 import java.io.Serializable;
 
-/**
- * Created by chelo on 11/23/16.
- */
-
 public class CityGson implements Serializable {
     private static final long serialVersiouUID = 1L;
 

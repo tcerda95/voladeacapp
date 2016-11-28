@@ -105,9 +105,6 @@ public class Flight implements Serializable {
             latitude = schedule.airport.city.latitude;
             longitude = schedule.airport.city.longitude;
 
-            System.out.println("Latitude:" + latitude + " longitude: " + longitude);
-
-
             gate = schedule.airport.gate;
             terminal = schedule.airport.terminal;
             flightDate = schedule.actual_time == null ? new FlightDate() : new FlightDate(schedule.actual_time);
@@ -136,7 +133,6 @@ public class Flight implements Serializable {
         }
 
         public String getDateInFormat(String format) {
-            System.out.println("RETURNINGG " + flightDate.date);
             String s = new SimpleDateFormat(format, Locale.ENGLISH).format( flightDate.date != null ? flightDate.date : scheduledDate.date );
             return s;
         }
@@ -233,7 +229,6 @@ public class Flight implements Serializable {
         setBaggageClaim(newStatus.arrival.airport.baggage);
 
         departureSchedule.scheduledDate = new FlightDate(newStatus.departure.scheduled_time);
-        System.out.println("ScheduledDate: " + departureSchedule.scheduledDate.toString());
         if(newStatus.departure.actual_time != null) {
             if(!confirmedDeparture){
                 confirmedDeparture = true;
@@ -460,8 +455,6 @@ public class Flight implements Serializable {
         if(departureSchedule.flightDate.date != null) {
             return departureSchedule.flightDate.date;
         } else{
-            System.out.println("RETURNING");
-            System.out.println(departureSchedule.scheduledDate.date);
             return departureSchedule.scheduledDate.date;
         }
 

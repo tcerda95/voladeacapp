@@ -32,7 +32,6 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static hci.voladeacapp.ApiService.DATA_FLIGHT_GSON;
-import static hci.voladeacapp.ApiService.startActionGetReviews;
 
 public class MisVuelosFragment extends Fragment {
 
@@ -149,7 +148,6 @@ public class MisVuelosFragment extends Fragment {
         bgRefreshStatusRcv =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("REFRESHING LIST");
                 refreshList();
             }
         };

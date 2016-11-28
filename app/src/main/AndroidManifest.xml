@@ -87,7 +87,6 @@
         <activity
             android:name=".AddReviewActivity"
             android:parentActivityName=".Voladeacapp" />
-        <activity android:name=".PostResenaDummy" />
 
         <receiver android:name=".BackgroundRefreshReceiver">
             <intent-filter android:priority="0">

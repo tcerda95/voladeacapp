@@ -1,14 +1,8 @@
 package hci.voladeacapp;
 
-import com.google.gson.Gson;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-/**
- * Created by Bianchi on 19/11/16.
- */
 
 public class FlightSettings implements Serializable{
     private static final long serialVersiouUID = 1L;

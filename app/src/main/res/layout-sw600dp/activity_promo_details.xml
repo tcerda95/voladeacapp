@@ -12,8 +12,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.6">
+            android:layout_weight="0.6"
+            android:layout_height="0dp">
 
             <com.synnapps.carouselview.CarouselView
                 android:id="@+id/carouselView"
@@ -24,7 +24,7 @@
                 app:slideInterval="6000"
                 app:strokeColor="@color/white"
                 app:strokeWidth="1dp"
-                android:layout_height="220dp" />
+                android:layout_height="match_parent" />
 
 
         </FrameLayout>

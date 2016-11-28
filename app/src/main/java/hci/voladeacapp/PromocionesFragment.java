@@ -47,11 +47,9 @@ import com.google.android.gms.location.LocationServices;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -249,7 +247,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 }
                 List<DealGson> list = (List<DealGson>) intent.getSerializableExtra(DATA_DEAL_LIST);
                 if (list == null) {
-                    System.out.println("NULL LIST");
+
                 } else {
                     for (DealGson d : list) {
                         deals.add(d);
@@ -379,7 +377,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         deals.clear();
         CityGson city = getFromCity();
         if (city == null) {
-            System.out.println("INVALID CITY");
+
         } else {
             currentCity = city;
             ApiService.startActionGetDeals(getActivity().getApplicationContext(), city.id, RECEIVER_TAG);

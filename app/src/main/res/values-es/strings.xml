@@ -153,5 +153,9 @@
     <string name="takeoff">Despegue</string>
     <string name="why_we_use_your_localization">Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.</string>
     <string name="ok">OK</string>
+    <string name="searching_reviews">Buscando reseñas</string>
+    <string name="try_again_later">Intente de nuevo más tarde</string>
+    <string name="searching_reviews">Buscando reseñas</string>
+    <string name="error_came_up">Se produjo un error</string>
 
 </resources>

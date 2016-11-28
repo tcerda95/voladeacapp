@@ -1,12 +1,6 @@
 package hci.voladeacapp;
 
-import com.google.gson.Gson;
-
 import java.io.Serializable;
-
-/**
- * Created by chelo on 11/22/16.
- */
 
 public class FlightIdentifier implements Serializable {
     private String number;

@@ -44,7 +44,6 @@ public class AppSettingsActivity extends AppCompatActivity {
             }
             else { lp.setSummary(getActivity().getString(R.string.spanish)); }
 
-            System.out.println(Locale.getDefault().toString().toLowerCase());
 
             updateFrequencyDescription();
 
@@ -57,13 +56,11 @@ public class AppSettingsActivity extends AppCompatActivity {
                                 case "notifications_switch":
                                     updatedNotificationSettings = false;
                                     Boolean val = SP.getBoolean(key, true);
-                                    System.out.println(key + "Changed to: " + val);
                                     break;
 
                                 case "updateFrequency":
                                     updatedNotificationSettings = false;
                                     String value = SP.getString(key, "NULL");
-                                    System.out.println(key + "Changed to: " + value);
                                     updateFrequencyDescription();
                                     break;
 

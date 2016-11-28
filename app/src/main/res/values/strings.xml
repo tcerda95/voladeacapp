@@ -171,5 +171,6 @@
     <string name="ok">OK</string>
     <string name="error_came_up">Se produjo un error</string>
     <string name="try_again_later">Intente de nuevo más tarde</string>
+    <string name="searching_reviews">Buscando reseñas</string>
 
 </resources>

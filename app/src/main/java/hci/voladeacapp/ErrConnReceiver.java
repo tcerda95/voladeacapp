@@ -8,10 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.TextView;
 
-/**
- * Created by chelo on 11/25/16.
- */
-
 public class ErrConnReceiver extends BroadcastReceiver {
 
     private View view;
