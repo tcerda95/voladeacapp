@@ -151,5 +151,7 @@
     <string name="notifications_from_this_flight">Notificaciones de este vuelo</string>
     <string name="notify_me_about">Notificarme sobre</string>
     <string name="takeoff">Despegue</string>
+    <string name="why_we_use_your_localization">Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.</string>
+    <string name="ok">OK</string>
 
 </resources>

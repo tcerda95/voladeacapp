@@ -192,7 +192,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         rootView = layoutInflater.inflate(R.layout.fragment_promociones, parent, false);
 
         fromCityTextView = (AutoCompleteTextView) rootView.findViewById(R.id.promo_from_city_autocomplete);
-        updateLabel();
 
         ArrayAdapter<String> cityAutocompleteAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 android.R.layout.select_dialog_item, new ArrayList<>(citiesMap.keySet()));
@@ -292,10 +291,10 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         if (!hasLocationPermissions()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setTitle("Localización");
-                alertDialog.setMessage("Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.");
+                alertDialog.setTitle(getString(R.string.localization));
+                alertDialog.setMessage(getString(R.string.why_we_use_your_localization));
 
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
                     }
@@ -353,7 +352,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
             if (auxDistance < minDistance) {
                 closestCity = e.getKey();
                 minDistance = auxDistance;
-                System.out.println(closestCity);
             }
         }
 
@@ -363,13 +361,11 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
     @Override
     public void onConnectionSuspended(@NonNull int i) {
         rootView.findViewById(R.id.promos_no_connection_layout).setVisibility(View.VISIBLE);
-        System.out.println("Connection suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         rootView.findViewById(R.id.promos_no_connection_layout).setVisibility(View.VISIBLE);
-        System.out.println("Connection failed");
     }
 
     private void refreshResults() {
@@ -451,11 +447,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void updateLabel() {
-        String myFormat = getResources().getString(R.string.formato_fecha);
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-    }
-
     private void getCityImageURL(final DealGson deal) {
         StringRequest sr = new StringRequest(Request.Method.GET, FlickrParser.getAPIPetition(deal.city.name),
                 new Response.Listener<String>() {
@@ -533,7 +524,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         Toast.makeText(getActivity().getApplicationContext(),
                 getResources().getString(R.string.couldnt_determine_position), Toast.LENGTH_SHORT).show();
         fromCityTextView.setText(DEFAULT_CITY);
-        System.out.println("Usando default: " + DEFAULT_CITY);
         refreshResults();
     }
 

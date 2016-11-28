@@ -153,6 +153,8 @@
     <string name="notifications_from_this_flight">Notifications for this flight</string>
     <string name="notify_me_about">Notify me about</string>
     <string name="takeoff">Takeoff</string>
+    <string name="why_we_use_your_localization">We use your location to show you promos departing from a city near you.</string>
+    <string name="ok">OK</string>
 
 
 </resources>
