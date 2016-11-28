@@ -146,6 +146,15 @@
     <string name="error_invalid_airline">Choose a valid airline</string>
     <string name="loading_promo">Loading promo</string>
     <string name="we_cant_scan_wo_camera">We can\'t scan the QR code without access to camera</string>
+    <string name="cancelation">Cancelation</string>
+    <string name="delay">Delay</string>
+    <string name="deviation">Deviation</string>
+    <string name="landing">Landing</string>
+    <string name="notifications_from_this_flight">Notifications for this flight</string>
+    <string name="notify_me_about">Notify me about</string>
+    <string name="takeoff">Takeoff</string>
+    <string name="why_we_use_your_localization">We use your location to show you promos departing from a city near you.</string>
+    <string name="ok">OK</string>
 
 
 </resources>

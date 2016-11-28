@@ -21,7 +21,9 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -283,6 +285,18 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
         airline.setAdapter(adapter);
         airline.setThreshold(1);
 
+        flightNumberEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    AddFlightActivity.this.findViewById(R.id.fl_search_btn).performClick();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
         Button search = (Button)findViewById(R.id.fl_search_btn);
 
         search.setOnClickListener(new View.OnClickListener(){
@@ -420,13 +434,13 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 qrIntegrator.initiateScan();
             else
-                Toast.makeText(this, getString(R.string.we_cant_scan_wo_camera), Toast.LENGTH_LONG);
+                Toast.makeText(this, getString(R.string.we_cant_scan_wo_camera), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void processQRData(String data) {
         if (!isAFlightNumber(data)) {
-            Toast.makeText(this, getString(R.string.invalid_QR), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.invalid_QR), Toast.LENGTH_SHORT).show();
         } else { // Es un número de vuelo
             String[] splitData = data.split(" ");
             FlightIdentifier identifier = new FlightIdentifier(splitData[0], splitData[1]);

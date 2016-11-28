@@ -147,10 +147,7 @@ public class PromoDetailsActivity extends AppCompatActivity
 
     private void setMarkers(GoogleMap GMap) {
         LatLng departLocation = flight.getArrivalCityLatLng();
-        GMap.addMarker(new MarkerOptions().position(departLocation)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-
-        );
+        GMap.addMarker(new MarkerOptions().position(departLocation));
         GMap.moveCamera(CameraUpdateFactory.newLatLngZoom(departLocation, MAP_PADDING));
     }
 

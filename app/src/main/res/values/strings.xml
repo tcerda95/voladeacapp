@@ -160,5 +160,14 @@
     <string name="review_sent">Reseña enviada</string>
     <string name="error_invalid_airline">Elija una aerolínea válida</string>
     <string name="loading_promo">Cargando promoción</string>
+    <string name="notifications_from_this_flight">Notificaciones de este vuelo</string>
+    <string name="notify_me_about">Notificarme sobre</string>
+    <string name="takeoff">Despegue</string>
+    <string name="landing">Aterrizaje</string>
+    <string name="delay">Retraso</string>
+    <string name="deviation">Desvío</string>
+    <string name="cancelation">Cancelación</string>
+    <string name="why_we_use_your_localization">Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.</string>
+    <string name="ok">OK</string>
 
 </resources>

@@ -31,7 +31,9 @@
                     android:ems="10"
                     android:id="@+id/airline_id_data"
                     android:layout_marginTop="13dp"
-                    android:hint="@string/airline_label" />
+                    android:hint="@string/airline_label"
+                    android:nextFocusDown="@+id/fl_num_data"
+                    android:imeOptions="actionNext"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -43,8 +45,10 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:ems="10"
-                    android:id="@+id/fl_num_data"
-                    android:hint="@string/flight_number_label" />
+                    android:id="@id/fl_num_data"
+                    android:hint="@string/flight_number_label"
+                    android:nextFocusDown="@+id/fl_search_btn"
+                    android:imeOptions="actionSearch" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -52,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:id="@+id/fl_search_btn"
+                android:id="@id/fl_search_btn"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
