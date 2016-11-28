@@ -152,7 +152,9 @@
     <string name="departure_time_label_promo">A las</string>
     <string name="promo_price_label">PROMOCIÓN | </string>
     <string name="detalles_del_vuelo">Detalles del vuelo</string>
-    <string name="no_reviews">Sin reseñas</string>
+    <string name="no_reviews">Sin calificaciones</string>
+    <string name="we_cant_scan_wo_camera">No podemos escanear el código QR sin acceso a tu cámara</string>
+    <!--<string name="no_reviews">Sin reseñas</string>-->
 
     <string name="flight_added">Vuelo agregado</string>
     <string name="review_sent">Reseña enviada</string>

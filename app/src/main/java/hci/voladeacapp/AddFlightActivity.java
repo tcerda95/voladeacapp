@@ -381,13 +381,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        if(result != null) {
-            if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
-            } else {
-                processQRData(result.getContents());
-                Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_SHORT).show();
-            }
+        if(result != null && result.getContents() != null) {
+            Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_SHORT).show();
         }
         else if (requestCode == DETAILS_REQUEST_CODE) {
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
@@ -423,13 +418,13 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 qrIntegrator.initiateScan();
             else
-                Toast.makeText(this, "No podemos escanear el código QR sin acceso a tu cámara", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.we_cant_scan_wo_camera), Toast.LENGTH_LONG);
         }
     }
 
     private void processQRData(String data) {
         if (!isAFlightNumber(data)) {
-            Toast.makeText(this, "", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.invalid_QR), Toast.LENGTH_LONG).show();
         } else { // Es un número de vuelo
             String[] splitData = data.split(" ");
             FlightIdentifier identifier = new FlightIdentifier(splitData[0], splitData[1]);

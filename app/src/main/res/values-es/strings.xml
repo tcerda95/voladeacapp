@@ -136,12 +136,14 @@
     <string name="formato_fecha">dd-MM-yyyy</string>
     <string name="notifications">Notificaciones</string>
     <string name="details_title">Detalles del vuelo</string>
+    <string name="we_cant_scan_wo_camera">No podemos escanear el código QR sin acceso a tu cámara</string>
     <string name="promo_price_label">PROMOCIÓN |</string>
     <string name="detalles_del_vuelo">Detalles del vuelo</string>
     <string name="departure_time_label_promo">A las</string>
     <string name="flight_added">Vuelo agregado</string>
     <string name="review_sent">Reseña enviada</string>
     <string name="error_invalid_airline">Elija una aerolínea válida</string>
+>>>>>>> origin/master
 
 
 </resources>
