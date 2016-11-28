@@ -155,5 +155,6 @@
     <string name="promo_price_label">PROMOCIÓN | </string>
     <string name="detalles_del_vuelo">Detalles del vuelo</string>
     <string name="no_reviews">Sin calificaciones</string>
+    <string name="we_cant_scan_wo_camera">No podemos escanear el código QR sin acceso a tu cámara</string>
 
 </resources>

@@ -17,28 +17,14 @@
                 <com.synnapps.carouselview.CarouselView
                     android:id="@+id/carouselView"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
                     app:fillColor="#FFFFFFFF"
                     app:pageColor="#00000000"
                     app:radius="4dp"
-                    app:slideInterval="3000"
+                    app:slideInterval="6000"
                     app:strokeColor="@color/white"
                     app:strokeWidth="1dp"
-                    />
+                    android:layout_height="220dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="28sp"
-                    android:textColor="@color/white"
-                    android:shadowColor="@color/darkgrey"
-                    android:shadowRadius="10"
-                    android:shadowDx="2"
-                    android:shadowDy="2"
-                    android:padding="7dp"
-                    android:id="@+id/promo_city"
-                    android:visibility="gone"
-                    />
 
             </FrameLayout>
 
@@ -150,12 +136,6 @@
                     android:layout_marginBottom="15dp"
                     />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:orientation="vertical"
-                    android:id="@+id/map_layout"
-                    />
             </LinearLayout>
 
         </LinearLayout>

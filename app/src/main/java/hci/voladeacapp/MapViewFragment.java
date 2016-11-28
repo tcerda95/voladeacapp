@@ -63,6 +63,7 @@ public class MapViewFragment extends Fragment {
             public void onMapReady(GoogleMap mMap) {
                 GMap = mMap;
                 GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
+                getActivity().findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
                 updateMap(deals, fromCityID);
             }
         });

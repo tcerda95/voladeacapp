@@ -136,6 +136,7 @@
     <string name="formato_fecha">dd-MM-yyyy</string>
     <string name="notifications">Notificaciones</string>
     <string name="details_title">Detalles del vuelo</string>
+    <string name="we_cant_scan_wo_camera">No podemos escanear el código QR sin acceso a tu cámara</string>
 
 
 </resources>

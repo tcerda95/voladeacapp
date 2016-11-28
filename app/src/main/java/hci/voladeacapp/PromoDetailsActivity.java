@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -30,11 +31,15 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
 import com.synnapps.carouselview.ViewListener;
@@ -53,6 +58,8 @@ public class PromoDetailsActivity extends AppCompatActivity
     private GoogleMap GMap;
 
     public final static String PARENTSHIP = "hci.voladeacapp.PromoDetailsActivity.PARENTSHIP";
+
+    private final static float MAP_PADDING = 20;
 
     CarouselView carouselView;
     RequestQueue requestQueue;
@@ -75,12 +82,6 @@ public class PromoDetailsActivity extends AppCompatActivity
 
         setTitle(flight.getArrivalCity().split(",")[0]);
 
-//        LayoutInflater inflater = getLayoutInflater();
-//        View rootView = inflater.inflate(R.layout.fragment_maps, (ViewGroup) findViewById(R.id.map_layout), true);
-//        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-//        mMapView.onCreate(savedInstanceState);
-//        mMapView.onResume(); // needed to get the map to display immediately
-
         carouselView = (CarouselView) findViewById(R.id.carouselView);
         carouselView.setPageCount(CAROUSEL_SIZE);
 
@@ -89,11 +90,25 @@ public class PromoDetailsActivity extends AppCompatActivity
             public View setViewForPosition(int position) {
                 View customView;
                 if (position == 0) {
-                    // Mapa
+                    // Mapa en el primer slide
                     customView = getLayoutInflater().inflate(R.layout.fragment_maps, null);
                     mMapView = (MapView) customView.findViewById(R.id.mapView);
                     mMapView.onCreate(savedInstanceState);
                     mMapView.onResume(); // needed to get the map to display immediately
+
+                    mMapView.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(GoogleMap mMap) {
+                            GMap = mMap;
+                            UiSettings UI = GMap.getUiSettings();
+//                            UI.setAllGesturesEnabled(false);
+                            findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
+                            setMarkers(GMap);
+                            //TODO: Settear markers y posicion de camara
+                        }
+                    });
+
+                    mMapView.onResume();
                 } else {
                     // Foto
                     customView = getLayoutInflater().inflate(R.layout.carousel_image_layout, null);
@@ -121,28 +136,19 @@ public class PromoDetailsActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                GMap = mMap;
-                UiSettings UI = GMap.getUiSettings();
-                UI.setAllGesturesEnabled(false);
-                findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
-                //TODO: Settear markers y posicion de camara
-            }
-        });
-
         carouselView.setViewListener(viewListener);
         fillDetails(flight);
     }
 
-//    private View setMap(Bundle savedInstanceState) {
-//        LayoutInflater inflater = getLayoutInflater();
-//        View customMapView = inflater.inflate(R.layout.fragment_maps, null);
-//        mMapView = (MapView) customMapView.findViewById(R.id.mapView);
-//        mMapView.onCreate(savedInstanceState);
-//        mMapView.onResume(); // needed to get the map to display immediately
-//    }
+    private void setMarkers(GoogleMap GMap) {
+        double depLat = 0;
+        double depLong = 0;
+
+        LatLng departLocation = new LatLng(depLat, depLong);
+        GMap.addMarker(new MarkerOptions().position(departLocation));
+
+        GMap.moveCamera(CameraUpdateFactory.newLatLngZoom(departLocation, MAP_PADDING));
+    }
 
     private void fillDetails(Flight flight) {
         getTextView(R.id.promo_price).append(" " + TextHelper.getAsPrice(promoPrice));
@@ -204,15 +210,8 @@ public class PromoDetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
         requestQueue.cancelAll(REQUEST_TAG);
     }
 
@@ -220,12 +219,6 @@ public class PromoDetailsActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
     }
 
     @Override
