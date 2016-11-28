@@ -31,7 +31,8 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -127,13 +128,14 @@
 
                 <Button
                     android:text="@string/detalles_del_vuelo"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/more_details_btn"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginBottom="15dp"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
                     />
 
             </LinearLayout>
