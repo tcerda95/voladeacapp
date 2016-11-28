@@ -130,7 +130,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     if(found){
                         ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
                     }else {
-                        ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde");
+                        ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde"); // TODO: STRINGS.XML
                         pDialog.hide();
                     }
                 }
@@ -235,6 +235,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 Double price = deals.get(position).price;
 
                 pDialog.show();
+                pDialog.setMessage(getString(R.string.loading_promo));
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
             }

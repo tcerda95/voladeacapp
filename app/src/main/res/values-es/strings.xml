@@ -143,7 +143,6 @@
     <string name="flight_added">Vuelo agregado</string>
     <string name="review_sent">Reseña enviada</string>
     <string name="error_invalid_airline">Elija una aerolínea válida</string>
->>>>>>> origin/master
-
+    <string name="loading_promo">Cargando promoción</string>
 
 </resources>

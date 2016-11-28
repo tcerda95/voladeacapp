@@ -18,7 +18,13 @@ public class ReviewDetail extends AppCompatActivity {
         setContentView(R.layout.activity_review_detail);
         Intent intent = getIntent();
         review = (GlobalReview)intent.getSerializableExtra("review");
-        setTitle(getString(R.string.review_details_title, review.airline() + " " + review.flightNumber()));
+        setTitle(getString(R.string.review_details_title));
+
+        Flight flight = StorageHelper.getFlight(this, new FlightIdentifier(review.airline(), review.flightNumber()));
+
+        if (flight != null)
+            ((TextView) findViewById(R.id.review_airline_name)).setText(flight.getFullAirlineName() + " " + flight.getNumber());
+
         fillDetails();
     }
 

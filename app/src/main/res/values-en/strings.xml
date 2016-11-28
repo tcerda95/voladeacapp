@@ -145,6 +145,8 @@
     <string name="flight_added">Flight added</string>
     <string name="review_sent">Review sent</string>
     <string name="error_invalid_airline">Choose a valid airline</string>
+    <string name="loading_promo">Loading promo</string>
+    <string name="we_cant_scan_wo_camera">We can\'t scan the QR code without access to camera</string>
 
 
 </resources>
