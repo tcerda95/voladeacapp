@@ -45,7 +45,7 @@ public class ResenasFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
 
                 if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                        return;
+                    return;
                 }
 
                 else {
