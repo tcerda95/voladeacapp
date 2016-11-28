@@ -34,7 +34,10 @@
                     android:id="@+id/airline_input"
                     android:ems="10"
                     android:hint="@string/airline_label"
-                    android:cursorVisible="false" />
+                    android:cursorVisible="false"
+                    android:imeOptions="actionNext"
+                    android:nextFocusRight="@+id/flight_number_input"
+                    android:inputType="text"/>
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_weight="1"
@@ -45,12 +48,13 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/flight_number_input"
+                    android:id="@id/flight_number_input"
                     android:ems="10"
                     android:hint="@string/flight_number_label"
                     android:inputType="number"
                     android:cursorVisible="false"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -301,7 +305,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/comment_data"
             android:layout_gravity="center"
-            android:hint="@string/optional"/>
+            android:hint="@string/optional"
+            android:imeOptions="actionDone"
+            android:inputType="text"/>
 
     <Button
         android:layout_width="wrap_content"
