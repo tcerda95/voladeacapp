@@ -117,6 +117,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         notifiedConnectionError = true;
 
         pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage(getString(R.string.loading_promo));
 
         dealIdReceiver = new BroadcastReceiver() {
             @Override
@@ -234,7 +235,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                 Double price = deals.get(position).price;
 
                 pDialog.show();
-                pDialog.setMessage(getString(R.string.loading_promo));
 
                 ApiService.startActionGetBestFlight(v.getContext(), originId, destId, price);
             }

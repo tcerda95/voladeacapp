@@ -25,10 +25,10 @@
 
         <ImageView
             android:src="@drawable/ic_maprefsvg"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|left"
             android:layout_height="50dp"
             android:layout_width="90dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="85dp"
             android:visibility="gone"
             android:id="@+id/map_price_reference"
             />
