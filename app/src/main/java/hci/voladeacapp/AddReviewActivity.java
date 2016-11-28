@@ -112,7 +112,7 @@ public class AddReviewActivity extends AppCompatActivity implements Validator.Va
                 try {
                     numeroVuelo = new Integer(numeroVueloText.getText().toString());
                 }catch(NumberFormatException e){
-                    numeroVuelo = null; //TODO: Hacer esto es un a s c o
+                    numeroVuelo = null;
                 }
 
                 aerolinea = aerolineaText.getText().toString();
