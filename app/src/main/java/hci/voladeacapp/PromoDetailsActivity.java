@@ -62,7 +62,7 @@ public class PromoDetailsActivity extends AppCompatActivity
     private static String REQUEST_TAG = "_VOLLEY_PHOTO_REQUEST_TAG_";
 
     @Override
-    protected void onCreate (Bundle savedInstanceState){
+    protected void onCreate (final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promo_details);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -73,11 +73,11 @@ public class PromoDetailsActivity extends AppCompatActivity
 
         setTitle(flight.getArrivalCity().split(",")[0]);
 
-        LayoutInflater inflater = getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.fragment_maps, (ViewGroup) findViewById(R.id.map_layout), true);
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
+//        LayoutInflater inflater = getLayoutInflater();
+//        View rootView = inflater.inflate(R.layout.fragment_maps, (ViewGroup) findViewById(R.id.map_layout), true);
+//        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+//        mMapView.onCreate(savedInstanceState);
+//        mMapView.onResume(); // needed to get the map to display immediately
 
         carouselView = (CarouselView) findViewById(R.id.carouselView);
         carouselView.setPageCount(CAROUSEL_SIZE);
@@ -85,10 +85,19 @@ public class PromoDetailsActivity extends AppCompatActivity
         ViewListener viewListener = new ViewListener() {
             @Override
             public View setViewForPosition(int position) {
-                View customView = getLayoutInflater().inflate(R.layout.carousel_image_layout, null);
-                ImageView image = (ImageView) customView.findViewById(R.id.carousel_image);
-                setImageInPosition(image, position);
-
+                View customView;
+                if (position == 0) {
+                    // Mapa
+                    customView = getLayoutInflater().inflate(R.layout.fragment_maps, null);
+                    mMapView = (MapView) customView.findViewById(R.id.mapView);
+                    mMapView.onCreate(savedInstanceState);
+                    mMapView.onResume(); // needed to get the map to display immediately
+                } else {
+                    // Foto
+                    customView = getLayoutInflater().inflate(R.layout.carousel_image_layout, null);
+                    ImageView image = (ImageView) customView.findViewById(R.id.carousel_image);
+                    setImageInPosition(image, position);
+                }
                 return customView;
             }
         };
@@ -115,6 +124,7 @@ public class PromoDetailsActivity extends AppCompatActivity
                 GMap = mMap;
                 UiSettings UI = GMap.getUiSettings();
                 UI.setAllGesturesEnabled(false);
+                findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
                 //TODO: Settear markers y posicion de camara
             }
         });
@@ -122,6 +132,14 @@ public class PromoDetailsActivity extends AppCompatActivity
         carouselView.setViewListener(viewListener);
         fillDetails(flight);
     }
+
+//    private View setMap(Bundle savedInstanceState) {
+//        LayoutInflater inflater = getLayoutInflater();
+//        View customMapView = inflater.inflate(R.layout.fragment_maps, null);
+//        mMapView = (MapView) customMapView.findViewById(R.id.mapView);
+//        mMapView.onCreate(savedInstanceState);
+//        mMapView.onResume(); // needed to get the map to display immediately
+//    }
 
     private void fillDetails(Flight flight) {
         getTextView(R.id.promo_price).append(" " + TextHelper.getAsPrice(promoPrice));
