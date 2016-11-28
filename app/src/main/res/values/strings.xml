@@ -98,7 +98,7 @@
     <string name="otro_string">Otro</string>
     <string name="landed">Aterrizado</string>
     <string name="programmed">Programado</string>
-    <string name="active">En Vuelo</string>
+    <string name="active">Volando</string>
     <string name="diverted">Desviado</string>
     <string name="late">Retrasado</string>
     <string name="cancelled">Cancelado</string>
@@ -170,5 +170,6 @@
     <string name="why_we_use_your_localization">Usamos tu ubicación para mostrarte promociones partiendo de una ciudad cerca tuyo.</string>
     <string name="ok">OK</string>
     <string name="searching_reviews">Buscando reseñas</string>
+    <string name="flight_change">¡El vuelo %1$s %2$s sufrió cambios!</string>
 
 </resources>

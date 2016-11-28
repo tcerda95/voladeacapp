@@ -46,7 +46,6 @@ public class MisVuelosFragment extends Fragment {
     private class RefreshReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-
             refreshCount--;
 
             if(refreshCount <= 0){
@@ -75,9 +74,11 @@ public class MisVuelosFragment extends Fragment {
                 return;
             }
             Flight toUpdate = flight_details.get(idx);
-            toUpdate._update(updatedGson);
+            if(toUpdate._update(updatedGson) != null){
+                Toast.makeText(getActivity(), getResources().getString(R.string.flight_change, toUpdate.getAirlineID(), toUpdate.getNumber()), Toast.LENGTH_SHORT).show();
+            }
             adapter.notifyDataSetChanged();
-        //    abortBroadcast(f);
+            abortBroadcast();
         }
     }
 
@@ -293,6 +294,10 @@ public class MisVuelosFragment extends Fragment {
      * Realiza la lógica del refresh. En este caso refreshear el estado de los vuelos.
      */
     private void updateFlightsStatus() {
+        if(flight_details.isEmpty()){
+            hideRefreshIcon();
+            return;
+        }
 
         for(Flight f: flight_details){
             ApiService.startActionGetFlightStatus(getActivity(), f.getIdentifier(), ACTION_GET_REFRESH);

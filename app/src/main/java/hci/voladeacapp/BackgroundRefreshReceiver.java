@@ -45,7 +45,7 @@ public class BackgroundRefreshReceiver extends BroadcastReceiver {
 
                 if(change == null){
                     System.out.println("Nothing changed for" + toUpdate.toString());
-                }else{
+                }else if(flightSettings.notificationsActive() && flightSettings.isActive(change)){
                     NotificationCreator.createNotification(context, toUpdate, change);
                     System.out.println("Sending refresh for " + toUpdate.toString());
                     context.sendBroadcast(new Intent(MisVuelosFragment.FLIGHTS_REFRESHED));
