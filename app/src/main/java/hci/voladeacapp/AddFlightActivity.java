@@ -392,6 +392,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
         if(result != null && result.getContents() != null) {
             Toast.makeText(this, getString(R.string.found_QR, result.getContents()) , Toast.LENGTH_SHORT).show();
+            processQRData(result.getContents());
+
         }
         else if (requestCode == DETAILS_REQUEST_CODE) {
             boolean addedNew = data.getBooleanExtra(NEW_FLIGHT_ADDED, false);
@@ -439,7 +441,20 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
             FlightIdentifier identifier = new FlightIdentifier(splitData[0], splitData[1]);
             findViewById(R.id.in_search_layout).setVisibility(View.VISIBLE);
             findViewById(R.id.not_exists_result).setVisibility(View.GONE);
-            ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
+
+            Map<String, String> nameMap = StorageHelper.getAirlineNameMap(this);
+            if(nameMap.keySet().contains(identifier.getAirline())) {
+                ((EditText) findViewById(R.id.airline_id_data)).setText(nameMap.get(identifier.getAirline()));
+            } else {
+                ((EditText) findViewById(R.id.airline_id_data)).setText(identifier.getAirline());
+            }
+            ((EditText)findViewById(R.id.fl_num_data)).setText(identifier.getNumber());
+
+            ((AutoCompleteTextView) findViewById(R.id.airline_id_data)).dismissDropDown();
+
+            // ApiService.startActionGetFlightStatus(this, identifier, ACTION_GET_FLIGHT);
+            ((Button)findViewById(R.id.fl_search_btn)).performClick();
+
         }
     }
 
