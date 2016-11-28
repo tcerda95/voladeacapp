@@ -38,6 +38,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -105,10 +107,9 @@ public class PromoDetailsActivity extends AppCompatActivity
                         public void onMapReady(GoogleMap mMap) {
                             GMap = mMap;
                             UiSettings UI = GMap.getUiSettings();
-//                            UI.setAllGesturesEnabled(false);
+                            UI.setAllGesturesEnabled(false);
                             findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
                             setMarkers(GMap);
-                            //TODO: Settear markers y posicion de camara
                         }
                     });
 
@@ -145,12 +146,11 @@ public class PromoDetailsActivity extends AppCompatActivity
     }
 
     private void setMarkers(GoogleMap GMap) {
-        double depLat = 0;
-        double depLong = 0;
+        LatLng departLocation = flight.getArrivalCityLatLng();
+        GMap.addMarker(new MarkerOptions().position(departLocation)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
 
-        LatLng departLocation = new LatLng(depLat, depLong);
-        GMap.addMarker(new MarkerOptions().position(departLocation));
-
+        );
         GMap.moveCamera(CameraUpdateFactory.newLatLngZoom(departLocation, MAP_PADDING));
     }
 

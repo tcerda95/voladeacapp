@@ -1,5 +1,7 @@
 package hci.voladeacapp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.DateFormat;
 
 import java.io.Serializable;
@@ -427,6 +429,14 @@ public class Flight implements Serializable {
 
     public String getDepartureTerminal() {
         return departureSchedule.terminal;
+    }
+
+    public LatLng getDepartureCityLatLng() {
+        return new LatLng(departureSchedule.latitude, departureSchedule.longitude);
+    }
+
+    public LatLng getArrivalCityLatLng() {
+        return new LatLng(arrivalSchedule.latitude, arrivalSchedule.longitude);
     }
 
     public String getArrivalGate() {
