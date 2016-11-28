@@ -75,7 +75,8 @@
                         android:id="@+id/departure_date"
                         android:textSize="20sp"
                         android:paddingStart="12dp"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -99,7 +100,8 @@
                         android:id="@+id/departure_time"
                         android:textSize="20sp"
                         android:paddingStart="12dp"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -123,7 +125,8 @@
                         android:id="@+id/departure_city"
                         android:textSize="20sp"
                         android:paddingStart="12dp"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
                 <Button
