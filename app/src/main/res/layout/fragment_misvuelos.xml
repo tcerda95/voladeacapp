@@ -49,12 +49,13 @@
                 android:text="@string/no_flights"
                 android:textAlignment="center"
                 android:textSize="18sp"
-                android:layout_gravity="center"
                 android:textColor="@color/darkgrey"
                 android:padding="0dp"
                 android:paddingBottom="0dp"
                 android:paddingEnd="30dp"
-                android:paddingStart="30dp" />
+                android:paddingStart="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="100dp" />
             <TextView
                 android:layout_width="180dp"
                 android:layout_height="60dp"
