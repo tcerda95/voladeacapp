@@ -56,6 +56,8 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
 
     public final static String PARENTSHIP = "hci.voladeacapp.AddFlightActivity.PARENTSHIP";
 
+    private final static String FLIGHT_NUMBER_REGEX = "[A-Z]{2} [0-9]+";
+
     @NotEmpty
     private EditText flightNumberEdit;
 
@@ -459,7 +461,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     }
 
     private boolean isAFlightNumber(String str) {
-        return str != null && str.matches("[A-Z]{2} [0-9]+");
+        return str != null && str.matches(FLIGHT_NUMBER_REGEX);
     }
 
 

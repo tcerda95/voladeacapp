@@ -129,7 +129,7 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
                     if(found){
                         ApiService.startActionGetFlightStatus(context, (FlightIdentifier)intent.getSerializableExtra("identifier"), START_DETAIL_CALLBACK);
                     }else {
-                        ErrorHelper.alert(context, "Se produjo un error", "Intente de nuevo más tarde"); // TODO: STRINGS.XML
+                        ErrorHelper.alert(context, getString(R.string.error_came_up), getString(R.string.try_again_later));
                         pDialog.hide();
                     }
                 }

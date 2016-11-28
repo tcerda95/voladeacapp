@@ -19,13 +19,10 @@ public class ResenaCardAdapter extends BaseAdapter{
     private static final double SAD_RATING_BOUND = 7.0;
     private ArrayList<GlobalReview> cardsData;
     private LayoutInflater inflater;
-    private ViewHolder holder;
-    RequestQueue rq;
 
     public ResenaCardAdapter(Context aContext, ArrayList<GlobalReview> listData) {
         this.cardsData = listData;
         inflater = LayoutInflater.from(aContext);
-//        rq = Volley.newRequestQueue(aContext);
     }
     @Override
     public int getCount() {

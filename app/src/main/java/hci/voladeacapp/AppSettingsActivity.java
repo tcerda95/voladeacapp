@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.Locale;
 
-//TODO: STACK no preserva el fragment que tenía
 public class AppSettingsActivity extends AppCompatActivity {
 
     private static int MINUTES_IN_HOUR = 60;

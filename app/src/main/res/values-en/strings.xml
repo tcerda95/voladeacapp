@@ -157,6 +157,8 @@
     <string name="ok">OK</string>
     <string name="searching_reviews">Searching reviews</string>
     <string name="flight_change">Flight %1$s %2$s has changed!</string>
+    <string name="try_again_later">Try again later</string>
+    <string name="error_came_up">An error occurred</string>
 
 
 </resources>
