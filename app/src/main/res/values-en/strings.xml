@@ -143,6 +143,8 @@
     <string name="detalles_del_vuelo">Flight details</string>
     <string name="departure_time_label_promo">At</string>
     <string name="flight_added">Flight added</string>
+    <string name="review_sent">Review sent</string>
+    <string name="error_invalid_airline">Choose a valid airline</string>
 
 
 </resources>

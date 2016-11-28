@@ -141,8 +141,6 @@ public class PromocionesFragment extends Fragment implements GoogleApiClient.Con
         detailStarterReceiver = new BestFlightReceiver(getActivity(), pDialog, deals);
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
