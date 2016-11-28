@@ -390,6 +390,7 @@ public class StorageHelper {
     }
 
     public static void loadLanguage(Context c) {
+        c = c.getApplicationContext();
         SharedPreferences shp = c.getSharedPreferences(
                 "hci.voladeacapp.PREFERENCES", Context.MODE_PRIVATE);
         String language = shp.getString("USER_LANGUAGE", Locale.getDefault().toString().toLowerCase());
