@@ -43,11 +43,12 @@ public class FlightDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StorageHelper.loadLanguage(this);
+
         setContentView(R.layout.activity_flight_details);
 
         this.flight = (Flight) this.getIntent().getSerializableExtra("Flight");
 
-        StorageHelper.loadLanguage(this);
 
         this.identifier = (FlightIdentifier) getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
 //        this.isPromoDetail = getIntent().getBooleanExtra(IS_PROMO_DETAIL, false);
