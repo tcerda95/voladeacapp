@@ -65,7 +65,7 @@ public class PromoDetailsActivity extends AppCompatActivity
 
     public final static String PARENTSHIP = "hci.voladeacapp.PromoDetailsActivity.PARENTSHIP";
 
-    private final static float MAP_PADDING = 20;
+    private final static float MAP_PADDING = 2;
 
     CarouselView carouselView;
     RequestQueue requestQueue;

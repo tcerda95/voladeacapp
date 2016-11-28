@@ -38,7 +38,7 @@ public class Flight implements Serializable {
         public String timestamp;
 
         public FlightDate(){
-            date = new Date();
+            date = null;
         }
 
         public FlightDate(String time) {
@@ -136,7 +136,9 @@ public class Flight implements Serializable {
         }
 
         public String getDateInFormat(String format) {
-            return new SimpleDateFormat(format, Locale.ENGLISH).format( flightDate != null ? flightDate.date : scheduledDate.date );
+            System.out.println("RETURNINGG " + flightDate.date);
+            String s = new SimpleDateFormat(format, Locale.ENGLISH).format( flightDate.date != null ? flightDate.date : scheduledDate.date );
+            return s;
         }
 
         public String getBoardingTime() {
@@ -230,7 +232,8 @@ public class Flight implements Serializable {
 
         setBaggageClaim(newStatus.arrival.airport.baggage);
 
-
+        departureSchedule.scheduledDate = new FlightDate(newStatus.departure.scheduled_time);
+        System.out.println("ScheduledDate: " + departureSchedule.scheduledDate.toString());
         if(newStatus.departure.actual_time != null) {
             if(!confirmedDeparture){
                 confirmedDeparture = true;
@@ -240,6 +243,8 @@ public class Flight implements Serializable {
             }
         }
 
+
+        arrivalSchedule.scheduledDate = new FlightDate(newStatus.arrival.scheduled_time);
         if(newStatus.arrival.scheduled_time != null){
             FlightDate newDepartureScheduledDate = new FlightDate(newStatus.arrival.scheduled_time);
             arrivalSchedule.scheduledDate = newDepartureScheduledDate;
@@ -388,11 +393,11 @@ public class Flight implements Serializable {
     }
 
     public String getArrivalDateInFormat(String format) {
-        return new SimpleDateFormat(format, Locale.ENGLISH).format(arrivalSchedule.flightDate.date);
+        return new SimpleDateFormat(format, Locale.ENGLISH).format(getArrivalDate());
     }
 
     public String getDepartureDateInFormat(String format) {
-        return new SimpleDateFormat(format, Locale.ENGLISH).format(departureSchedule.flightDate.date);
+        return new SimpleDateFormat(format, Locale.ENGLISH).format(getDepartureDate());
     }
 
     public String getBaggageClaim() {
@@ -452,11 +457,22 @@ public class Flight implements Serializable {
     }
 
     public Date getDepartureDate() {
-        return departureSchedule.flightDate.date;
+        if(departureSchedule.flightDate.date != null) {
+            return departureSchedule.flightDate.date;
+        } else{
+            System.out.println("RETURNING");
+            System.out.println(departureSchedule.scheduledDate.date);
+            return departureSchedule.scheduledDate.date;
+        }
+
     }
 
     public Date getArrivalDate() {
-        return arrivalSchedule.flightDate.date;
+        if(arrivalSchedule.flightDate.date != null) {
+            return arrivalSchedule.flightDate.date;
+        } else{
+            return arrivalSchedule.scheduledDate.date;
+        }
     }
 
     @Override

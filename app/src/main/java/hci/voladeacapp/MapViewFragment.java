@@ -64,6 +64,8 @@ public class MapViewFragment extends Fragment {
                 GMap = mMap;
                 GMap.setOnInfoWindowClickListener(new mapPromoDetailsListener());
                 getActivity().findViewById(R.id.map_loading_indicator).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.map_price_reference).setVisibility(View.VISIBLE);
+
                 updateMap(deals, fromCityID);
             }
         });

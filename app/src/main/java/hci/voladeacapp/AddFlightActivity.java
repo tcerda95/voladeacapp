@@ -435,6 +435,7 @@ public class AddFlightActivity extends AppCompatActivity implements Validator.Va
     }
 
     private boolean isAFlightNumber(String str) {
+        System.out.println("Regex " + str != null && str.matches("[A-Z]{2} [0-9]+"));// TODO: Chequear REGEX
         return str != null && str.matches("[A-Z]{2} [0-9]+"); // TODO: Chequear REGEX
     }
 
