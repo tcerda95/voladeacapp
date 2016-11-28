@@ -1,6 +1,7 @@
 package hci.voladeacapp;
 
 import android.app.Activity;
+import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +11,8 @@ import java.util.Date;
  */
 
 public class TextHelper {
-    public static String getSimpleDate(Date date, Activity activity) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(activity.getResources().getString(R.string.formato_fecha));
+    public static String getSimpleDate(Date date, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(context.getResources().getString(R.string.formato_fecha));
         return dateFormat.format(date);
     }
 
