@@ -412,15 +412,11 @@ public class Flight implements Serializable {
     }
 
     public String getDepartureBoardingTime() {
-        return departureSchedule.flightDate.timestamp;
+        return departureSchedule.getBoardingTime();
     }
 
     public String getArrivalBoardingTime() {
-        if(arrivalSchedule.flightDate.timestamp != null) {
-            return arrivalSchedule.flightDate.timestamp;
-        } else {
-            return arrivalSchedule.scheduledDate.timestamp;
-        }
+        return arrivalSchedule.getBoardingTime();
     }
 
     public String getDepartureGate() {
