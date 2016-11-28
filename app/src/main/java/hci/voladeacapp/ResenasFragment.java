@@ -35,19 +35,25 @@ public class ResenasFragment extends Fragment {
     private ErrConnReceiver errConnReceiver;
     private ArrayList<Flight> flight_list;
 
+    private boolean timeoutErrorShowed;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         flight_list = StorageHelper.getFlights(getActivity().getApplicationContext());
 
         reviewList = new ArrayList<>();
         receiver = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)){
-                    return;
+                if(intent.getBooleanExtra(ApiService.API_REQUEST_ERROR, false)) {
+                    if (!timeoutErrorShowed) {
+                        timeoutErrorShowed = true;
+                        rootView.findViewById(R.id.in_search_layout).setVisibility(View.GONE);
+                        ErrorHelper.connectionErrorShow(context);
+                    }
                 }
-
                 else {
                     GlobalReview review = (GlobalReview) intent.getSerializableExtra(DATA_GLOBAL_REVIEW);
                     Flight corresponding = new Flight();
@@ -63,6 +69,7 @@ public class ResenasFragment extends Fragment {
                             }
                         });
                         adapter.notifyDataSetChanged();
+                        rootView.findViewById(R.id.in_search_layout).setVisibility(View.GONE);
                     }
                     System.out.println("RECEIVED: " + review.airline() + "  " + review.flightNumber());
                 }
@@ -102,8 +109,10 @@ public class ResenasFragment extends Fragment {
     private void fillList() {
         refreshCount = 0;
 
-        if (flight_list.size() > 0)
+        if (flight_list.size() > 0) {
             rootView.findViewById(R.id.emptyElement).setVisibility(View.GONE);
+            rootView.findViewById(R.id.in_search_layout).setVisibility(View.VISIBLE);
+        }
 
         for(Flight f: flight_list) {
             ApiService.startActionGetReviews(getActivity(), f.getAerolinea(), f.getNumber(), ACTION_FILL_REVIEWS);
@@ -115,6 +124,8 @@ public class ResenasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_resenas, container, false);
+
+        timeoutErrorShowed = false;
 
         FloatingActionButton addButton = (FloatingActionButton)rootView.findViewById(R.id.add_review_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +155,6 @@ public class ResenasFragment extends Fragment {
                 startActivity(detailIntent);
             }
         });
-
-        System.out.println("onCreateView");
         return rootView;
     }
 

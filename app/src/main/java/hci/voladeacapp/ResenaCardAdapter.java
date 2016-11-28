@@ -15,7 +15,6 @@ import com.android.volley.RequestQueue;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-//TODO: ARREGLAR TODOS LOS MAGIC NUMBERS
 public class ResenaCardAdapter extends BaseAdapter{
     private static final double SAD_RATING_BOUND = 7.0;
     private ArrayList<GlobalReview> cardsData;
@@ -84,6 +83,7 @@ public class ResenaCardAdapter extends BaseAdapter{
             percentageView.setVisibility(View.GONE);
             convertView.findViewById(R.id.recommends_text).setVisibility(View.GONE);
             cardView.setForeground(null);  // Quita el ripple
+            cardView.findViewById(R.id.resenas_card_layout).setBackgroundColor(parent.getResources().getColor(R.color.grey));
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

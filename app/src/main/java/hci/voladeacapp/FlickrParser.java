@@ -3,9 +3,6 @@ package hci.voladeacapp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by Bianchi on 26/11/16.
- */
 
 public class FlickrParser {
     public static String getAPIPetition(String city) {

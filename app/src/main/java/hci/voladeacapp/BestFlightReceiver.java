@@ -9,7 +9,6 @@ import android.content.Intent;
 import java.util.ArrayList;
 
 import static hci.voladeacapp.MisVuelosFragment.FLIGHT_IDENTIFIER;
-import static hci.voladeacapp.MisVuelosFragment.IS_PROMO_DETAIL;
 import static hci.voladeacapp.MisVuelosFragment.PROMO_DETAIL_PRICE;
 
 
@@ -54,8 +53,6 @@ public class BestFlightReceiver extends BroadcastReceiver {
 
     private DealGson getDealFromCity(String arrivalCity) {
         for (DealGson d: deals) {
-            System.out.println("ArrivalCity: " + arrivalCity);
-            System.out.println("DealCity: " + d.city.name);
             if (d.city.name.equals(arrivalCity))
                 return d;
         }

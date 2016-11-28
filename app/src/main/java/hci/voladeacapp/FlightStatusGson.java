@@ -2,10 +2,6 @@ package hci.voladeacapp;
 
 import java.io.Serializable;
 
-/**
- * Created by CarliMacbook on 11/17/16.
- */
-
 public class FlightStatusGson implements Serializable {
    private static final long serialVersiouUID = 1L;
 

@@ -2,10 +2,6 @@ package hci.voladeacapp;
 
 import java.io.Serializable;
 
-/**
- * Created by chelo on 11/20/16.
- */
-
 public class ConfiguredFlight extends Flight implements Serializable {
     private static final long serialVersiouUID = 2L;
 

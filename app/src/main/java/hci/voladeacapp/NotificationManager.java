@@ -6,10 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
-/**
- * Created by chelo on 11/25/16.
- */
-
 public class NotificationManager {
     private static final int PULL_REQUEST_CODE = 10;
     private static final Integer DEFAULT_MINUTES = 15;

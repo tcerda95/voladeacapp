@@ -22,10 +22,6 @@ import static android.content.Context.MODE_PRIVATE;
 import static hci.voladeacapp.ApiService.DATA_AIRLINE_ID_MAP;
 import static hci.voladeacapp.ApiService.DATA_AIRNAME_ID_MAP;
 
-/**
- * Created by chelo on 11/20/16.
- */
-
 public class StorageHelper {
     public final static String FLIGHT_LIST = "hci.voladeacapp.StorageHelper.FLIGHT_LIST";
     public final static String FLIGHTS = "hci.voladeacapp.data.StorageHelper.FLIGHTS";
@@ -75,7 +71,6 @@ public class StorageHelper {
             Gson gson = new GsonBuilder().create();
             Type type = new TypeToken<HashMap<String, FlightSettings>>() {
             }.getType();
-            System.out.println(stringMap);
             settingsMap = gson.fromJson(stringMap, type);
         }
 
@@ -211,8 +206,6 @@ public class StorageHelper {
             return null;
         }
 
-
-        System.out.println("FINDING: FOUND AT IDX " + list.indexOf(searcher));
         return list.get(idx);
 
     }
@@ -222,7 +215,6 @@ public class StorageHelper {
         searcher.setIdentifier(identifier);
 
         List<Flight> list = getFlights(context);
-        System.out.println("DELETING: FOUND AT IDX " + list.indexOf(searcher));
         list.remove(searcher);
 
         saveFlights(context, list);
@@ -236,7 +228,6 @@ public class StorageHelper {
         if(idx < 0) {
             list.add(flight);
         } else {
-            System.out.println("Removing at idx " + idx);
             list.remove(flight);
             list.add(idx, flight);
         }
@@ -244,28 +235,6 @@ public class StorageHelper {
     }
 
 
- /*   public static void saveSettings(Context context, FlightIdentifier identifier, FlightSettings settings){
-        ConfiguredFlight searcher = new ConfiguredFlight();
-        searcher.setIdentifier(identifier);
-
-        List<ConfiguredFlight> list = getFlights(context);
-        int idx = list.indexOf(searcher);
-        if(idx >= 0) {
-            list.get(idx).setSettings(settings);
-            System.out.println("SAVING SETTINGS");
-            System.out.println("Landing: " + settings.isActive(NotificationCategory.LANDING));
-            System.out.println("Delay: " + settings.isActive(NotificationCategory.DELAY));
-            System.out.println("Cancelation: " + settings.isActive(NotificationCategory.CANCELATION));
-            System.out.println("Takeoff: " + settings.isActive(NotificationCategory.TAKEOFF));
-            System.out.println("Deviation: " + settings.isActive(NotificationCategory.DEVIATION));
-            System.out.println("ALL: " + settings.notificationsActive());
-        }else{
-            System.out.println("NOT SAVING SETTINGS B/C NOT FOUND");
-        }
-
-        saveFlights(context, list);
-    }
-*/
     public static void saveFlights(Context context, List<Flight> flight_details){
         saveData(context, flight_details, FLIGHT_LIST);
     }
@@ -360,7 +329,6 @@ public class StorageHelper {
                     if(idMap != null) {
                         Gson gson = new Gson();
                         String map = gson.toJson(idMap);
-                        System.out.println(map);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(AIRLINE_LIST, map);
                         editor.commit();

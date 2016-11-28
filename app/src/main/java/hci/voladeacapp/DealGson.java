@@ -2,10 +2,6 @@ package hci.voladeacapp;
 
 import java.io.Serializable;
 
-/**
- * Created by chelo on 11/21/16.
- */
-
 public class DealGson implements Serializable{
     private static final long serialVersiouUID = 1L;
 

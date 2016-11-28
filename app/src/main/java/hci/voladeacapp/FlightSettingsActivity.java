@@ -33,7 +33,6 @@ public class FlightSettingsActivity extends AppCompatActivity {
         public void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            System.out.println("CREATING");
             sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
             identifier =  (FlightIdentifier) getActivity().getIntent().getSerializableExtra(FLIGHT_IDENTIFIER);
@@ -74,7 +73,6 @@ public class FlightSettingsActivity extends AppCompatActivity {
 
         private void setSwitchesEnabled(boolean enabled) {
             getFragmentManager().executePendingTransactions();
-            System.out.println("ENABLED: " + enabled);
             findPreference("takeoff_notifications_switch").setEnabled(enabled);
             findPreference("landing_notifications_switch").setEnabled(enabled);
             findPreference("delay_notifications_switch").setEnabled(enabled);
